@@ -1,0 +1,46 @@
+server:
+  port : 8499
+#  ssl:
+#    enabled: true
+#    key-store: keystore
+#    key-store-type: PKCS12
+#    key-store-password: jemma
+# Oracle Connect
+spring:
+
+  # File Size
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  datasource:
+   url: jdbc:oracle:thin:@localhost:1521/xe
+   username: devware
+   password: tiger
+   driver-class-name: oracle.jdbc.driver.OracleDriver
+   
+  # Jpa Setting  
+  jpa: 
+    hibernate:
+      ddl-auto: update  # none create update
+    properties:
+      hibernate:
+        default_batch_fetch_size : 500 # fetch조인을 하지 않더라도 sql수를 줄여줌 동시에 할수있는것은 500개까지 추가해줌
+      show_sql:   true         # System.out 에 하이버네이트 실행 SQL
+      format_sql: true
+
+  # view Resolver
+  mvc:
+    view:
+     prefix: /WEB-INF/views/
+     suffix: .jsp
+
+#Mybatis classpath는 resource
+mybatis:
+  config-location: classpath:configuration.xml
+  mapper-locations: classpath:mappers/*.xml
+
+logging.level:
+  org.hibernate.SQL: debug   # logger를 통해 하이버네이트 실행 SQL
+      
