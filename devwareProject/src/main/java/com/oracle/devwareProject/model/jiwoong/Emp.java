@@ -1,4 +1,4 @@
-package com.oracle.devwareProject.model;
+package com.oracle.devwareProject.model.jiwoong;
 
 import lombok.Data;
 

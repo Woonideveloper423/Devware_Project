@@ -3,8 +3,9 @@
 
 <configuration>
 	<typeAliases>
-		<typeAlias alias="Board" 	  type="com.oracle.devwareProject.model.Board"/>
-		<typeAlias alias="Emp"   	  type="com.oracle.devwareProject.model.Emp"/>
-		<typeAlias alias="BoardEmp"   type="com.oracle.devwareProject.model.BoardEmp"/>
+		<typeAlias alias="Board" 	  type="com.oracle.devwareProject.model.jiwoong.Board"/>
+		<typeAlias alias="Emp"   	  type="com.oracle.devwareProject.model.jiwoong.Emp"/>
+		<typeAlias alias="BoardEmp"   type="com.oracle.devwareProject.model.jiwoong.BoardEmp"/>
+		
 	</typeAliases>
 </configuration>

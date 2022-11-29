@@ -132,12 +132,12 @@ ul .nav-item {padding-left:7px;}
         <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">사내게시판:</h6>
-            <a class="collapse-item" href="#">사내 게시판</a>
-            <a class="collapse-item" href="#">소속팀 게시판</a>
-            <a class="collapse-item" href="#">My 게시글 목록</a>
+            <a class="collapse-item" href="/typeBoardList?brd_type=1">사내 게시판</a>
+            <a class="collapse-item" href="/typeBoardList?brd_type=2">소속팀 게시판</a>
+            <a class="collapse-item" href="/detailBoard">My 게시글 목록</a>
              <h6 class="collapse-header">커뮤니티:</h6>
-            <a class="collapse-item" href="#">Q&A게시판</a>
-            <a class="collapse-item" href="#">스터디&동호회</a>
+            <a class="collapse-item" href="/typeBoardList?brd_type=3">Q&A게시판</a>
+            <a class="collapse-item" href="/typeBoardList?brd_type=4">스터디&동호회</a>
           </div>
         </div>
       </li>

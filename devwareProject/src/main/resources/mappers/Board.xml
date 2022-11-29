@@ -53,4 +53,36 @@
 	                       )
 	                         	
 	</insert>
+	
+	<select id="jwTypeBrdTotal" parameterType="int" resultType="int">
+		select count(*) from Board where brd_type=#{brd_type}
+	</select>
+	
+	<select id="jwTypeBrdList" parameterType="Board" resultType="Board">
+		SELECT *
+		    FROM
+		    (SELECT rownum rn , a.*
+		    FROM
+		    (select b.*,d.dept_name,e.emp_name
+		    from board b
+		    inner join emp e
+		    on e.emp_num=b.emp_num
+		    inner join dept d
+		    on d.dept_num = e.dept_num 
+		    where b.brd_type=#{brd_type}
+		    order by b.brd_date desc ) a)
+		    WHERE rn BETWEEN #{start} and #{end}
+	</select>		
+	
+	<select id="jwBoardSelOne" parameterType="hashMap" resultType="Board">
+		select b.*,d.dept_name,e.emp_name
+		    from board b
+		    inner join emp e
+		    on e.emp_num=b.emp_num
+		    inner join dept d
+		    on d.dept_num = e.dept_num 
+		    where b.emp_num=#{emp_num} and b.brd_type=${brd_type} and b.brd_num=${brd_num}
+	</select>
+	
+	
 </mapper>

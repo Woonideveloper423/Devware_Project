@@ -1,9 +1,12 @@
-package com.oracle.devwareProject.controller;
+package com.oracle.devwareProject.controller.jiwoong;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.RequestMapping;
+
+
+
 
 @Controller
 public class SampleController {
@@ -17,12 +20,13 @@ public class SampleController {
 		return "/board/JwBoardForm"; 
 	}
 	
-	@RequestMapping(value = "/typeBoardlist")
-	public String typeBoardList(Model model) {
+	@RequestMapping(value = "/detailBoard")
+	public String detailBoard(Model model) {
 		
-		System.out.println("SampleController typeBoardList Start... ");
+		System.out.println("SampleController detailBoard Start... ");
 		
-		return "/board/typeBoardList";
+		return "/board/detailBoard";
 	}
 	
+	 
 }

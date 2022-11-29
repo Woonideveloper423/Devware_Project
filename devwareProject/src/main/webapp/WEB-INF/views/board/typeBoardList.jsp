@@ -16,75 +16,91 @@
 			<!-- 게시판 title 분기 -->
 			<div class="titlebox" align="center">
 				<c:choose>
-					<c:when test="${brd_type == 1 }">
+					<c:when test="${board.brd_type == 1 }">
 						<h2>사내 게시판</h2>
 					</c:when>
-					<c:when test="${brd_type == 2 }">
+					<c:when test="${board.brd_type == 2 }">
 						<h2>소속팀 게시판</h2>
 					</c:when>
-					<c:when test="${brd_type == 3 }">
+					<c:when test="${board.brd_type == 3 }">
 						<h2>Q&A 게시판</h2>
 					</c:when>
-					<c:when test="${brd_type == 4 }">
+					<c:when test="${board.brd_type == 4 }">
 						<h2>스터디&소모임 게시판</h2>
 					</c:when>
 					<c:otherwise>
-						<h2>노멀 게시판</h2>
+						<h2>오류 게시판</h2>
 					</c:otherwise>
 				</c:choose>
 			</div>
 			<hr>
 			
-			<div class="search_btn input-group input-group-lg">
-			  <button class="btn btn-success btn-lg" type="button">검색</button>
-			  <input type="text" class="form-control" placeholder="검색어를 입력하세요" aria-label="Example text with button addon" aria-describedby="button-addon1">
-		   </div>
+			
+			<div class="input-group input-group-lg">
+			 	<input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-lg">
+			   <span class="input-group-text" id="inputGroup-sizing-lg">검색</span>
+			</div>
+		   
+		   <c:set var="num" value="${page.total-page.start+1 }"></c:set>
+		   
+		   <ul style="margin-top: 25px; margin-left: -20px" class="nav">
+			  <li class="nav-item">
+			    <a class="nav-link active" aria-current="page" href="#"><span style="font-size: 18px;">최신순</span></a>
+			  </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="#"><span style="font-size: 18px;">추천순</span></a>
+			  </li>
+			  <li class="nav-item">
+			    <a class="nav-link" href="#"><span style="font-size: 18px;">댓글많은순</span></a>
+			  </li>
+			</ul>
 		   
 		   
-		   <table class="table table-hover">
-		   		<thead>
+		   
+		   
+		   <table style="margin-top: 20px"  class="table table-hover" >
+		   		<thead align="center">
 		   		<tr>
 		   			<th>글번호</th>
 		   			<th>제목</th>
 		   			<th>작성자</th>
 		   			<th>댓글 수</th>
 		   			<th>조회 수</th>
+		   			<th>작성일</th>
+		   			<th>유형</th>
 		   		</tr>
 		   		</thead>
-		   		<tbody>
-		   		<tr>
-		   			<td>1</td>
-		   			<td>우루과이 뚜드려 패보자</td>
-		   			<td>손흥민</td>
-		   			<td>100</td>
-		   			<th>100</th>
-		   		</tr>
-		   		
-		   		<tr>
-		   			<td>2</td>
-		   			<td>호날두 뚜드려 패보자</td>
-		   			<td>김민재</td>
-		   			<td>100</td>
-		   			<th>100</th>
-		   		</tr>
+		   		<tbody align="center">
+		   		<c:forEach var="board" items="${typeBrdList }">
+			   		<tr>
+			   			<td>${num }</td>
+			   			<td align="center"><a href="/detailBoard?emp_num=${board.emp_num }&brd_type=${board.brd_type }&brd_num=${board.brd_num}">${board.brd_title }</a></td>
+			   			<td>${board.dept_name } ${board.emp_name }</td>
+			   			<td>0</td>
+			   			<th>0</th>
+			   			<th>${board.brd_date }</th>
+			   			<th>${board.brd_type }</th>
+			   		<c:set var="num" value="${num - 1 }"></c:set>
+			   		</tr>
+		   		</c:forEach>
 		   		</tbody>
 		   </table>
 		   <hr/>
 		   
 		   <nav aria-label="Page navigation example">
 				  <ul class="pagination pagination-lg justify-content-center">
-				    <li class="page-item"><a class="page-link" href="#">이전</a></li>
-				    <li class="page-item"><a class="page-link" href="#">1</a></li>
-				    <li class="page-item"><a class="page-link" href="#">2</a></li>
-				    <li class="page-item"><a class="page-link" href="#">3</a></li>
-				    <li class="page-item"><a class="page-link" href="#">다음</a></li>
+					  <c:if test="${page.startPage > page.pageBlock }">
+					  	<li class="page-item"><a class="page-link" href="/typeBoardList?currentPage=${page.startPage-page.pageBlock}&brd_type=${board.brd_type}">이전</a></li>
+					  </c:if>
+					  <c:forEach var="i" begin="${page.startPage}" end="${page.endPage}">
+				    	<li class="page-item"><a class="page-link" href="/typeBoardList?currentPage=${i }&brd_type=${board.brd_type}">${i }</a></li>
+				      </c:forEach>
+				  	  <c:if test="${page.endPage<page.totalPage }">
+				   		 <li class="page-item"><a class="page-link" href="/typeBoardList?currentPage=${page.startPage+page.pageBlock }&brd_type=${board.brd_type}">다음</a></li>
+				    </c:if>
 				  </ul>
 		  </nav>
 		   
-		   
-		   
-		   
-	
 	</div>		
 </body>
 </html>			
