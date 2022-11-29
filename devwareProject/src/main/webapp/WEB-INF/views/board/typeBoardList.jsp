@@ -19,7 +19,7 @@
 					<c:when test="${board.brd_type == 1 }">
 						<h2>사내 게시판</h2>
 					</c:when>
-					<c:when test="${board.brd_type == 2 }">
+					<c:when test="${board.brd_type == 2 }">	
 						<h2>소속팀 게시판</h2>
 					</c:when>
 					<c:when test="${board.brd_type == 3 }">
