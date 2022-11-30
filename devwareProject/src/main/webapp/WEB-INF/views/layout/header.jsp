@@ -1,9 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
-
+<%
+	String context = request.getContextPath();
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -34,7 +34,10 @@ $.ajax({
 setInterval('email()', 30000)
 
 function email(){
-		$.ajax({
+	if($("#emp.emp_num").val() == "") {
+		$(location).attr("href", "/logoutForm");
+	}
+	$.ajax({
 		type:"POST",
 		url:"${ pageContext.request.contextPath }/email/pop3",
 		success:function(data){
@@ -47,7 +50,9 @@ function email(){
 	});
 }
 $(document).ready(function() {
-	
+	if($("#emp.emp_num").val() == "") {
+		$(location).attr("href", "/logoutForm");
+	}
 });
 </script>
 </head>
@@ -142,7 +147,7 @@ $(document).ready(function() {
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">${sessionScope.member.member_name}님</span>
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small">${emp.emp_name}님</span>
                 
                <!--  <img class="img-profile rounded-circle"> -->
                 <i class="fas fa-user"></i>
@@ -189,7 +194,7 @@ $(document).ready(function() {
         <div class="modal-body">로그아웃을 누르시면 현재 세션을 벗어나 로그인 창으로 이동합니다.</div>
         <div class="modal-footer">
           <button class="btn btn-outline-primary" type="button" data-dismiss="modal">돌아가기</button>
-          <a class="btn btn-outline-primary" href="${pageContext.request.contextPath}/member/logout">로그아웃</a>
+          <a class="btn btn-outline-primary" href="/logoutForm">로그아웃</a>
         </div>
       </div>
     </div>
