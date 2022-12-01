@@ -13,5 +13,6 @@
 	    <typeAlias alias="EmpForSearch"  	type="com.oracle.devwareProject.domain.EmpForSearch" />
 		<typeAlias alias="Dept"  			type="com.oracle.devwareProject.domain.Dept" />
 		<typeAlias alias="Page"  			type="com.oracle.devwareProject.domain.Page" />
+		<typeAlias alias="Commute"  		type="com.oracle.devwareProject.dto.KiWoSu.Commute" />
 	</typeAliases>
 </configuration>
