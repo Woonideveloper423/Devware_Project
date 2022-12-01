@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.domain.EmpForSearch;
+import com.oracle.devwareProject.domain.EmpList;
 import com.oracle.devwareProject.domain.Page;
 
 public interface EmpDao {
@@ -18,4 +19,8 @@ public interface EmpDao {
 	public List<EmpForSearch> getUserInfo(Page pg, int deptnum);
 
 	public int updateEmpWithAdmin(EmpForSearch emp);
+
+	public int emplistSave(EmpList emplist);
+
+	public EmpForSearch adminGetUserInfo(int emp_num);
 }

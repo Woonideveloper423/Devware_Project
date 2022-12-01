@@ -21,5 +21,4 @@ public interface EmpRepository
 	Emp getInfo(int emp_num);
 
 	int changePw(String emp_passwd, int emp_num);
-
 }

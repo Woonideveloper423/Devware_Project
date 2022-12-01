@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.domain.EmpForSearch;
+import com.oracle.devwareProject.domain.EmpList;
 import com.oracle.devwareProject.domain.Page;
 
 import lombok.RequiredArgsConstructor;
@@ -105,7 +106,41 @@ public class EmpDaoImpl implements EmpDao {
 		return emplist;
 	}
 
+	@Override
+	public int emplistSave(EmpList emplist) {
+		int result = 0;
+		try {
+				System.out.println("사번: "+emplist.getEmp_num());
+				System.out.println("이름: "+emplist.getEmp_name());
+				System.out.println("부서: "+emplist.getDept_num());
+				System.out.println("입사일: "+emplist.getEmp_hire_date());
+				System.out.println("권한: "+emplist.getAuth_num());
+				System.out.println("상황: "+emplist.getStatus_num());
+			
+			
+			result = session.insert("emplistSave",emplist);
+			System.out.println("직원 리스트 생성 결과: " + result);
+			
+		} catch (Exception e) {
+			System.out.println("EmpDaoImpl emplistSave 에러 발생:"+e.getMessage());
+		}
+		return result;
+	}
 
+	@Override
+	public EmpForSearch adminGetUserInfo(int emp_num) 
+	{
+		EmpForSearch emp = new EmpForSearch();
+		System.out.println("EmpDaoImpl adminGetUserInfo Start");
+		try {
+			emp = session.selectOne("getUserInfo", emp_num);
+			System.out.println("getUserInfo Emp의 이름:" + emp.getEmp_name());
+		} catch (Exception e) {
+			System.out.println("EmpDaoImpl emplistSave 에러 발생:"+e.getMessage());
+		}
+		
+		return emp;
+	}
 
 
 }
