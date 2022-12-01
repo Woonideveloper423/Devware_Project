@@ -30,5 +30,8 @@ public class EmpList
 	private String msg; //결과 메시지
 	
 	@Transient
+	private String emp_hire_date;
+	
+	@Transient
 	private int result; //결과 상태창
 }

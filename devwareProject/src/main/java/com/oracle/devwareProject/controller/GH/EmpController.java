@@ -78,26 +78,10 @@ public class EmpController
 		}
 	}
 	
-	//일반 유저 메인 페이지 정보를 보여주는 메소드 
-	@RequestMapping("/userMyPageForm")
-	public String myPageForm(HttpSession session,Model model)
-	{
-		Emp emp = (Emp) session.getAttribute("emp");
-		System.out.println("EmpService myPageForm Start");
-		
-		System.out.println("Name : "+emp.getEmp_name());
-		
-		model.addAttribute(emp);
-		return "/member/user/userMyPageForm";
-	}
-	
-	//관리자 유저 메인 페이지 정보를 보여주는 메소드 
-	@RequestMapping("/adminMyPageForm")
-	public String AdminMyPageForm(HttpSession session,Model model)
-	{
-		System.out.println("EmpService adminMyPageForm Start");
-		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
-		
+	//회원 가입을 위한 유저 리스트 만들기 [관리자 기능]
+	@RequestMapping("/createUserListForm")
+	public String createUserListForm(Model model)
+	{	
 		List <Dept> deptlist = new ArrayList<Dept>();
 		deptlist = deptService.getDeptInfo();
 		
@@ -110,6 +94,66 @@ public class EmpController
 		List <Status> statuslist = new ArrayList<Status>();
 		statuslist = statusService.getStatusInfo();
 		
+		model.addAttribute("deptlist",deptlist);
+		model.addAttribute("authlist",authlist);
+		model.addAttribute("poslist",poslist);
+		model.addAttribute("statuslist",statuslist);
+		
+		return "/member/admin/makeUserList";
+	}
+	
+	
+	//일반 유저 메인 페이지 정보를 보여주는 메소드 
+	@RequestMapping("/userMyPageForm")
+	public String myPageForm(HttpSession session,Model model)
+	{
+		Emp emp = (Emp) session.getAttribute("emp");
+		System.out.println("EmpService myPageForm Start");
+		
+		System.out.println("Name : "+emp.getEmp_name());
+		
+		List <Dept> deptlist = (List<Dept>) session.getAttribute("deptlist"); 
+		List <Authority> authlist = (List<Authority>) session.getAttribute("authlist");
+		List <Position> poslist = (List<Position>) session.getAttribute("poslist");
+		List <Status> statuslist = (List<Status>) session.getAttribute("statuslist");
+		
+		model.addAttribute("deptlist",deptlist);
+		model.addAttribute("authlist",authlist);
+		model.addAttribute("poslist",poslist);
+		model.addAttribute("statuslist",statuslist);
+		model.addAttribute("emp",emp);
+		
+		return "/member/user/userMyPageForm";
+	}
+	
+	//관리자 유저 메인 페이지 정보를 보여주는 메소드 
+	@SuppressWarnings("unchecked")
+	@RequestMapping("/adminMyPageForm")
+	public String AdminMyPageForm(HttpSession session,Model model)
+	{
+		System.out.println("EmpService adminMyPageForm Start");
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		
+		
+		/*
+		 * List <Dept> deptlist = new ArrayList<Dept>(); deptlist =
+		 * deptService.getDeptInfo();
+		 * 
+		 * List <Authority> authlist = new ArrayList<Authority>(); authlist =
+		 * authService.getAuthInfo();
+		 * 
+		 * List <Position> poslist = new ArrayList<Position>(); poslist =
+		 * posService.getPosInfo();
+		 * 
+		 * List <Status> statuslist = new ArrayList<Status>(); statuslist =
+		 * statusService.getStatusInfo();
+		 */
+		 
+		List <Dept> deptlist = (List<Dept>) session.getAttribute("deptlist"); 
+		List <Authority> authlist = (List<Authority>) session.getAttribute("authlist");
+		List <Position> poslist = (List<Position>) session.getAttribute("poslist");
+		List <Status> statuslist = (List<Status>) session.getAttribute("statuslist");
+		 
 		model.addAttribute("deptlist",deptlist);
 		model.addAttribute("authlist",authlist);
 		model.addAttribute("poslist",poslist);
@@ -144,6 +188,50 @@ public class EmpController
 
 		return "/member/findIdPwForm";
 	}
+	
+	@GetMapping("/createUserList")
+	public String createUserList(Model model, EmpList emplist, @RequestParam String emp_hire_date) 
+	{
+		System.out.println("EmpController createUserList Start");
+		
+		System.out.println("Emplist Hire Date:" + emp_hire_date);
+		
+		
+		emplist.setEmp_hire_date(emp_hire_date);
+		
+		int result = empService.userlistSave(emplist);
+		System.out.println("유저 리스트 생성 결과: "+result);
+		
+		List <Dept> deptlist = new ArrayList<Dept>();
+		deptlist = deptService.getDeptInfo();
+		
+		List <Authority> authlist = new ArrayList<Authority>();
+		authlist = authService.getAuthInfo();
+		
+		List <Position> poslist = new ArrayList<Position>();
+		poslist = posService.getPosInfo();
+		
+		List <Status> statuslist = new ArrayList<Status>();
+		statuslist = statusService.getStatusInfo();
+		
+		model.addAttribute("deptlist",deptlist);
+		model.addAttribute("authlist",authlist);
+		model.addAttribute("poslist",poslist);
+		model.addAttribute("statuslist",statuslist);
+		
+		if(result == 0)
+		{
+			result += 2;
+		}
+		
+		model.addAttribute("result",result);
+
+	
+		System.out.println("던지기전 result의 값: "+result);
+		
+		return "/member/admin/makeUserList";
+	}
+	
 	
 	//아이디 찾기 메소드 [AJAX]
 	@ResponseBody
@@ -264,9 +352,25 @@ public class EmpController
 			empForSearch.setEmp_gender(emp.getEmp_gender());
 			empForSearch.setEmp_hireDate(emp.getEmp_hireDate());
 			
+			List <Dept> deptlist = new ArrayList<Dept>();
+			deptlist = deptService.getDeptInfo();
+			
+			List <Authority> authlist = new ArrayList<Authority>();
+			authlist = authService.getAuthInfo();
+			
+			List <Position> poslist = new ArrayList<Position>();
+			poslist = posService.getPosInfo();
+			
+			List <Status> statuslist = new ArrayList<Status>();
+			statuslist = statusService.getStatusInfo();	
+			
 			//세션에 저장하기 위한 절차 
 			session.setAttribute("empForSearch", empForSearch);
 			session.setAttribute("emp", emp);
+			session.setAttribute("deptlist",deptlist);
+			session.setAttribute("authlist",authlist);
+			session.setAttribute("poslist",poslist);
+			session.setAttribute("statuslist",statuslist);
 		}
 		else
 		{
@@ -583,9 +687,54 @@ public class EmpController
 		
 		return "/member/user/userMyPageForm";
 	}
+	@RequestMapping("/adminGetUserInfo")
+	public String adminEditUser(@RequestParam int emp_num, Model model,HttpSession session)
+	{
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		
+		System.out.println("EmpService adminEditUser Start");
+		System.out.println("Emp_Num : "+emp_num);
+		System.out.println("해당 사번을 가진 유저의 데이터를 가져오기");
+		
+		EmpForSearch userEmp = new EmpForSearch();
+		try {
+			userEmp = empService.adminGetUserInfo(emp_num);
+		} catch (Exception e) {
+			System.out.println("EmpService adminEditUser Error 발생" + e.getMessage());
+		}
+		
+		/*
+		 * List <Dept> deptlist = (List<Dept>) session.getAttribute("deptlist"); List
+		 * <Authority> authlist = (List<Authority>) session.getAttribute("authlist");
+		 * List <Position> poslist = (List<Position>) session.getAttribute("poslist");
+		 * List <Status> statuslist = (List<Status>) session.getAttribute("statuslist");
+		 */
+		
+		List <Dept> deptlist = new ArrayList<Dept>();
+		deptlist = deptService.getDeptInfo();
+		
+		List <Authority> authlist = new ArrayList<Authority>();
+		authlist = authService.getAuthInfo();
+		
+		List <Position> poslist = new ArrayList<Position>();
+		poslist = posService.getPosInfo();
+		
+		List <Status> statuslist = new ArrayList<Status>();
+		statuslist = statusService.getStatusInfo();
+		
+		model.addAttribute("emp",emp);
+		model.addAttribute("userEmp",userEmp);
+		model.addAttribute("deptlist",deptlist);
+		model.addAttribute("authlist",authlist);
+		model.addAttribute("poslist",poslist);
+		model.addAttribute("statuslist",statuslist);
+		
+		return "/member/admin/adminEditUserForm";
+	}
+	
 	
 	@PostMapping("/adminEditInfo")
-	public String upDateUserAdmin(EmpForSearch new_emp, Model model, HttpSession session)
+	public String upDateAdminData(EmpForSearch new_emp, Model model, HttpSession session)
 	{
 		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
 		System.out.println("EmpService adminEditInfo Start");
@@ -672,4 +821,100 @@ public class EmpController
 		return "/member/admin/adminMyPageForm";
 	}
 	
+	@PostMapping("/adminEditUserInfo")
+	public String adminUpDateUserData(EmpForSearch new_emp, Model model, HttpSession session)
+	{
+		System.out.println("EmpController adminUpDateUserData Start");
+		System.out.println("Emp_Num : "+new_emp.getEmp_num());
+		System.out.println("해당 사번을 가진 유저의 데이터를 가져오기");
+		
+		EmpForSearch emp = new EmpForSearch();
+		
+		try {
+			emp = empService.adminGetUserInfo(new_emp.getEmp_num());
+		} catch (Exception e) {
+			System.out.println("EmpService adminUpDateUserData Error 발생" + e.getMessage());
+		}
+		
+		int result = 0;
+		
+		try {
+			//이름 변경
+			emp.setEmp_name(new_emp.getEmp_name());
+			System.out.println("이름: "+new_emp.getEmp_name());
+			
+			//비밀번호 변경
+			//비밀번호 수정한 경우 암호화 한 후 다시 변경 
+			if(emp.getEmp_passwd().equals(new_emp.getEmp_passwd()))
+			{
+				emp.setEmp_passwd(new_emp.getEmp_passwd());
+			} else {
+				String temp = new_emp.getEmp_passwd();
+				temp = encoder.encode(temp);
+				emp.setEmp_passwd(temp);
+			}
+			System.out.println("비밀번호: "+emp.getEmp_passwd());
+			
+			//이메일 변경
+			emp.setEmp_email(new_emp.getEmp_email());
+			System.out.println("이메일: "+new_emp.getEmp_email());
+			
+			//권한 등급 변경
+			emp.setAuth_num(new_emp.getAuth_num());
+			System.out.println("권한 등급: "+new_emp.getAuth_num());
+			
+			//부서 변경
+			emp.setDept_num(new_emp.getDept_num());
+			System.out.println("부서: "+new_emp.getDept_num());
+			
+			//직책 변경
+			emp.setPosition_num(new_emp.getPosition_num());
+			System.out.println("직책: "+new_emp.getPosition_num());
+			
+			//상태 변경
+			emp.setStatus_num(new_emp.getStatus_num());
+			System.out.println("상태: "+new_emp.getStatus_num());
+			
+			//주소 변경
+			emp.setEmp_address(new_emp.getEmp_address());
+			System.out.println("주소: " + new_emp.getEmp_address());
+			
+			//변경 사항을 반영한 update문 
+			result = empService.updateEmpWithAdmin(emp);
+			
+			if(result == 1)
+			{
+				System.out.println("회원 정보 변경에 성공하였습니다.");
+			}
+			else if(result == 2)
+			{
+				System.out.println("회원 정보 변경에 실패하였습니다.");
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		List <Dept> deptlist = new ArrayList<Dept>();
+		deptlist = deptService.getDeptInfo();
+		
+		List <Authority> authlist = new ArrayList<Authority>();
+		authlist = authService.getAuthInfo();
+		
+		List <Position> poslist = new ArrayList<Position>();
+		poslist = posService.getPosInfo();
+		
+		List <Status> statuslist = new ArrayList<Status>();
+		statuslist = statusService.getStatusInfo();
+		
+		model.addAttribute("deptlist",deptlist);
+		model.addAttribute("authlist",authlist);
+		model.addAttribute("poslist",poslist);
+		model.addAttribute("statuslist",statuslist);
+		
+		model.addAttribute("emp",emp);
+		model.addAttribute("result",result);
+		
+		return "/member/admin/adminEditUserForm";
+	}
 }

@@ -29,7 +29,11 @@
 	<select id="getUserInfo_deptnum" parameterType="int" resultType="EmpForSearch">
 		select * from emp where dept_num = #{deptnum}
 	</select>
-		
+
+	<select id="getUserInfo" parameterType="int" resultType="EmpForSearch">
+		select * from emp where emp_num = #{emp_num}
+	</select>
+
 	<select id="getAllUserInfo_Paging_Deptnum" parameterType="Map"  resultType="EmpForSearch">
 	 	SELECT * 
 		FROM 
@@ -39,5 +43,9 @@
 		) q
 		) WHERE rn BETWEEN #{start} and #{end}
  	</select>
+	
+	<select id="emplistSave" parameterType="EmpList">
+		INSERT INTO emp_list(emp_num, auth_num, dept_num, emp_hire_date, emp_name, position_num, status_num) VALUES(#{emp_num},#{auth_num},#{dept_num},#{emp_hire_date},#{emp_name},#{position_num},#{status_num})
+	</select>
 	
 </mapper>

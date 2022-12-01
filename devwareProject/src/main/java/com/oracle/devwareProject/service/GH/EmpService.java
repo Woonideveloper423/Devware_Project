@@ -95,6 +95,8 @@ public class EmpService {
 		}
 		return emplist;
 	}
+	
+	
 
 	public int getEmpCount() {
 		int count = 0;
@@ -155,6 +157,30 @@ public class EmpService {
 			System.out.println(e.getMessage());
 		}
 		return emplist;
+	}
+
+	public int userlistSave(EmpList emplist) {
+		System.out.println("EmpService userlistSave Start");
+		int result = 0;
+		try {
+			result = ed.emplistSave(emplist);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+	
+		return result;
+	}
+
+	public EmpForSearch adminGetUserInfo(int emp_num) {
+		System.out.println("EmpService adminGetUserInfo Start");
+		EmpForSearch emp = new EmpForSearch();
+		try {
+			emp = ed.adminGetUserInfo(emp_num);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return emp;
 	}
 
 
