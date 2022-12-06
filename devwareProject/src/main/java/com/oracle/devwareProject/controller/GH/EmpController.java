@@ -178,14 +178,15 @@ public class EmpController
 	
 	//로그인 뷰 출력
 	@GetMapping("/loginForm")
-	public String loginForm() {
+	public String loginForm() 
+	{
 		return "/member/loginForm";
 	}
 	
 	//아이디, 비밀번호 찾기 뷰 출력
 	@GetMapping("/findIdPwForm")
-	public String findIdPwForm() {
-
+	public String findIdPwForm() 
+	{
 		return "/member/findIdPwForm";
 	}
 	
@@ -824,6 +825,7 @@ public class EmpController
 	@PostMapping("/adminEditUserInfo")
 	public String adminUpDateUserData(EmpForSearch new_emp, Model model, HttpSession session)
 	{
+		EmpForSearch admin_emp = (EmpForSearch) session.getAttribute("empForSearch");
 		System.out.println("EmpController adminUpDateUserData Start");
 		System.out.println("Emp_Num : "+new_emp.getEmp_num());
 		System.out.println("해당 사번을 가진 유저의 데이터를 가져오기");
@@ -911,8 +913,8 @@ public class EmpController
 		model.addAttribute("authlist",authlist);
 		model.addAttribute("poslist",poslist);
 		model.addAttribute("statuslist",statuslist);
-		
-		model.addAttribute("emp",emp);
+		model.addAttribute("emp",admin_emp);
+		model.addAttribute("userEmp",emp);
 		model.addAttribute("result",result);
 		
 		return "/member/admin/adminEditUserForm";

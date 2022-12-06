@@ -59,7 +59,7 @@
 	<title>Insert title here</title>
 </head>
 <body>
-		<h2>[관리자] 유저 리스트 입력</h2>
+		<h2>유저 리스트 입력</h2>
 		<div class="container-fluid">
 			<form action="/createUserList">
 				<table class="table table-hover text-center">
@@ -69,7 +69,7 @@
 					</tr>
 					
 					<tr>
-						<th>사원 번호</th>
+						<th>사원 번호<br><sub>사번 형식: [입사년도[2]+ 부서 번호[2] + 카운트번호[3]]</sub></th>
 						<td><input type="text" id="emp_num" name="emp_num"></td>
 					</tr>
 					
