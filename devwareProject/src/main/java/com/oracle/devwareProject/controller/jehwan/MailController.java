@@ -282,7 +282,7 @@ public class MailController {
 		}
 		
 
-		@RequestMapping(value = "/mail/saveAttach")
+		@RequestMapping(value = "/saveAttach")
 		public void saveAttach(HttpServletRequest request, HttpServletResponse response, String saveName, String realName) {
 			log.info("saveAttach start...");
 			String uploadFolder = request.getSession().getServletContext().getRealPath("/upload/");

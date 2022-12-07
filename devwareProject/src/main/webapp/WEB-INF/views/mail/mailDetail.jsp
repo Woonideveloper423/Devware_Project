@@ -26,7 +26,7 @@
 		
 		$(document).on("click",".save_attach", function(){
 			//save_attach($(this).attr('id'),$(this).attr('name'));
-			location.href = '/mail/saveAttach?saveName='+ $(this).attr('id') + "&realName=" + $(this).attr('name');
+			location.href = '/saveAttach?saveName='+ $(this).attr('id') + "&realName=" + $(this).attr('name');
 		});
 		
 	});
