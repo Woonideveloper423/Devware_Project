@@ -1,4 +1,4 @@
-package com.oracle.devwareProject.model.jiwoong;
+package com.oracle.devwareProject.dto.jiwoong;
 
 import lombok.Data;
 
@@ -13,10 +13,12 @@ public class Board {
 	private int    brd_hit;			private int brd_deleteYn;
 	private int	   brd_ref;			private int brd_re_step;
 	private int	   brd_re_level;	private int qa_status;
+	private int    reply_cnt;
+	
 	
 	// 조회용
 	private String search;			private String keyword;
 	private String pageNum;			
 	private int    start;			private int end;
-	private String emp_name;		private String dept_name;
+	
 }

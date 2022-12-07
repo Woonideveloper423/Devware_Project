@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.devwareProject.BoardEmpDeptMapper">
+
+	<!-- 유형별 게시판 게시글 insert -->
+	<insert id="jwBoardInsert" parameterType="BoardEmpDept" >
+		INSERT INTO Board values(#{emp_num},     
+		                         #{brd_type},
+		                        <choose>
+		                        	<when test="brd_type==1">brd1_num_seq.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.nextval,</when>
+		                        	<when test="brd_type==3">brd3_num_seq.nextval,</when>
+		                        	<when test="brd_type==4">brd4_num_seq.nextval,</when>
+		                        </choose>
+		                         #{brd_title},
+		                         #{brd_content},
+		                         SYSDATE,
+		                         0,  <!-- 조회수 -->
+		                         0,  <!-- 추천수 -->
+		                         0,  <!--  삭제여부 -->
+		                         <choose>
+		                        	<when test="brd_type==1">brd1_num_seq.currval,</when>
+		                        	<when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.currval,</when>
+		                        	<when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.currval,</when>
+		                        	<when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.currval,</when>
+		                        	<when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.currval,</when>
+		                        	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.currval,</when>
+		                        	<when test="brd_type==3">brd3_num_seq.currval,</when>
+		                        	<when test="brd_type==4">brd4_num_seq.currval,</when>
+		                        </choose>	
+		                        0, <!-- 답변글 순서 -->
+		                        0, <!-- 들여쓰기 -->
+								0, <!-- 해결상태 -->
+								0 )	                       
+	</insert>                       	
+	                       
+	                       
+	<!--   유형별 게시판 게시물 총 개수   -->            
+    <select id="jwcheckListTotal" parameterType="BoardEmpDept" resultType="int">
+		 <choose>
+			 <when test="brd_type==2">
+			 	select count(*) from(select b.*
+				                     from board b
+				                     inner join emp e
+				                     on b.emp_num=e.emp_num
+				                     where e.dept_num=#{dept_num} and b.brd_type=2)
+			 </when>
+			  <when test="brd_type==5">
+			 	select count(*) from Board where emp_num=#{emp_num}
+			 </when>
+			 <otherwise>
+			 	select count(*) from Board where brd_type=#{brd_type}
+			 </otherwise>
+		 </choose>
+	</select>                   	
+	
+	<!-- 유형별 게시판 게시물 목록 GET -->
+	<select id="jwBrdCheckList" parameterType="BoardEmpDept" resultType="BoardEmpDept">
+		<choose>
+			<when test="brd_type==2">
+				SELECT *
+				    FROM
+				    (SELECT rownum rn , a.*
+				    FROM
+				    (select b.*,d.dept_name,e.emp_name
+				    from board b
+				    inner join emp e
+				    on e.emp_num=b.emp_num
+				    inner join dept d
+				    on d.dept_num = e.dept_num 
+				    where b.brd_type=2 and e.dept_num=#{dept_num}
+				    order by b.brd_date desc ) a)
+				    WHERE rn BETWEEN #{start} and #{end}
+		    </when>
+		    <when test="brd_type==5">
+			SELECT *
+		        FROM
+		        (SELECT rownum rn , a.*
+		        FROM
+		        (select b.*,d.dept_name,e.emp_name
+		        from board b
+		        inner join emp e
+		        on e.emp_num=b.emp_num
+		        inner join dept d
+		        on d.dept_num = e.dept_num 
+		        where b.emp_num=#{emp_num}
+		        order by b.brd_date desc ) a)
+		        WHERE rn BETWEEN #{start} and #{end}
+		    </when>
+		     <otherwise>
+			 	SELECT *
+				    FROM
+				    (SELECT rownum rn , a.*
+				    FROM
+				    (select b.*,d.dept_name,e.emp_name
+				    from board b
+				    inner join emp e
+				    on e.emp_num=b.emp_num
+				    inner join dept d
+				    on d.dept_num = e.dept_num 
+				    where b.brd_type=#{brd_type}
+				    order by b.brd_date desc ) a)
+				    WHERE rn BETWEEN #{start} and #{end}
+			 </otherwise>
+		  </choose>       
+	</select>		
+	
+	<select id="jwBoardSelOne" parameterType="hashMap" resultType="Board">
+		select b.*,d.dept_name,e.emp_name
+		    from board b
+		    inner join emp e
+		    on e.emp_num=b.emp_num
+		    inner join dept d
+		    on d.dept_num = e.dept_num 
+		    where b.emp_num=#{emp_num} and b.brd_type=${brd_type} and b.brd_num=${brd_num}
+	</select>
+	
+	
+</mapper>

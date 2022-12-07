@@ -67,7 +67,7 @@ $(document).ready(function(){
 		if (!chkInputValue("#brd_content", "글 내용을"))
 			return;
 
-		$("#writeForm").submit();
+		/* $("#writeForm").submit(); */
 	}
 </script>
 </head>
@@ -79,31 +79,37 @@ $(document).ready(function(){
 				<br>
 				<h2 class="fw-bolder" align="center">게시글  작성</h2>
 
-				<form id="writeBoard" name="writeBoard" action="/writeBoard" method="post" enctype="multipart/form-data">
+				<form id="boardWrite" name="boardWrite" action="/board/write" method="post" enctype="multipart/form-data">
 			
-					<div class="form-group">
-						
-						<%-- <input type="hidden" id="emp_no" name="emp_no" value="<c:out value="${sessionScope.member.member_name}"/>"> --%>
-							
-
-					</div>
-
 					<div class="form-group">
 						<label class="brd_label" for="title">제목:</label> <input placeholder="제목을 입력해 주세요" type="text" class="form-control" id="brd_title" name="brd_title">
 					</div>
 					<div class="form-group">
-						<label class="brd_label" for="brd_label">작성자 사번:</label> <input placeholder="작성자 사번 이름" type="number" class="form-control" id="emp_num" name="emp_num">
+						<label class="brd_label" for="brd_label">작성자 아이디:</label>
+						<input type='text' class="form-control" id="emp_id" name="emp_id" value="${emp.emp_id}" readonly="readonly">
+						<input type='hidden' id='dept_num' name='dept_num' value='${emp.dept.dept_num }'>
+						<input type='hidden' id='emp_num' name='emp_num' value="${emp.emp_num }">
+						<input type='hidden' id='dept_name' name='dept_name' value="${emp.dept.dept_name }">
+						
 					</div>
 					<div class="form-group">
-						<label class="brd_label" for="title">작성게시판:</label><input placeholder="작성게시판 입력" type="number" class="form-control" id="brd_type" name="brd_type">
-					</div>
-					<div class="form-group">
+						<label class="brd_label" for="title">작성게시판:</label><br>
+						<select id='brd_type' name='brd_type' class="form-select-lg mb-3" aria-label=".form-select-lg example">
+						  <option selected="selected" disabled="disabled">게시판 종류</option>
+						  <option value='1'>사내게시판</option>
+						  <option value='2'>${sessionScope.emp.dept.dept_name} 게시판</option>
+						  <option value='3'>Q&A 게시판</option>
+						  <option value='4'>스터디&동호회 게시판</option>
+						</select>
+					</div>	
+					
+					<div style="margin-top: -20px;" class="form-group">
 						<label class="brd_label" for="content">내용:</label>
 						<textarea id="brd_content" class="form-control" name="brd_content" rows="10"></textarea>
-						 
-					</div>
+					</div>	 
 					
-					<%--첨부파일 로직(추후구현) <div>
+					
+					<%-- 첨부파일 로직(추후구현) <div>
 						<label for="file" >첨부파일:</label>
 
 						<c:forEach var="listview" items="${listview}" varStatus="status">

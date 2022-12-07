@@ -1,15 +1,12 @@
 package com.oracle.devwareProject.dao.jiwoong;
 
-import java.util.HashMap;
+
 import java.util.List;
 import java.util.Map;
-
 import org.apache.ibatis.session.SqlSession;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-
-import com.oracle.devwareProject.model.jiwoong.Board;
-import com.oracle.devwareProject.model.jiwoong.BoardEmp;
+import com.oracle.devwareProject.dto.jiwoong.Board;
+import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,50 +17,48 @@ public class BoardDaolmpl implements BoardDao {
 	private final SqlSession session;
 	
 	@Override
-	public int writeBoard(Board board) {
-		System.out.println("BoardDaolmpl insertBoard Start...");
-		int insertCount = 0;
+	public int boardInsert(BoardEmpDept bEmp) {
+		System.out.println("BoardDaolmpl boardInsert Start...");
+		int brdInsertCnt = 0;
 		try {
-			System.out.println(board.getBrd_type());
-			System.out.println("BoardDaolmpl /writeBoard board parameter=>" +board);
-			insertCount=session.insert("insertBoard",board);
+			System.out.println(bEmp);
+			
+			brdInsertCnt=session.insert("jwBoardInsert",bEmp);
 			
 		} catch (Exception e) {
 			System.out.println("BoardDaolmpl insertBoard Exception=>" +e.getMessage());
 		}
-		return insertCount;
+		return brdInsertCnt;
 	}
-
-	
 	
 	@Override
-	public List<Board> listTypeBoard(Board board) {
-		List<Board> typeBrdList = null;
-		System.out.println("BoardDaolmpl listTypeBoard Start...");
+	public int checkListTotalCnt(BoardEmpDept bEmp) {
+		System.out.println("BoardDaolmpl checkListTotalCnt start");
+		int checkListTotalCnt=0;
 		try {
-			typeBrdList=session.selectList("jwTypeBrdList",board);
-			System.out.println("BoardDaolmpl listTypeBoard typeBrdList.size()-->" +typeBrdList.size());
+			System.out.println(bEmp);
+			
+			checkListTotalCnt=session.selectOne("jwcheckListTotal",bEmp);
+			
 		} catch (Exception e) {
-			System.out.println("BoardDaolmpl listTypeBoard Exception-->" +e.getMessage());
+			System.out.println("BoardDaolmpl checkListTotalCnt Exception=>"+e.getMessage());
 		}
-		
-		return typeBrdList;
+		System.out.println("BoardDaolmpl checkListTotalCnt=>" + checkListTotalCnt);
+		return checkListTotalCnt;
 	}
-
+	
 	@Override
-	public int totalTypeBoard(int brd_type) {
-		 int totalTypeBrdCnt =0; 
-		 System.out.println("BoardDaolmpl totalTypeBoard start...");
+	public List<BoardEmpDept> boardCheckList(BoardEmpDept bEmp) {
+		System.out.println("BoardDaolmpl boardCheckList start");
+		List<BoardEmpDept> brdCheckList = null;
 		try {
-			totalTypeBrdCnt = session.selectOne("jwTypeBrdTotal",brd_type);
-			System.out.println("BoardDaolmpl totalTypeBoard totalTypeBrdCnt-->+totalTypeBrdCnt");
+			brdCheckList = session.selectList("jwBrdCheckList",bEmp);
 		} catch (Exception e) {
-			System.out.println("BoardDaolmpl totalTypeBoard Exception-->"+e.getMessage()); 
+			System.out.println("BoardDaolmpl boardCheckList Exception=>" +e.getMessage());
 		}
-		return  totalTypeBrdCnt;
+		return brdCheckList;
 	}
-
-
+	
 	
 	// 게시물 상세조회
 	@Override
@@ -81,6 +76,23 @@ public class BoardDaolmpl implements BoardDao {
 		
 		return board;
 	}
+
+	
+	
+
+
+
+	
+
+
+	
+
+
+
+
+
+
+	
 
 
 	
