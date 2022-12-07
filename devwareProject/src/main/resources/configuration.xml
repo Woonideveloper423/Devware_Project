@@ -3,9 +3,10 @@
 
 <configuration>
 	<typeAliases>
-		<typeAlias alias="Board" 	  		type="com.oracle.devwareProject.model.jiwoong.Board"/>
+		<typeAlias alias="Board" 	  		type="com.oracle.devwareProject.dto.jiwoong.Board"/>
 		<!-- <typeAlias alias="Emp"   	  type="com.oracle.devwareProject.model.jiwoong.Emp"/> -->
-		<typeAlias alias="BoardEmp"   		type="com.oracle.devwareProject.model.jiwoong.BoardEmp"/>
+		<!-- <typeAlias alias="BoardEmp"   		type="com.oracle.devwareProject.dto.jiwoong.BoardEmp"/> -->
+		<typeAlias alias="BoardEmpDept"   	type="com.oracle.devwareProject.dto.jiwoong.BoardEmpDept"/>
 	    <typeAlias alias="Emp"  			type="com.oracle.devwareProject.domain.Emp" />
 	    <typeAlias alias="Status"  			type="com.oracle.devwareProject.domain.Status" />
 	    <typeAlias alias="Pos"  			type="com.oracle.devwareProject.domain.Position" />

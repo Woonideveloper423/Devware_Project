@@ -13,6 +13,10 @@
 </definition>       
   
  <!-- 컨트롤러에서 리턴해 주는 뷰이름,본예제는 hello  -->
+<definition name="/*/*/*" extends="tilesbase">     
+    <put-attribute name="title" value="Devware 2022 for Everywhere" />   
+    <put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />     
+</definition>
 <definition name="/*/*" extends="tilesbase">     
     <put-attribute name="title" value="Devware 2022 for Everywhere" />   
     <put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />     

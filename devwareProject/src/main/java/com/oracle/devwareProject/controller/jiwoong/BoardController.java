@@ -10,7 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oracle.devwareProject.domain.Emp;
 
@@ -91,20 +91,26 @@ public class BoardController {
 
 	
 	 // 게시물 상세조회
-	 /* @GetMapping(value = "/board/detail") 
+	  @GetMapping(value ="/board/detail") 
 	  public String boardDetail(BoardEmpDept bEmpDept,Model model) {
 		  System.out.println("BoardController /board/detail Start...");
+		  log.info("brd_type:"+bEmpDept.getBrd_type());
+		  log.info("emp_num:"+bEmpDept.getEmp_num());
+		  log.info("brd_num:"+bEmpDept.getBrd_num());
+		  String brd_date="";
 		  
-			
-			  String brd_date=""; if(board.getBrd_date() !=null) {
-			  brd_date=board.getBrd_date().substring(0,19); board.setBrd_date(brd_date); }
-			  System.out.println("brd_date=>" +brd_date);
-			  model.addAttribute("board",board);
-			  
-			  return "/board/detailBoard";
+			/*
+			 * if(board.getBrd_date() !=null) {
+			 * brd_date=board.getBrd_date().substring(0,19); board.setBrd_date(brd_date);}
 			 */
+		  
+		  System.out.println("brd_date=>" +brd_date);
+		 
+		  
+		  return "/board/test";
+			 
 	  
 	  }
-
+}
 	  // 게시물 조건검색
 
