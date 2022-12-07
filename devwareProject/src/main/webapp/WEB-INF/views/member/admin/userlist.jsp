@@ -37,7 +37,7 @@
 			<button onclick="userlistDeptSearch()">조회하기</button>
 		</div>
 		<table class="table table-hover text-center">
-			<tr><th>사원명</th><th>사원 번호</th><th>사원 아이디</th><th>부서명</th><th>직급</th><th>사용자 등급</th><th>재직 여부</th></tr>
+			<tr><th>사원명</th><th>사원 번호</th><th>사원 아이디</th><th>부서명</th><th>직급</th><th>사용자 등급</th><th>재직 여부</th><th>정보 수정</th><th>사내 메일</th></tr>
 			<c:forEach var="emp" items="${emplist}">
 				<tr>
 					<td>${emp.emp_name}</td>
@@ -48,6 +48,7 @@
 					<td>${emp.auth_name}</td>
 					<td>${emp.status_name}</td>
 					<td><button type="button" class="btn btn-primary btn-lg" onclick="location.href = '/adminGetUserInfo?emp_num=${emp.emp_num}'">정보 수정</button></td>
+					<td><button type="button" class="btn btn-primary btn-lg" onclick="">사내 메일 허락</button></td>
 				</tr>
 				<c:set var="num" value="${num - 1 }"></c:set>
 	
