@@ -66,9 +66,8 @@ $(document).ready(function() {
             <i class="fa fa-bars"></i>
           </button>
           
-			<div><a href="${pageContext.request.contextPath}/member/main"><img id="main_file_img" src="${pageContext.request.contextPath}/resources/img/icon.png" alt="사진"  height="60px"></a></div>
-
-
+		  <div><a href="/auth_finder"><img id="main_file_img" src="${pageContext.request.contextPath}/resources/img/icon.png" alt="사진"  height="60px"></a></div>
+	        
           <!-- Topbar Navbar -->
           <ul class="navbar-nav ml-auto">
 			
@@ -144,60 +143,63 @@ $(document).ready(function() {
 
             <div class="topbar-divider d-none d-sm-block"></div>
 
-            <!-- Nav Item - User Information -->
+            <!-- 유저 정보 탭 [마이페이지],[로그아웃],[이름 출력] -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small">${emp.emp_name}님</span>
                 
-               <!--  <img class="img-profile rounded-circle"> -->
                 <i class="fas fa-user"></i>
               </a>
               
-              <!-- Dropdown - User Information -->
               <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="${pageContext.request.contextPath}/member/myinfo">
-                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                		  내 정보
-                </a>
-                <a class="dropdown-item" href="${pageContext.request.contextPath}/member/editPw?type=0">
-                  <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-              		    정보 변경
-                </a>
-                <a class="dropdown-item" href="${pageContext.request.contextPath}/member/myboard?member_name=${sessionScope.member.member_name}">
-                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                  		내 게시글
-                </a>
+	           		<!-- 마이 페이지 [분기] 관리자 & 일반 유저 -->
+	           		<c:choose>
+	           			<c:when test="${emp.auth_num eq 0}">
+	           				<a class="dropdown-item" href="/adminMyPageForm">
+			                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>내 정보
+			                </a>
+			            </c:when>
+			            
+	           			<c:otherwise>
+		           			<a class="dropdown-item" href="/userMyPageForm">
+			                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>내 정보
+			                </a>
+	           			</c:otherwise>
+	                </c:choose>
+	                
+	                <a class="dropdown-item" href="${pageContext.request.contextPath}/member/myboard?member_name=${sessionScope.member.member_name}">
+	                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>내 게시글
+	                </a>
                 
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                		  로그아웃
-                </a>
+					<!-- 로그아웃 버튼  -->
+	                <div class="dropdown-divider"></div>
+		            <a class="dropdown-item" data-toggle="modal" data-target="#logoutModal">
+		            <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>로그아웃
+		     		</a>
+		     		
               </div>
             </li>
 
           </ul>
 
         </nav>
-        <!-- 상단바 끝 -->
-        
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">로그아웃하시겠습니까?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">로그아웃을 누르시면 현재 세션을 벗어나 로그인 창으로 이동합니다.</div>
-        <div class="modal-footer">
-          <button class="btn btn-outline-primary" type="button" data-dismiss="modal">돌아가기</button>
-          <a class="btn btn-outline-primary" href="/logoutForm">로그아웃</a>
-        </div>
-      </div>
-    </div>
-  </div>        
-</body>
+		  <!-- 로그 아웃 [모달], 로그아웃 버튼 선택시 모달 창이 나온다. 로그아웃 시에 로그인 창으로 이동한다.-->
+		  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		    <div class="modal-dialog" role="document">
+		      <div class="modal-content">
+		        <div class="modal-header">
+		          <h5 class="modal-title" id="exampleModalLabel">로그아웃하시겠습니까?</h5>
+		          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+		            <span aria-hidden="true">×</span>
+		          </button>
+		        </div>
+		        <div class="modal-body">로그아웃을 누르시면 현재 세션을 벗어나 로그인 창으로 이동합니다.</div>
+		        <div class="modal-footer">
+		          <button class="btn btn-outline-primary" type="button" data-dismiss="modal">돌아가기</button>
+		          <a class="btn btn-outline-primary" href="/logoutForm">로그아웃</a>
+		        </div>
+		      </div>
+		    </div>
+		  </div>        
+	</body>
 </html>

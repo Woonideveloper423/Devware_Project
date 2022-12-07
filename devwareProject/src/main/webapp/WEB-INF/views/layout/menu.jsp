@@ -163,7 +163,7 @@ ul .nav-item {padding-left:7px;}
       <hr class="sidebar-divider">
 
     
-    <!-- 내 정보 -->
+   	  <!-- 내 정보 -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsemem" aria-expanded="true" aria-controls="collapsemem">
           <!-- <i class="fas fa-fw fa-wrench"></i> -->
@@ -172,55 +172,42 @@ ul .nav-item {padding-left:7px;}
         </a>
         <div id="collapsemem" class="collapse" aria-labelledby="headingmem" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
+            <c:choose>
+            	<c:when test="${emp.auth_num eq 0}">
+            		 <a class="collapse-item" href="/adminMyPageForm">내 정보</a>
+            	</c:when>
+            	<c:otherwise>
+            		 <a class="collapse-item" href="/userMyPageForm">내 정보</a>
+            	</c:otherwise>
+            </c:choose>
             
-            <a class="collapse-item" href="${pageContext.request.contextPath}/member/myinfo">내 정보</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/member/editPw?type=0">비밀번호 변경</a>
             <a class="collapse-item" href="${pageContext.request.contextPath}/member/myboard?member_name=${sessionScope.member.member_name}">내 게시글</a>            
-             </div>
+          
+          </div>
         </div>
       </li>
       
-         <!-- 나눔선 -->
+      <!-- 나눔선 -->
       <hr class="sidebar-divider">
       
-      <!-- 관리자 -->
-      <c:if test="${sessionScope.member.member_status eq '9'}">
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-          <!-- <i class="fas fa-fw fa-wrench"></i> -->
-          <i class="fas fa-cog"></i>
-          <span style="font-size: 15px;">관리자</span>
-        </a>
-        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-          
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">회원관리:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/unauthorized?page=1">가입 승인</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/member?page=1">회원 관리</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/commuting">사원근태 관리</a>
-            
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">결재관리:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/allApvList?page=1">전체결재 리스트</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/apvDelList?page=1">결재 삭제요청</a>
-            
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">일정관리:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/calendar/company">회사 일정 관리</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/calendar/member">사원 일정 조회</a>
-            
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">인사관리:</h6>       
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/department?page=1">부서 관리</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/rank?page=1">직급 관리</a>
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">통계:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/manager/statistics">회원 통계</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/apv_payment/statistics">지출 통계</a>
-       
-          </div>
-        </div>
+      <!-- 관리자 메뉴 -->
+      <c:if test="${emp.auth_num eq 0}">
+      	<li class="nav-item">
+	        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
+	          <!-- <i class="fas fa-fw fa-wrench"></i> -->
+	          <i class="fas fa-cog"></i>
+	          <span style="font-size: 15px;">관리자</span>
+	        </a>
+	        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
+		        <div class="bg-white py-2 collapse-inner rounded">
+		          
+		            <div class="collapse-divider"></div>
+		            <h6 class="collapse-header">회원  & 인사 관리:</h6>
+		            <a class="collapse-item" href="/userlist">사원 조회 및 관리</a>
+		            <a class="collapse-item" href="/createUserListForm">사원 리스트 추가</a>
+		            
+	          	</div>
+        	</div>
       </li>
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">

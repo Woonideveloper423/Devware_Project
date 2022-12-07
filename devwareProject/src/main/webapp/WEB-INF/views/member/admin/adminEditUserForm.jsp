@@ -184,7 +184,7 @@
 </head>
 <body>
 	<div class="container-fluid">
-		<h3>관리자 용 마이페이지</h3>
+		<h3>관리자용 마이페이지</h3>
 		<form action="/adminEditUserInfo" method="post">
 			<table class="table table-hover text-center">
 				<tr>
