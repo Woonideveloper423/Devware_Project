@@ -18,5 +18,11 @@
 
 		<typeAlias alias="Commute"  		type="com.oracle.devwareProject.dto.KiWoSu.Commute" />
 
+		<typeAlias alias="ChatMessageDto"     	type="com.oracle.devwareProject.dto.jehwan.ChatMessageDto" />
+	  	<typeAlias alias="ChatRoomInviteLeave"  type="com.oracle.devwareProject.dto.jehwan.ChatRoomInviteLeave" />
+	    <typeAlias alias="ChatMessageProc"    	type="com.oracle.devwareProject.dto.jehwan.ChatMessageProc"/>
+	    <typeAlias alias="ChatRoomDto"    		type="com.oracle.devwareProject.dto.jehwan.ChatRoomDto"/>
+	    <typeAlias alias="EmpDto"    			type="com.oracle.devwareProject.dto.jehwan.EmpDto"/>
+	    <typeAlias alias="EmpDtoVO"     		type="com.oracle.devwareProject.dto.jehwan.EmpDtoVO" />
 	</typeAliases>
 </configuration>

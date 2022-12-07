@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.chattingPrototype.chatting">
+	
+	 <resultMap type="java.lang.String" id="ReadMessage">
+    	<result property="java.lang.String" column="log_num"  />
+    </resultMap>
+	
+	<resultMap type="ChatMessageDto" id="MessageResult">
+    	<result property="room_num" column="room_num"  />
+    	<result property="emp_num"  column="emp_num" />
+    	<result property="member_name"  column="member_name" />
+    	<result property="log_num"    column="log_num" />
+    	<result property="msg_type" column="msg_type"  />
+    	<result property="msg_content"  column="msg_content" />
+    	<result property="attach_name"    column="attach_name" />
+    	<result property="send_date"  column="send_date" />
+    	<result property="not_read_cnt"    column="not_read_cnt" />
+    </resultMap>
+    
+   
+	
+	<select id="getMsgCnt" parameterType="int" resultType="int">
+		<!-- select Count(*) from READ_CNT where EMP_NUM = #{empno} -->
+		select COUNT(*)
+		from chat_log cl, 
+		(select room_num, last_read_log
+		from chat_member
+		where emp_num = #{empno})cm
+		where cl.room_num = cm.room_num
+		and cl.log_num > cm.last_read_log
+	</select>
+	
+	<select id="getEmpList" parameterType="EmpDtoVO" resultType="EmpDto">
+		<choose>
+			<when test="type == 1">
+				select emp_num, emp_name
+				from emp
+				where emp_num != #{emp_num}
+			</when>
+			<when test="type == 2">
+				select cm.emp_num, e.emp_name
+				from emp e , (select * from chat_member where room_num = #{room_num} and emp_num != #{emp_num}) cm
+				where e.emp_num = cm.emp_num
+			</when>
+			<when test="type == 3">
+				select emp_num, emp_name
+				from emp
+				where emp_num NOT IN (select emp_num from chat_member where room_num = #{room_num})
+			</when>
+		</choose>
+	</select>
+	
+	<select id="myChatRoomId" parameterType="int" resultType="java.lang.String">
+		select ROOM_NUM
+		from CHAT_MEMBER
+		where EMP_NUM = #{empno}
+	</select>
+	
+	<select id="myChatRoomList" parameterType="int" resultType="ChatRoomDto">
+		<!-- select cr.ROOM_NUM, ROOM_TITLE,mem_name last_sender, ROOM_CNT, msg_content last_msg, SEND_DATE last_msg_date, not_read_cnt
+		from CHAT_ROOM cr, 
+		(select ROOM_NUM from CHAT_MEMBER where EMP_NUM=#{empno}) cm, 
+		(select cl_sort.ROOM_NUM,cm2.mem_name, cl_sort.MSG_CONTENT, cl_sort.SEND_DATE
+		from CHAT_LOG cl_sort, (select max(SEND_DATE) SEND_DATE from CHAT_LOG group by ROOM_NUM) max_date, CHAT_MEMBER cm2
+		where cl_sort.SEND_DATE = max_date.SEND_DATE
+		and cl_sort.room_num = cm2.room_num
+		and cm2.emp_num = cl_sort.emp_num) cl, 
+		(select ROOM_NUM, COUNT(*) not_read_cnt from READ_CNT where EMP_NUM=#{empno} GROUP BY ROOM_NUM) rc
+		where cr.ROOM_NUM = cm.ROOM_NUM
+		and cr.ROOM_NUM = cl.ROOM_NUM
+		and cr.ROOM_NUM = rc.ROOM_NUM(+)
+		ORDER BY send_date desc -->
+		
+		select cr.ROOM_NUM, ROOM_TITLE,emp_name last_sender, msg_content last_msg, SEND_DATE last_msg_date, not_read_cnt
+		from CHAT_ROOM cr, 
+		(select cl2.room_num, count(*) not_read_cnt
+		from chat_log cl2, 
+		(select room_num, last_read_log
+		from chat_member
+		where emp_num = #{empno})cm2
+		where cl2.room_num = cm2.room_num
+		and cl2.log_num > cm2.last_read_log
+		group by cl2.room_num) cm, 
+		(select cl_sort.ROOM_NUM,cl_sort.emp_num, cl_sort.MSG_CONTENT, cl_sort.SEND_DATE
+		from CHAT_LOG cl_sort, (select max(SEND_DATE) SEND_DATE from CHAT_LOG group by ROOM_NUM) max_date
+		where cl_sort.SEND_DATE = max_date.SEND_DATE
+		) cl,
+        emp e
+		where cr.ROOM_NUM = cm.ROOM_NUM
+		and cr.ROOM_NUM = cl.ROOM_NUM
+        and cl.emp_num = e.emp_num
+		ORDER BY send_date desc
+	</select>
+	
+	<select id="getMessageList" parameterType="ChatMessageProc" statementType="CALLABLE">
+	        { 
+	             call Chat_Message_Proc(
+	                       #{p_room_num,mode=IN,    jdbcType=INTEGER}
+	                     , #{p_emp_num,mode=IN,    jdbcType=INTEGER}
+	                     , #{readMsg,   mode=OUT,   jdbcType=CURSOR
+	                     ,   javaType=java.sql.ResultSet 
+	                     ,   resultMap=ReadMessage}
+	                     , #{chatMessageDtos,   mode=OUT,   jdbcType=CURSOR
+	                     ,   javaType=java.sql.ResultSet 
+	                     ,   resultMap=MessageResult}
+	                     )
+	        }
+	</select>
+	
+	<delete id="leaveRoom" parameterType="ChatRoomInviteLeave">
+		delete from chat_member where room_num = #{room_num} and emp_num = #{emp_num}
+	</delete>
+	
+	<delete id="deleteRoom" parameterType="java.lang.String">
+		delete from chat_room where room_num = #{room_num}
+	</delete>
+	
+	<insert id="createRoom" parameterType="ChatRoomDto">
+	
+		insert all
+		into CHAT_ROOM values(CHAT_ROOM_SEQ.nextval, #{room_title})
+		<foreach collection="emp_list" item="item" separator=" ">
+			into CHAT_MEMBER values(CHAT_ROOM_SEQ.currval,#{item}, 0) 
+		</foreach>
+		select * from DUAL
+		
+		<selectKey keyProperty="room_num" resultType="int" order="AFTER">
+			SELECT CHAT_ROOM_SEQ.currval from dual
+		</selectKey>
+	</insert>
+	
+	<insert id="inviteRoom" parameterType="ChatRoomInviteLeave">
+		insert all
+		<foreach collection="invite_emp" item="item" separator=" ">
+		     into chat_member values(#{room_num},#{item}, LOG_NUM)
+		</foreach>
+		select LOG_NUM
+		from CHAT_LOG cl_sort, (select max(SEND_DATE) SEND_DATE from CHAT_LOG group by ROOM_NUM) max_date
+		where cl_sort.SEND_DATE = max_date.SEND_DATE
+		and cl_sort.room_num = #{room_num}
+	</insert>
+	
+	<insert id="saveMessage" parameterType="ChatMessageDto">
+		<!-- insert into CHAT_LOG values(#{room_num},CHAT_LOG_SEQ.nextval, #{msg_type}, #{msg_content}, #{attach_name}, SYSDATE, #{emp_num}) -->
+		<!-- insert all
+		when emp_num = #{emp_num} then
+			into CHAT_LOG values(#{room_num},#{log_num}, #{msg_type}, #{msg_content}, #{attach_name}, SYSDATE, #{emp_num})
+		else
+			into read_cnt values(#{room_num}, #{log_num}, emp_num)
+		select emp_num
+		from chat_member
+		where room_num = #{room_num}
+		<foreach collection="look_member" item="item" separator=" ">
+			<if test="item != emp_num">
+			   and emp_num != #{item}
+			</if>
+		</foreach> -->
+		insert into CHAT_LOG values(#{room_num},CHAT_LOG_SEQ.nextval, #{msg_type}, #{msg_content}, #{attach_name}, SYSDATE, #{emp_num}, #{not_read_cnt})
+		<selectKey keyProperty="log_num" resultType="int" order="AFTER">
+			SELECT CHAT_LOG_SEQ.currval from dual
+		</selectKey>
+	</insert>
+	
+	<update id="updateLastLog">
+		update CHAT_MEMBER 
+		set LAST_READ_LOG = #{log_num}
+		where ROOM_NUM = #{room_num}
+		<foreach collection="look_member" item="item" separator=" ">
+			and emp_num = #{item}
+		</foreach>
+	</update>
+	
+	<!-- <select id="connectRoom" parameterType="java.lang.String" resultType="java.lang.String" flushCache="true">
+	    delete from some_stuff where id = #{id}
+	    RETURNING *
+	</select> -->
+</mapper>
