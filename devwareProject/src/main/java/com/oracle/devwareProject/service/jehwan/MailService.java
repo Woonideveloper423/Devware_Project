@@ -18,7 +18,7 @@ public interface MailService {
 
 	Long countMail(String MailAccount, int mailType, String search, String keyword);
 
-	List<Mail> listMail(String MailAccount, Long empno, int start, int end, int mailType, String search, String keyword);
+	List<Mail> listMail(String MailAccount, int empno, int start, int end, int mailType, String search, String keyword);
 
 	//Mail mailDetail(Mail mail);
 
@@ -30,7 +30,7 @@ public interface MailService {
 
 	void restore_mail(List<String> deleteArray);
 
-	void mailImportant(Long empno, Long mailNumLong, String isImportant);
+	void mailImportant(int empno, Long mailNumLong, String isImportant);
 
 	void deleteDetailMail(String uploadFolder, Long mailNum, int mailType);
 

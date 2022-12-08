@@ -110,7 +110,7 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 	
 	@Override
-	public List<Mail> listSendMail(String mailAccount,Long empno, int start, int end, String search, String keyword) {
+	public List<Mail> listSendMail(String mailAccount,int empno, int start, int end, String search, String keyword) {
 		System.out.println("MailRepositoryImpl listMail start...");
 		System.out.println("MailRepositoryImpl listMail search->" + search);
 		
@@ -141,7 +141,7 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 
 	@Override
-	public List<Mail> listReceiveMail(String mailAccount,Long empno, int start, int end, String search, String keyword) {
+	public List<Mail> listReceiveMail(String mailAccount,int empno, int start, int end, String search, String keyword) {
 		System.out.println("MailRepositoryImpl listMail start...");
 		List<Mail> mailList = new ArrayList<Mail>();
 		if(keyword==null || keyword == "") {
@@ -169,7 +169,7 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 
 	@Override
-	public List<Mail> listImportantMail(String mailAccount,Long empno, int start, int end, String search, String keyword) {
+	public List<Mail> listImportantMail(String mailAccount,int empno, int start, int end, String search, String keyword) {
 		System.out.println("MailRepositoryImpl listMail start...");
 		List<MailImportant> mailImportants = em.createQuery("SELECT mi FROM MailImportant mi where EMP_NUM = :EMP_NUM").setParameter("EMP_NUM", empno).getResultList();
 		List<Mail> mailList = new ArrayList<Mail>();
@@ -293,7 +293,7 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 
 	@Override
-	public void mailImportant(Long empno, Long mailNumLong, String isImportant) {
+	public void mailImportant(int empno, Long mailNumLong, String isImportant) {
 		System.out.println("MailRepositoryImpl mailImportant start...");
 		System.out.println("MailRepositoryImpl mailImportant isImportant->" + isImportant);
 		

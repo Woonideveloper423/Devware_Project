@@ -42,6 +42,7 @@ public class ChatController {
 		session.setAttribute("empno", empno);
 		model.addAttribute("testEmpno", empno);
 		model.addAttribute("testEname", empName);
+		model.addAttribute("mailType",0);
 		return "/chat/chatRoomList";
 	}
 	

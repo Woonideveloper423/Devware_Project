@@ -157,7 +157,9 @@ public class ChatService {
 		log.info("leaveRoomLook start...");
 		ChatRoom chatRoom = chatRooms.get(roomId);
 		log.info("chatRoom" + chatRoom);
+		if(chatRoom != null) {
 		chatRoom.getLook_member().remove(empno);
+		}
 		log.info("leaveRoomLook end...");
 	}
 
