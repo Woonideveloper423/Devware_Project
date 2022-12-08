@@ -1,12 +1,14 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ include file="header.jsp" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 </head>
+<link href="${pageContext.request.contextPath}/resources/css/sb-admin-2.min.css" rel="stylesheet">
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="https://kit.fontawesome.com/f7fe0761ae.js" crossorigin="anonymous"></script>
 <script type="text/javascript">
@@ -281,7 +283,7 @@ $(function(){
 						str2 += "<td>"+ this.sender_mail + "</td><td>";
 					}
 					if(data.mailAttaches[index].length != 0){
-						str2 += "<i class='fa-thin fa-paperclip'></i>"
+						str2 += "<i class='fa-solid fa-paperclip'></i>"
 					}
 					
 					str2 += this.mail_title + "</td><td>" + this.mail_date + "</td></tr>";
@@ -296,17 +298,17 @@ $(function(){
 		var pageCnt = parseInt(data.paging.totalPage);
 		var currentPage = parseInt(data.paging.currentPage)
 		if(startPage > blockSize){
-			pageInfo+="<input id='prev' type='button' value='<'>";
+			pageInfo+="<input id='prev' class='page-item' type='button' value='<'>";
 		}
 		for(startPage ; startPage<=endPage ; startPage++){
 			if(startPage == currentPage){
-				pageInfo+="<input class='pageNum curPage' type='button' value='" + startPage +"'>";
+				pageInfo+="<input class='pageNum curPage page-item' type='button' value='" + startPage +"'>";
 			}else{
-				pageInfo+="<input class='pageNum' type='button' value='" + startPage +"'>";
+				pageInfo+="<input class='pageNum page-item' type='button' value='" + startPage +"'>";
 			}
 		}
 		if(endPage < pageCnt){
-			pageInfo+="<input id='next' type='button' value='>'>";
+			pageInfo+="<input id='next' class='page-item' type='button' value='>'>";
 		}
 		$('#paging').html(pageInfo);
 		
@@ -315,34 +317,49 @@ $(function(){
 	
 </script>
 <body>
-	<c:if test="${mailType eq '0'}">
-		<h1>보낸 메일함</h1>
-		<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
-	</c:if>
-	<c:if test="${mailType eq '1'}">
-		<h1>받은 메일함</h1>
-		<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='delete_not_read'>안 읽은 메일 삭제</button>
-	</c:if>
-	<c:if test="${mailType eq '2'}">
-		<h1>중요 메일함</h1>
-		<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
-	</c:if>
-	<c:if test="${mailType eq '3'}">
-		<h1>휴지통</h1>
-		<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='restore_mail'>복원</button>
-	</c:if>
+<div class="body_box">
+	<div class="titlebox" align="center">
+		<c:if test="${mailType eq '0'}">
+			<h2>보낸 메일함</h2>
+			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
+		</c:if>
+		<c:if test="${mailType eq '1'}">
+			<h2>받은 메일함</h2>
+			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='delete_not_read'>안 읽은 메일 삭제</button>
+		</c:if>
+		<c:if test="${mailType eq '2'}">
+			<h2>중요 메일함</h2>
+			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
+		</c:if>
+		<c:if test="${mailType eq '3'}">
+			<h2>휴지통</h2>
+			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='restore_mail'>복원</button>
+		</c:if>
+	</div>
+	<div class="s003">
 		
-	<select id="search">
-		<option value="s_title">제목</option>
-		<option value="s_content">내용</option>
-		<option value="s_mail">메일</option>
-	</select>
-	<input type="text" id="keyword" placeholder="검색어를 입력하세요">
-	<button id="searchResult">검색</button><p>
-
-	<table id="mailList">
+			<div class="inner-form">
+		          <div class="input-field first-wrap">
+		            <div class="input-select">
+		           	 <select id="search">
+						<option value="s_title">제목</option>
+						<option value="s_content">내용</option>
+						<option value="s_mail">메일</option>
+					</select>
+					</div>
+				</div>
+			</div>
+			<div class="input-field second-wrap">
+				<input type="text" id="keyword" placeholder="검색어를 입력하세요">
+			</div>
+	</div>
+	<div class="input-field third-wrap">
+		<button class="btn-search" id="searchResult">검색</button><p>
+	</div>
+	<table id="mailList" style="margin-top: 20px"  class="table table-hover">
 	</table>
-	<div id="paging"></div>
+	<div id="paging" class="pagination pagination-lg justify-content-center"></div>
 	
+</div>
 </body>
 </html>

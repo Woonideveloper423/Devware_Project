@@ -104,7 +104,7 @@ public class MailController {
 			log.info("page.getStart()" + page.getEnd());
 			int start = page.getStart();
 			int end = page.getEnd();
-			Long empno = 1L;
+			int empno = 1;
 			List<Mail> mailList = mailservice.listMail("jehwan@devware.shop",empno , page.getStart(), page.getEnd(), mailType, search, keyword);
 			
 			log.info("mailList.size()->" + mailList.size());
@@ -235,7 +235,7 @@ public class MailController {
 		@RequestMapping(value = "/mail/mailImportant")
 		public String mailImportant(String currentPage, String search, String keyword, String mailNum, String isImportant, int mailType, Model model) {
 			log.info("mailImportant mailType->" + mailType);
-			Long empno = 1L;
+			int empno = 1;
 			log.info("mailImportant mailNum->" + mailNum);
 			Long mailNumLong = (long) Integer.parseInt(mailNum);
 			mailservice.mailImportant(empno, mailNumLong, isImportant);

@@ -14,5 +14,5 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode
 public class MailImportantID implements Serializable {
 	private Long mail;
-	private Long mailAccount;
+	private int mailAccount;
 }

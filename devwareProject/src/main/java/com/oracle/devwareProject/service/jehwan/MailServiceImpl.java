@@ -352,7 +352,7 @@ public class MailServiceImpl implements MailService {
 	}
 
 	@Override
-	public List<Mail> listMail(String MailAccount, Long empno, int start, int end, int mailType, String search, String keyword) {
+	public List<Mail> listMail(String MailAccount, int empno, int start, int end, int mailType, String search, String keyword) {
 		log.info("MailServiceImpl listMail start..");
 		List<Mail> listMail = null;
 		switch (mailType) {
@@ -417,7 +417,7 @@ public class MailServiceImpl implements MailService {
 	}
 
 	@Override
-	public void mailImportant(Long empno, Long mailNumLong, String isImportant) {
+	public void mailImportant(int empno, Long mailNumLong, String isImportant) {
 		log.info("mailImportant start...");
 		mailRepository.mailImportant(empno, mailNumLong, isImportant);
 		log.info("mailImportant after...");

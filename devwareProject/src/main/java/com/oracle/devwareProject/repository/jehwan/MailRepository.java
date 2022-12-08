@@ -20,11 +20,11 @@ public interface MailRepository {
 
 	Long countReceiveMail(String mailAccount, String search, String keyword);
 
-	List<Mail> listSendMail(String mailAccount, Long empno, int start, int end, String search, String keyword);
+	List<Mail> listSendMail(String mailAccount, int empno, int start, int end, String search, String keyword);
 
-	List<Mail> listReceiveMail(String mailAccount, Long empno, int start, int end, String search, String keyword);
+	List<Mail> listReceiveMail(String mailAccount, int empno, int start, int end, String search, String keyword);
 
-	List<Mail> listImportantMail(String mailAccount, Long empno, int start, int end, String search, String keyword);
+	List<Mail> listImportantMail(String mailAccount, int empno, int start, int end, String search, String keyword);
 
 	List<Mail> listDeletedMail(String mailAccount, int start, int end, String search, String keyword);
 
@@ -42,7 +42,7 @@ public interface MailRepository {
 	
 	void restore_mail(List<String> deleteArray);
 
-	void mailImportant(Long empno, Long mailNumLong, String isImportant);
+	void mailImportant(int empno, Long mailNumLong, String isImportant);
 
 	List<String> premanDetailDelete(Long mailNum);
 	

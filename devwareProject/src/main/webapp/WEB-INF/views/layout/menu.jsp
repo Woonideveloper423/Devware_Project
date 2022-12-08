@@ -98,10 +98,11 @@ ul .nav-item {padding-left:7px;}
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">전자메일:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/email/write">메일 보내기</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/email/receive">받은 메일함 (<span id="menu_email_count">0</span>)</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/email/send">보낸 메일함</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/email/recycle">휴지통</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/mailWriteForm">메일 보내기</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/receiveMailList">받은 메일함 (<span id="menu_email_count">0</span>)</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/sendMailList">보낸 메일함</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/importantMailList">주요 메일함</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/deletedMailList">휴지통</a>
                    
           </div>
         </div>
