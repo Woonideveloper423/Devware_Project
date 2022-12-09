@@ -18,6 +18,10 @@ public interface BoardDao {
 	List<BoardEmpDept> boardCheckList(BoardEmpDept bEmp);
 	
 
-	Board detailBoard(Map<String, Object> map);
+	BoardEmpDept detailBoard(BoardEmpDept bEmpDept);
+
+	int brdViewUpdate(BoardEmpDept bEmpDept);
+
+	int brdDelete(BoardEmpDept bEmpDept);
 
 	}

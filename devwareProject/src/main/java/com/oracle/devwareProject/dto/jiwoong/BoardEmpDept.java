@@ -26,12 +26,12 @@ public class BoardEmpDept {
 		private String dept_name;
 	
 		// 조회용
-		private String search;			private String keyword;
-		private String pageNum;			
-		private int    start;			private int end;
-		
+		private String searchType;			private String keyword;
+		private String pageNum;				private int rn;	 // 글번호용
+		private int    start;				private int end;
 		
 	
+		private int brd_re_step_max;
 		
 		
 		

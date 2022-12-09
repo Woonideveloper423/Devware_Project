@@ -14,11 +14,8 @@
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin-2.min.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/resources/css/board/searchForm.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
-  
- 
 </head>
 <body>
-
 	<div class="body_box">
 			<!-- 게시판 title 분기 -->
 			<div class="titlebox" align="center">
@@ -36,10 +33,9 @@
 		          <div class="input-field first-wrap">
 		            <div class="input-select">
 		              <select   data-trigger="" name="choices-single-defaul">
-		                <option selected="selected">작성자</option>
-		                <option>제목</option>
-		                <option>댓글</option>
-		              </select>
+		                <option value="brd_title" selected="selected">제목</option>
+		                <option value="brd_type">게시판종류</option>
+		            </select>
 		            </div>
 		          </div>
 		          <div class="input-field second-wrap">
@@ -83,7 +79,7 @@
 		   			<th>댓글 수</th>
 		   			<th>조회 수</th>
 		   			<th>작성일</th>
-		   			<th>분류</th>
+		   			<th>게시판 종류</th>
 		   		</tr>
 		   		</thead>
 		   		<tbody align="center">

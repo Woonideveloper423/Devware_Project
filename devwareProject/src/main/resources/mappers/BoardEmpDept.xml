@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.oracle.devwareProject.BoardEmpDeptMapper">
 
 	<!-- 유형별 게시판 게시글 insert -->
@@ -37,9 +36,24 @@
 		                        0, <!-- 답변글 순서 -->
 		                        0, <!-- 들여쓰기 -->
 								0, <!-- 해결상태 -->
-								0 )	                       
+								0) <!-- 댓글수 -->	                       
 	</insert>                       	
-	                       
+	
+	<!-- 유형별 게시판 게시글 삭제  -->
+	<update id="jwBoardDelete" parameterType="BoardEmpDept">
+		<choose>
+		    	<when test="brd_type!=2">
+		    		UPDATE Board set brd_deleteyn=1 where brd_type=#{brd_type} and brd_ref=#{brd_num}
+		    	</when>
+		    	<when test="brd_type==2"> 
+		    		update (select b.brd_deleteyn from board b,emp e,dept d
+					         where  b.emp_num=e.emp_num and e.dept_num=d.dept_num
+					         and d.dept_num=#{dept_num} and b.brd_type=#{brd_type} and b.brd_ref=#{brd_num})
+					         set brd_deleteyn=1	 	    
+		    	</when>
+		    </choose>             
+	</update>
+	
 	                       
 	<!--   유형별 게시판 게시물 총 개수   -->            
     <select id="jwcheckListTotal" parameterType="BoardEmpDept" resultType="int">
@@ -49,13 +63,13 @@
 				                     from board b
 				                     inner join emp e
 				                     on b.emp_num=e.emp_num
-				                     where e.dept_num=#{dept_num} and b.brd_type=2)
+				                     where e.dept_num=#{dept_num} and b.brd_type=2 and brd_deleteYn=0)
 			 </when>
 			  <when test="brd_type==5">
-			 	select count(*) from Board where emp_num=#{emp_num}
+			 	select count(*) from Board where emp_num=#{emp_num} and brd_deleteYn=0
 			 </when>
 			 <otherwise>
-			 	select count(*) from Board where brd_type=#{brd_type}
+			 	select count(*) from Board where brd_type=#{brd_type} and brd_deleteYn=0
 			 </otherwise>
 		 </choose>
 	</select>                   	
@@ -74,9 +88,10 @@
 				    on e.emp_num=b.emp_num
 				    inner join dept d
 				    on d.dept_num = e.dept_num 
-				    where b.brd_type=2 and e.dept_num=#{dept_num}
-				    order by b.brd_date desc ) a)
+				    where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0
+				    order by b.brd_date) a)
 				    WHERE rn BETWEEN #{start} and #{end}
+				    order by brd_date desc
 		    </when>
 		    <when test="brd_type==5">
 			SELECT *
@@ -89,9 +104,10 @@
 		        on e.emp_num=b.emp_num
 		        inner join dept d
 		        on d.dept_num = e.dept_num 
-		        where b.emp_num=#{emp_num}
-		        order by b.brd_date desc ) a)
+		        where b.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0
+		        order by b.brd_date) a)
 		        WHERE rn BETWEEN #{start} and #{end}
+		        order by brd_date desc
 		    </when>
 		     <otherwise>
 			 	SELECT *
@@ -104,14 +120,16 @@
 				    on e.emp_num=b.emp_num
 				    inner join dept d
 				    on d.dept_num = e.dept_num 
-				    where b.brd_type=#{brd_type}
-				    order by b.brd_date desc ) a)
+				    where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0
+				    order by b.brd_date) a)
 				    WHERE rn BETWEEN #{start} and #{end}
+				    order by brd_date desc
 			 </otherwise>
 		  </choose>       
 	</select>		
 	
-	<select id="jwBoardSelOne" parameterType="hashMap" resultType="Board">
+	<!-- 게시글 상세 조회 -->
+	<select id="jwBoardSelOne" parameterType="BoardEmpDept" resultType="BoardEmpDept">
 		select b.*,d.dept_name,e.emp_name
 		    from board b
 		    inner join emp e
@@ -121,5 +139,115 @@
 		    where b.emp_num=#{emp_num} and b.brd_type=${brd_type} and b.brd_num=${brd_num}
 	</select>
 	
+	<!-- 게시글 조회수 증가 -->
+	<update id="jwViewUpdate" parameterType="BoardEmpDept">
+		<choose>
+			<when test="brd_type!=2">
+				update
+					board
+					set brd_view=brd_view+1
+					where
+					brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0
+			</when>
+		<when test="brd_type==2">
+			update 
+			    (select b.brd_view
+			        from
+			        board b,emp e,dept d
+			    where
+			    b.emp_num=e.emp_num and e.dept_num=d.dept_num
+			    and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_re_step=0
+			    )
+				set brd_view=brd_view+1
+		</when>
+		</choose>
+	</update>
+
+	<!--  게시글 댓글 총 Total -->
+	<select id="jwTotalReply" parameterType="BoardEmpDept" resultType="int">
+		<choose>
+			<when test="brd_type!=2">
+				select count(*) from board 
+				where brd_type=#{brd_type} and  brd_ref=#{brd_num} and brd_re_step !=0
+			</when>
+			<when test="brd_type=2">
+				select count(*) from( select b.*,d.dept_name
+                        			  from board b
+                        			  inner join emp e
+                        		      on b.emp_num=e.emp_num
+                        			  inner join dept d
+                        		      on d.dept_num = e.dept_num 
+                       			      where b.brd_type=2 and b.brd_ref=#{brd_ref} and d.dept_num=#{dept_num} and b.brd_re_step!=0)
+			</when>
+		</choose>
+	</select>
+	
+	 <!-- 게시글 댓글수 update -->
+	<update id="jwUpdateReplyCnt" parameterType="BoardEmpDept">
+        	<choose>
+		    	<when test="brd_type!=2">
+		    		UPDATE Board set reply_cnt=reply_cnt+1 
+					where brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0
+		    	</when>
+		    	<when test="brd_type==2"> 
+		    		update 
+    					(select b.reply_cnt from board b,emp e,dept d
+       					  where  b.emp_num=e.emp_num and e.dept_num=d.dept_num
+					       and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_re_step=0)
+					set
+					reply_cnt=reply_cnt+1		    
+		    	</when>
+		    </choose>                        
+	</update>
+	
+	<!-- 답글 작성시 앞 댓글들 번호 push -->
+	<update id="jwPushReply" parameterType="BoardEmpDept">
+		UPDATE Board set brd_re_step=brd_re_step+1
+		where brd_re_step>#{brd_re_step}
+	</update>
+	
+	<!-- 댓글 insert -->
+	<insert id="jwInsertReply" parameterType="BoardEmpDept">
+		<selectKey resultType="integer" keyProperty="brd_re_step_max" order="BEFORE">  
+			select Max(brd_re_step)+1 from board
+				where brd_ref=#{brd_num} 
+		</selectKey>
+		INSERT INTO Board values(#{emp_num}, #{brd_type},     
+	                        	<choose>
+		                        	<when test="brd_type==1">brd1_num_seq.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.nextval,</when>
+		                        	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.nextval,</when>
+		                        	<when test="brd_type==3">brd3_num_seq.nextval,</when>
+		                        	<when test="brd_type==4">brd4_num_seq.nextval,</when>
+		                        </choose>
+		                     'null',#{brd_content},SYSDATE,0,0,0,#{brd_ref},    
+	                          <choose>
+	                        	<when test="brd_re_step==0">
+	                        	#{brd_re_step_max},
+	                        	</when> 
+	                        	<when test="brd_re_step!=0">#{brd_re_step}+1,</when>
+	                        </choose>	
+	                        #{brd_re_level}+1,0,0) 
+	</insert>
+	<select id="jwGetReplyList" parameterType="BoardEmpDept" resultType="BoardEmpDept">
+		SELECT *
+      		FROM
+		    (SELECT rownum rn , a.*
+		    FROM
+		    (select b.*,d.dept_name,e.emp_name
+		    from board b
+		    inner join emp e
+		    on e.emp_num=b.emp_num
+		    inner join dept d
+		    on d.dept_num = e.dept_num
+		    <choose>
+		    	<when test="brd_type!=2">where b.brd_type=#{brd_type} and b.brd_ref=#{brd_num}  and b.brd_re_step!=0</when>
+		    	<when test="brd_type==2">where b.brd_type=2 and b.brd_ref=#{brd_num} and d.dept_num=#{dept_num}  and b.brd_re_step!=0</when>
+		    </choose> 
+		    order by brd_re_step) a)
+	</select>
 	
 </mapper>

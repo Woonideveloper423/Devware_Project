@@ -97,7 +97,7 @@ $(document).ready(function(){
 						<select id='brd_type' name='brd_type' class="form-select-lg mb-3" aria-label=".form-select-lg example">
 						  <option selected="selected" disabled="disabled">게시판 종류</option>
 						  <option value='1'>사내게시판</option>
-						  <option value='2'>${sessionScope.emp.dept.dept_name} 게시판</option>
+						  <option value='2'>${emp.dept.dept_name} 게시판</option>
 						  <option value='3'>Q&A 게시판</option>
 						  <option value='4'>스터디&동호회 게시판</option>
 						</select>

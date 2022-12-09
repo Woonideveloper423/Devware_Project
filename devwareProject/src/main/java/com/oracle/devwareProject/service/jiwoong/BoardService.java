@@ -17,7 +17,9 @@ public interface BoardService {
 	
 	List<BoardEmpDept> boardCheckList(BoardEmpDept bEmp);
 	
-	Board detailBoard(Map<String, Object> map);
+	BoardEmpDept detailBoard(BoardEmpDept bEmpDept);
+
+	int brdDelete(BoardEmpDept bEmpDept);
 
 	
 

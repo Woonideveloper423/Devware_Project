@@ -3,13 +3,14 @@ package com.oracle.devwareProject.dao.jiwoong;
 import java.util.List;
 
 import com.oracle.devwareProject.dto.jiwoong.Board;
+import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
 
 public interface RestReplyDao {
 
-	int insertReply(Board board);
+	int insertReply(BoardEmpDept board);
 
-	int totalReply(Board board);
+	int totalReply(BoardEmpDept board);
 
-	List<Board> getReplyList(Board board);
+	List<BoardEmpDept> getReplyList(BoardEmpDept board);
 
 }

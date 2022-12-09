@@ -134,7 +134,7 @@ ul .nav-item {padding-left:7px;}
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">사내게시판:</h6>
             <a class="collapse-item" href="/board/checkList?brd_type=1">사내 게시판</a>
-            <a class="collapse-item" href="/board/checkList?brd_type=2">${emp.dept.dept_name}팀 게시판</a>
+            <a class="collapse-item" href="/board/checkList?brd_type=2">${emp.dept.dept_name} 게시판</a>
             <a class="collapse-item" href="/board/checkList?brd_type=5">My 게시글 목록</a>
              <h6 class="collapse-header">커뮤니티:</h6>
             <a class="collapse-item" href="/board/checkList?brd_type=3">Q&A게시판</a>
