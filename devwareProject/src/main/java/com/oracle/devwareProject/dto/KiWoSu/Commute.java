@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class Commute {
-	private int com_num;
+	private String com_num;
 	private int emp_num;
 	private Date com_date;
 	private String com_start;

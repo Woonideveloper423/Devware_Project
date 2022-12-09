@@ -3,7 +3,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.oracle.j20221102_P.CommuteMapper">
+<mapper namespace="com.oracle.devwareProject.CommuteMapper">
 
 	<select id="wsComListAll" parameterType="commute" resultType="Commute">
 	 <![CDATA[
@@ -14,22 +14,30 @@
       ]]>	
  	</select>
 
-	<select id="wsComFindTime" parameterType="String" resultType="commute">
-	 	select * from commute where com_num = #{com_num}
+	<select id="wsComFindTime" parameterType="commute" resultType="Commute">
+	 	select * from commute where com_num = #{com_num} and emp_num = #{emp_num}
  	</select>
 	
-	<update id="wsComUpdateTime" parameterType="commute">
+	<update id="wsComUpdateTime" parameterType="Commute">
 	 	update commute set com_end=#{com_end} where com_num=#{com_num}
  	</update>
 
+	<update id="wsCusUpdateTime" parameterType="Commute">
+	 	update commute_cus set cus_end=#{com_end}, cus_cus = 2, cus_detail = '퇴근' where com_num=#{com_num} and cus_cus = 1
+ 	</update>
+ 	
 	<select id="wsSelectTime" parameterType="int" resultType="Commute">
 	 	select com_end, com_start , work_time(com_start , com_end) com_workTime
 	 	from commute where com_num = #{com_num}
  	</select>
  	
- 	<insert id="wsComInsert" parameterType="commute">
- 		insert into commute values ( #{com_num},    #{com_date}, #{com_end},  #{com_start},
-								  #{emp_num}) 
+ 	<insert id="wsComInsert" parameterType="Commute">
+ 		insert into commute(com_num, com_date, com_end, com_start, emp_num ) values
+ 		 ( #{com_num}, #{com_date}, #{com_end},  #{com_start}, #{emp_num}) 
  	</insert>
 	
+	<insert id="wsCusInsert" parameterType="Commute">
+ 		insert into commute_cus( emp_num, com_num, cus_seq, cus_start, cus_end, cus_cus, cus_detail) values
+ 		 ( #{emp_num}, #{com_num},commute_seq.nextval ,  #{com_start},  #{com_end}, 1, '근무중') 
+ 	</insert>
 </mapper>

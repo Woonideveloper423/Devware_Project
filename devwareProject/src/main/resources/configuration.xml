@@ -17,7 +17,10 @@
 		<typeAlias alias="Calendar"  		type="com.oracle.devwareProject.domain.Calendar"/>
 		<typeAlias alias="EmpList"  		type="com.oracle.devwareProject.domain.EmpList" />
 		<typeAlias alias="Commute"  		type="com.oracle.devwareProject.dto.KiWoSu.Commute" />
-
+		<typeAlias alias="Approve"  		type="com.oracle.devwareProject.dto.KiWoSu.Approve" />
+		<typeAlias alias="Approve_Progress" type="com.oracle.devwareProject.dto.KiWoSu.Approve_Progress" />
+		<typeAlias alias="AllForApprove" 	type="com.oracle.devwareProject.dto.KiWoSu.AllForApprove" />
+		
 		<typeAlias alias="ChatMessageDto"     	type="com.oracle.devwareProject.dto.jehwan.ChatMessageDto" />
 	  	<typeAlias alias="ChatRoomInviteLeave"  type="com.oracle.devwareProject.dto.jehwan.ChatRoomInviteLeave" />
 	    <typeAlias alias="ChatMessageProc"    	type="com.oracle.devwareProject.dto.jehwan.ChatMessageProc"/>

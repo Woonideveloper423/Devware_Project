@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.devwareProject.ApproveMapper">
+
+	<select id="ApvTotal" resultType="int">
+	 	select Count(*) FROM approve
+ 	</select>
+ 	
+ 	 <select id="wsApvListAll" parameterType="Approve" resultType="Approve">
+      <![CDATA[
+		SELECT *
+		FROM
+		(
+		        SELECT rownum rn , a.*
+		        FROM
+		                   (
+		                    select p.*, e.emp_name, c.ca_content
+						    from approve p
+						    inner join emp e
+						    on e.emp_num=p.emp_num
+                            inner join common_approve c
+                            on 
+                            p.comu_type + p.comu_app = c.ca_num + c.ca_appnum 
+                            or
+                            p.docs_type + p.docs_app = c.ca_num + c.ca_appnum 
+                            ORDER BY app_date desc
+                            ) a
+		 )   
+ 		WHERE  rn >= #{start} 
+ 		and    rn <= #{end} 
+ 	  ]]>	
+    </select>
+    
+    <insert id="wsWriteApv" parameterType="Approve" useGeneratedKeys="true" 
+    						keyColumn="app_num" 	keyProperty="app_num" >
+     insert into approve(app_num, APP_START, app_title, APP_CONTENT, app_date, emp_num, docs_app)
+      values ( apv_seq.nextval, sysdate, #{app_title}, #{app_content}, sysdate, 1, #{docs_app}) 
+    
+    </insert>
+    
+    <insert id="wsWriteApvPrg" parameterType="Approve_Progress" >
+     insert into approve_progress(app_num, prg_num1, prg_name1, 
+    							 prg_num2, prg_name2, prg_num3, prg_name3,
+    							 PRG_STATUS, prg_date)
+      values ( #{app_num}, #{prg_num1}, #{prg_name1}, #{prg_num2}, #{prg_name2},
+      			#{prg_num3}, #{prg_name3}, '미결재', sysdate) 
+    
+    </insert>
+    
+    <select id="getAllUserInfo" resultType="EmpForSearch">
+     <![CDATA[
+		SELECT
+		    *
+		FROM emp e, dept d, position p
+		where e.dept_num = d.dept_num and e.position_num = p.position_num
+		]]>	
+ 	</select>
+
+
+	<select id="getAllUserInfo2" resultType="EmpForSearch" >
+     <![CDATA[
+		SELECT
+		    *
+		FROM emp e, dept d, position p
+		where e.dept_num = d.dept_num and e.position_num = p.position_num and e.emp_num = #{param}
+		]]>	
+ 	</select>
+ 	
+ 	
+ 	<select id="getempDeptInfo" resultType="EmpForSearch" >
+     <![CDATA[
+		SELECT
+		    *
+		FROM emp e, dept d, position p
+		where e.dept_num = d.dept_num and e.position_num = p.position_num and e.dept_num = #{dept_num}
+		]]>	
+ 	</select>
+ 	
+ 	<select id="wsDetailApv" parameterType="String"  resultType="AllForApprove" >
+     <!-- 세션 연결시 로그인 emp_num하고 연결 시키기  -->
+		<![CDATA[
+		SELECT
+		    *
+		FROM emp e, approve a, approve_progress g, position p
+		where   e.emp_num = a.emp_num 
+			and a.app_num = g.app_num 
+			and e.position_num = p.position_num
+			and a.app_num = #{app_num}
+		]]>	
+ 	</select>
+ 	
+ 	
+
+
+
+<select id="wsPositioName" resultType="AllForApprove" >
+		<![CDATA[
+		 	select    get_position_name(e1.position_num) position_name1
+			       ,  get_position_name(e2.position_num) position_name2
+			       ,  get_position_name(e3.position_num) position_name3
+			from      approve_progress ap  , emp e1 , emp e2 , emp e3
+			where     ap.prg_num1    = e1.emp_num(+)
+			and       ap.prg_num2    = e2.emp_num(+)
+			and       ap.prg_num3    = e3.emp_num(+)
+			and       ap.app_num 	 = #{app_num}
+		]]>	
+ 	</select>
+
+</mapper>
