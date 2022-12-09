@@ -14,9 +14,8 @@
 	    <typeAlias alias="EmpForSearch"  	type="com.oracle.devwareProject.domain.EmpForSearch" />
 		<typeAlias alias="Dept"  			type="com.oracle.devwareProject.domain.Dept" />
 		<typeAlias alias="Page"  			type="com.oracle.devwareProject.domain.Page" />
-
+		<typeAlias alias="Calendar"  		type="com.oracle.devwareProject.domain.Calendar"/>
 		<typeAlias alias="EmpList"  		type="com.oracle.devwareProject.domain.EmpList" />
-
 		<typeAlias alias="Commute"  		type="com.oracle.devwareProject.dto.KiWoSu.Commute" />
 
 		<typeAlias alias="ChatMessageDto"     	type="com.oracle.devwareProject.dto.jehwan.ChatMessageDto" />

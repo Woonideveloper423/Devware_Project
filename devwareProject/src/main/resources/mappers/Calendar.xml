@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.j20221102_P.CalendarMapper">
+
+	<select id="addEvent" parameterType="Calendar">
+		INSERT INTO calendar(calendar_id,calendar_content,calendar_all_day,calendar_emp_num,calendar_end,calendar_start,calendar_title) 
+		VALUES(calendarCount.nextval,#{calendar_content},#{calendar_allDay},#{calendar_emp_num},#{calendar_end},#{calendar_start},#{calendar_title})
+	</select>
+	
+	<select id="deleteEvent" parameterType="int">
+		delete calendar where calendar_id = #{eventId}
+	</select>
+	
+	<select id="searchCalendar" parameterType="int" resultType="Calendar">
+		select * from calendar where CALENDAR_EMP_NUM = #{emp_num}
+	</select>
+	
+	<select id="modifyEvent" parameterType="Calendar">
+		UPDATE calendar SET calendar_content = #{calendar_content}, calendar_all_day = #{calendar_allDay}, calendar_end = #{calendar_end}, calendar_start = #{calendar_start}, calendar_title = #{calendar_title} WHERE calendar_id = #{calendar_id}
+	</select>
+	
+</mapper>
