@@ -18,11 +18,12 @@ public class CommuteDaoImpl implements CommuteDao {
 	private final SqlSession session;
 	
 	@Override
-	public Commute findTime(String com_num) {
+	public Commute findTime(Commute commute) {
 		System.out.println("CommuteDaoImpl findTime start..");
-		Commute commute = new Commute();
+		// empnum 추가로 comnum이 아닌 commute로 변경하자
+		System.out.println("CommuteDaoImpl findTime com_num->"+commute.getCom_num());
 		try {
-			commute = session.selectOne("wsComFindTime", com_num);
+			commute = session.selectOne("wsComFindTime", commute);
 			System.out.println("CommuteDaoImpl findTime getCom_start->"+commute.getCom_start());
 		} catch (Exception e) {
 			System.out.println("CommuteDaoImpl findTime Exception->"+e.getMessage());
@@ -31,6 +32,7 @@ public class CommuteDaoImpl implements CommuteDao {
 		
 	}
 
+	//퇴근 시간 입력
 	@Override
 	public Commute updateTime(Commute commute) {
 		System.out.println("CommuteDaoImpl updateTime start..");
@@ -39,6 +41,7 @@ public class CommuteDaoImpl implements CommuteDao {
 		System.out.println("CommuteDaoImpl updateTime getCom_num->"+commute.getCom_num());
 		try {
 			comCount = session.update("wsComUpdateTime", commute);
+			session.update("wsCusUpdateTime", commute);
 			System.out.println("CommuteDaoImpl updateTime getCom_end->"+commute.getCom_end());
 		} catch (Exception e) {
 			System.out.println("CommuteDaoImpl updateTime Exception->"+e.getMessage());
@@ -50,7 +53,7 @@ public class CommuteDaoImpl implements CommuteDao {
 	// 전제 -> COM_NUM 유일하다는 전제
 	// 출근 / 퇴근 / 근무 Setting
 	@Override
-	public Commute selectTime(int com_num) {
+	public Commute selectTime(String com_num) {
 		System.out.println("CommuteDaoImpl selectTime start..");
 		Commute commute = new Commute();
 		try {
@@ -80,6 +83,7 @@ public class CommuteDaoImpl implements CommuteDao {
 		System.out.println("CommuteDaoImpl saveTime start..");
 		try {
 			session.insert("wsComInsert", commute);
+			session.insert("wsCusInsert", commute);
 		} catch (Exception e) {
 			System.out.println("CommuteDaoImpl commuteList Exception->"+e.getMessage());
 		}

@@ -8,11 +8,11 @@ import com.oracle.devwareProject.dto.KiWoSu.Commute;
 
 public interface CommuteDao {
 
-	Commute findTime(String com_num);
+	Commute findTime(Commute commute);
 
 	Commute updateTime(Commute commute);
 
-	Commute selectTime(int com_num);
+	Commute selectTime(String com_num);
 
 	List<Commute> commuteList(Commute commute);
 

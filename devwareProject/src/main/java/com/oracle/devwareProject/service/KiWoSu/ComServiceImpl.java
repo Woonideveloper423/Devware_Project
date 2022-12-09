@@ -22,10 +22,10 @@ public class ComServiceImpl implements ComService {
 	private final CommuteDao cd;
 
 	@Override
-	public Commute findTime(String com_num) {
+	public Commute findTime(Commute commute) {
 		System.out.println("ComServiceImpl findTime ...");
-		Commute commute = null;
-		commute = cd.findTime(com_num);
+		commute = null;
+		commute = cd.findTime(commute);
 		return commute;
 	}
 
@@ -40,7 +40,7 @@ public class ComServiceImpl implements ComService {
 	// 전제 -> COM_NUM 유일하다는 전제
 	// 출근 / 퇴근 / 근무 Setting
 	@Override
-	public Commute selectTime(int com_num) {
+	public Commute selectTime(String com_num) {
 		Commute commute = null;
 		commute = cd.selectTime(com_num);
 		return commute;

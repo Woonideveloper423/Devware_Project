@@ -60,7 +60,7 @@ public class CommuteController {
 		List<Commute> listCommute = cs.ListCommute(commute);
 		System.out.println("CommuteController listCommute start....");
 		model.addAttribute("listCommute", listCommute);
-		return "commute/commute";
+		return "/commute/commute";
 		
 	}
 	
@@ -81,7 +81,7 @@ public class CommuteController {
 		cs.saveTime(commute); 
 		
 		
-		return "commute/redirect:commute";
+		return "/commute/redirect:commute";
 	}
 	
 //	@ResponseBody
@@ -99,10 +99,10 @@ public class CommuteController {
 	// KTG
 	@ResponseBody
 	@PostMapping("/findTime")
-	public Commute findTime(String com_num , Model model, String com_end) {
+	public Commute findTime(String com_num , Model model, String com_end, Commute commute) {
 		System.out.println("CommuteController findTime Start");
 		System.out.println("com_num -> " + com_num);
-		Commute commute = cs.findTime(com_num);
+		commute.setCom_num(com_num);
 		commute.setCom_end(com_end);
 		commute = cs.updateTime(commute);
 		// 전제 -> COM_NUM 유일하다는 전제

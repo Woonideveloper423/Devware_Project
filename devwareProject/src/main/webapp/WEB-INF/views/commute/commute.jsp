@@ -59,7 +59,7 @@ function startTime(){
 	}
 		
 	//데베 컬럼
-	var emp_num = 1;
+	var emp_num = 1;//
 	var com_date = new Date();
 	var com_start = nowyear +""+ nowMonth +""+ nowDay +""+ nowHour +""+ nowMins + "" +nowSecs +"";
 	var com_end = null;
@@ -79,7 +79,8 @@ function startTime(){
 					msg,
 					emp_num,
 					com_date,
-					com_num
+					com_num,
+					
 				},
 		dataType : 'json'
 	}); 
@@ -126,6 +127,7 @@ function endTime(){
 		url : "<%=context%>/findTime",
 		type : 'post',
 		data : { 	
+					emp_num,
 					"com_end" : com_end,
 					"com_num" : com_num
 				},
@@ -146,7 +148,7 @@ function endTime(){
 	}); 
 }
 
-
+setInterval('time()', 1000);
 function time() {
 	<%-- console.log("current_time jsp start");
 	$.ajax({
@@ -160,10 +162,16 @@ function time() {
 	var currentDate = new Date();
     var divClock = document.getElementById("current_time");
      
+
+	var divDate = document.getElementById("current_date");
+	var dateMsg = currentDate.getFullYear() + "년 "
+	dateMsg += currentDate.getMonth() + 1 + "월";
+	
     var msg = currentDate.getHours()+"시"
     msg += currentDate.getMinutes()+"분";
     msg += currentDate.getSeconds()+"초";
      
+    divDate.innerText = dateMsg;
     divClock.innerText = msg;
     setTimeout(time,1000);
 }
@@ -182,11 +190,11 @@ function time() {
                 
                   <h4 class="m-0 font-weight-bold text-primary"><strong>근태관리</strong></h4><div align="right">	
 				<div>
-				   <form id="selectDayForm" action="${ pageContext.request.contextPath }/commuting/commuting"></form>          	
+				   <form id="selectDayForm" action="<%=context%>/commuting"></form>          	
 				
 						<div class="clearfix">
 	<div class="float-left">
-		<h2>${ year }년 ${ month }월  <strong><span id="current_time"></span></strong></h2>
+		<h2><strong><span id="current_date"></span></strong> <strong><span id="current_time"></span></strong></h2>
 	</div>	
 	 <div class="float-right">
 					<input type="hidden" id="commuting_member_id" value="${sessionScope.member.member_id}"/>
