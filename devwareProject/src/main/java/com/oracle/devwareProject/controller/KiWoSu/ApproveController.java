@@ -1,5 +1,6 @@
 package com.oracle.devwareProject.controller.KiWoSu;
 
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.http.HttpSession;
@@ -8,12 +9,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
 import com.oracle.devwareProject.dto.KiWoSu.Approve;
 import com.oracle.devwareProject.dto.KiWoSu.Approve_Progress;
+import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 import com.oracle.devwareProject.service.GH.EmpService;
 import com.oracle.devwareProject.service.KiWoSu.Paging;
 import com.oracle.devwareProject.service.KiWoSu.approveService;
@@ -152,6 +155,7 @@ public class ApproveController {
 		@RequestMapping("writeApprove")
 		public String writeApproveForm(Approve approve, 
 										Approve_Progress approve_Progress, 
+										com.oracle.devwareProject.domain.Calendar calendar,
 										String prg_name1,
 										String prg_name2,
 										String prg_name3,
@@ -161,6 +165,9 @@ public class ApproveController {
 										String app_title,
 										String app_content,
 										String docs_app,
+										String comu_app,
+										String start_date,
+										String end_date,
 										Model model) {
 
 			System.out.println("CommuteController listCommute start....");
@@ -181,11 +188,21 @@ public class ApproveController {
 			approve.setApp_title(app_title);
 			approve.setApp_content(app_content);
 			approve.setDocs_app(docs_app);
-			
+			approve.setComu_app(comu_app);
 			
 			model.addAttribute("docs_app", approve.getDocs_app());
-			System.out.println("test->" + approve.getDocs_app());
+			System.out.println("test docs_app->" + approve.getDocs_app());
 			
+			model.addAttribute("comu_app", approve.getComu_app());
+			System.out.println("test comu_app->" + approve.getComu_app());
+			
+			System.out.println("test comu_app->" + calendar.getCalendar_start());
+			System.out.println("test comu_app->" + calendar.getCalendar_end());
+			if (approve.getComu_app() == "1_wholeVacat") {
+				String change = "1";
+				approve.setComu_app(change);
+			}
+			System.out.println("test comu_app->" + approve.getComu_app());
 			try {
 				int writeResult = as.writeApv(approve, approve_Progress); 
 			} catch (Exception e) {
@@ -196,5 +213,15 @@ public class ApproveController {
 			
 		}
 		
-		
+		@ResponseBody
+		@RequestMapping("/getVacation")
+		public Vacation getVacation(int emp_num, Vacation vacation, Model model) {
+			
+			System.out.println("CommuteController getVacation start....");
+			System.out.println("CommuteController getVacation emp_num->" + emp_num);
+			vacation = as.getVacation(emp_num);
+			model.addAttribute("vacation", vacation.getVa_stock());
+
+			return vacation;
+		}
 }

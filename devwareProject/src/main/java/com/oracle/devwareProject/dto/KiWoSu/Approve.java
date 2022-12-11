@@ -14,7 +14,7 @@ public class Approve {
 	private String app_content;
 	private Date app_date;
 	private int comu_type;
-	private int comu_app;
+	private String comu_app;
 	private int docs_type;
 	private String docs_app;
 	private int emp_num;
