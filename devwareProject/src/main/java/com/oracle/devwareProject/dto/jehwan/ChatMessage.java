@@ -2,7 +2,7 @@ package com.oracle.devwareProject.dto.jehwan;
 
 import java.util.List;
 
-import lombok.AllArgsConstructor;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,9 +10,9 @@ import lombok.Setter;
 @Setter
 public class ChatMessage {
 	
-    // 메시지 타입 : 입장, 채팅
+	  // 메시지 타입 : 입장, 채팅
     public enum MessageType {
-        CREATE, ENTER, TALK, LEAVE, CONNECT, INVITE
+        CREATE, TALK, LEAVE, CONNECT, INVITE, INVITED
     }
     private MessageType type; // 메시지 타입
     private String roomId; // 방번호

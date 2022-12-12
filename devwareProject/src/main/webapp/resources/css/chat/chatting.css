@@ -7,36 +7,10 @@
 /* 네비게이션 안의 컨텐츠 스타일 지정 = main-layout.css 참고 */
 
 /* 메인 안의 컨텐츠 스타일 지정 */
-ul{
-    /* flex box 생성 */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    /* unordered list 기본 스타일 제거(점, 들여쓰기) */
-    list-style: none;
-    padding-left: 0;
-}
-li{
-    flex-basis:5rem; /*16 브라우저 기준 80px */
-    flex-shrink: 0;
-    margin: 0px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-li > a{
-    /* 안에 또 다른 flex box 생성 */
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 0px;
-}
 .profile-img{
     width: 3.125rem;
 }
-li .talk{
+.talk{
     /* 프로필 사진과 메시지(채팅) 내용 사이 간격 조절 */
     margin-left: 0.9375rem; /* 16 브라우저 기준 15px */
     flex-grow: 1; /* 메시지 내용과 시간 사이에 빈 공간 채우기 위한 flex-grow 설정 */

@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class ChatController {
 	
-	private final ChatService chatService;
+private final ChatService chatService;
 	
 	@RequestMapping(value = "/chat/chatRoomList")
 	public String chatRoomList(HttpServletRequest request, int empno, String empName, Model model) {
@@ -40,16 +40,17 @@ public class ChatController {
 		log.info("empName->" + empName);
 		HttpSession session = request.getSession();
 		session.setAttribute("empno", empno);
-		model.addAttribute("testEmpno", empno);
-		model.addAttribute("testEname", empName);
-		model.addAttribute("mailType",0);
-		return "/chat/chatRoomList";
+		session.setAttribute("empName", empName);
+		model.addAttribute("mailType", 0);
+		return "/mail/MailList";
 	}
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/getMsgCnt")
-	public int getMsgCnt(int empno) {
-		
+	public int getMsgCnt(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		String empno =  session.getAttribute("empno").toString();
+		System.out.println("empno->" + empno);
 		int msgCnt = chatService.getMsgCnt(empno);
 		
 		return msgCnt;
@@ -57,7 +58,9 @@ public class ChatController {
 	
 	@RequestMapping(value = "/chat/getRoomList")
 	@ResponseBody
-	public List<ChatRoomDto> getRoomList(int empno){
+	public List<ChatRoomDto> getRoomList(HttpServletRequest request){
+		HttpSession session = request.getSession();
+		String empno =  session.getAttribute("empno").toString();
 		log.info("getRoomList start empno ->" + empno);
 		List<ChatRoomDto> chatRoomDtos = chatService.getRoomList(empno);
 		return chatRoomDtos;
@@ -73,7 +76,9 @@ public class ChatController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/detailRoom")
-	public ChatMessageProc detailRoom(ChatMessageProc chatMessageProc) {
+	public ChatMessageProc detailRoom(HttpServletRequest request, ChatMessageProc chatMessageProc) {
+		HttpSession session = request.getSession();
+		chatMessageProc.setP_emp_num(Integer.parseInt(session.getAttribute("empno").toString()));
 		log.info("detailRoom start chatMessageDto.emp_num ->" + chatMessageProc.getP_emp_num());
 		log.info("detailRoom start chatMessageDto.room_num ->" + chatMessageProc.getP_room_num());
 		chatService.detailRoom(chatMessageProc);
@@ -83,7 +88,9 @@ public class ChatController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/showEmpList")
-	public EmpDtoVO showEmpList(EmpDtoVO empDtoVo) {
+	public EmpDtoVO showEmpList(HttpServletRequest request, EmpDtoVO empDtoVo) {
+		HttpSession session = request.getSession();
+		empDtoVo.setEmp_num(Integer.parseInt(session.getAttribute("empno").toString()));
 		log.info("detailRoom start empno ->" + empDtoVo.getEmp_num());
 		log.info("detailRoom start roomId ->" + empDtoVo.getRoom_num());
 		log.info("detailRoom start type ->" + empDtoVo.getType());
@@ -94,8 +101,9 @@ public class ChatController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/leaveRoomLook")
-	public String leaveRoomLook(String empno, String roomId) {
-		
+	public String leaveRoomLook(HttpServletRequest request, String roomId) {
+		HttpSession session = request.getSession();
+		String empno = session.getAttribute("empno").toString();
 		log.info("leaveRoomLook start... empno->" + empno);
 		log.info("leaveRoomLook start... roomId->" + roomId);
 		chatService.leaveRoomLook(empno, roomId);
@@ -164,6 +172,7 @@ public class ChatController {
 		return "/chat/roomDetail";
 		
 	}
+	
 	
 	
 }

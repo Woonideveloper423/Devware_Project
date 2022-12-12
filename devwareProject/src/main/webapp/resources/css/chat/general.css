@@ -1,7 +1,7 @@
 /* 모든 페이지의 공통 스타일만 작성 */
 
 /* 기본 배경화면은 white */
-body{
+/* body{
     font-family: fontello, 'Nanum Gothic', sans-serif, Arial;
     background-color: white;
 }
@@ -11,7 +11,7 @@ body{
 a:visited, a:link{
     color: gray;
     text-decoration: none;
-}
+} */
 
 /* 상단 설정바 조절 */
 .setting_bar{

@@ -53,6 +53,8 @@ public class ChatDaoImpl implements ChatDao {
 		try {
 			session.insert("saveMessage", chatMessage);
 			if(chatMessage.getLook_member().size() != 0) {
+				log.info("채팅 번호는?->" + chatMessage.getLog_num());
+				log.info("보고있는사람존재");
 				session.update("updateLastLog", chatMessage);
 			}
 		} catch (Exception e) {
@@ -62,7 +64,7 @@ public class ChatDaoImpl implements ChatDao {
 	}
 
 	@Override
-	public int getMsgCnt(int empno) {
+	public int getMsgCnt(String empno) {
 		log.info("getMsgCnt start...");
 		int msgCnt = 0;
 		try {
@@ -76,7 +78,7 @@ public class ChatDaoImpl implements ChatDao {
 	}
 
 	@Override
-	public List<ChatRoomDto> getRoomList(int empno) {
+	public List<ChatRoomDto> getRoomList(String empno) {
 		log.info("findRoomByEmpno start...");
 		List<ChatRoomDto> roomList = new ArrayList<>();
 		try {
@@ -163,6 +165,7 @@ public class ChatDaoImpl implements ChatDao {
 	}
 
 
+	
 	
 	
 }

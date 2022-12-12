@@ -20,13 +20,21 @@ body{
 }
 
 /* 배경화면 설정 */
-#detailRoom, .setting_bar, .main-menu, header{
+#chatContainer, header, footer, .setting_bar{
     background-image: url(../pic/talk_background.jpg);
     background-repeat: repeat;
     background-position: top left;
     background-attachment: fixed;
     z-index: 98;
 }
+
+/* #detailRoom, .setting_bar, .main-menu, header{
+    background-image: url(../pic/talk_background.jpg);
+    background-repeat: repeat;
+    background-position: top left;
+    background-attachment: fixed;
+    z-index: 98;
+} */
 
 /* 설정바 스타일 지정 */
 .setting_bar{
@@ -63,6 +71,7 @@ header{
     align-items: center;
     margin-left: 0.625rem;
 }
+
 .profile-col{
     display: flex;
     flex-direction: column;
@@ -107,35 +116,6 @@ main{
 .chat-content{
     margin-left: 0.625rem;
     margin-right: 0.625rem;
-}
-
-/* main 중 고정 공지사항 스타일 지정 */
-.notice-bar{
-    padding: 10px;
-    position: sticky;
-    top: 5rem;
-    /* background-color: white; */
-    background-color: rgba(255, 255, 255, 0.95);
-    display: flex;
-    flex-direction: row;
-    z-index: 99;
-    margin-left: 0.625rem;
-    margin-right: 0.625rem;
-}
-.notice-bar > *{
-    font-size: 0.875rem;
-    line-height: 1.875rem ;
-    vertical-align: middle;
-}
-.notice-bar > i{
-    font-size: 1.5rem;
-    color: gray;
-    font-weight: bold;
-}
-.notice-bar > span{
-    flex-grow: 1;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
 }
 
 /* 말풍선 공통 스타일 지정 */
@@ -215,23 +195,28 @@ main{
     color: rgb(88, 88, 88);
     text-align: center;
 }
+.main-chat{
+	min-height: 446px;
+}
 .friend-chat > .time{
     margin-right: 2.5rem;
 }
 .me-chat > .time{
     margin-left: 2.5rem;
 }
-
-/* 날짜선(date-line) 스타일 지정 */
-.date-line{
-    /* flex 사용 */
-    display: flex;
+.notice-chat{
+	display: flex;
     flex-basis: 100%;
-    align-items: center;
-    color: rgb(88, 88, 88);
-    font-size: 0.875rem;   
+	align-items: center;
+	color: rgb(88, 88, 88);
+	font-size: 0.875rem;
 }
-.date-line::before, .date-line::after{
+
+.notice-chat > .notRead{
+	display: none;
+}
+
+.notice-chat::before, .notice-chat::after{
     content: "";
     flex-grow: 1;
     height: 1px;
@@ -239,6 +224,7 @@ main{
     font-size: 0px;
     line-height: 0px;
 }
+
 
 /* 채팅 입력차 스타일 지정 */
 .insert-content{
