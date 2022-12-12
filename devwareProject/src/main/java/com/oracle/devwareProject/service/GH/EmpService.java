@@ -147,7 +147,21 @@ public class EmpService {
 		}
 		return count;
 	}
-
+	
+	public List<EmpForSearch> getEmpByDeptNum(int deptnum) {
+		int count = 0;
+		System.out.println("EmpService getEmpCount Start");
+		List<EmpForSearch> emplist = new ArrayList<EmpForSearch>();
+		try {
+			emplist = ed.getUserInfo(deptnum);
+			count = emplist.size();
+			System.out.println("해당 부서의 직원수 : "+count);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		return emplist;
+	}
+	
 	public List<EmpForSearch> getUserInfo(Page pg, int deptnum) {
 		System.out.println("EmpService getUserInfo Start");
 		List<EmpForSearch> emplist = new ArrayList<EmpForSearch>();

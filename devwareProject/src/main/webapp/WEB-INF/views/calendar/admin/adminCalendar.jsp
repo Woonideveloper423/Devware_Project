@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String context = request.getContextPath();
 %>
@@ -13,6 +14,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 	
+	
+	
 	<!-- Full Calendar 참조 -->
 	<link rel='stylesheet' href='${pageContext.request.contextPath}/resources/fullcalendar/fullcalendar.css' />
 	<script src='${pageContext.request.contextPath}/resources/fullcalendar/lib/moment.min.js'></script>
@@ -23,6 +26,8 @@
 
 var allDay = false;
 var aDay = false;
+
+
 function adChBx() //allTimeCheck 시 
 {
 	if($('#allDay').is(':checked'))
@@ -100,6 +105,9 @@ function deleteEvent()
 	var eventId = $("#pid").val();
 	alert(eventId);
 	
+	var emp_num = $('#emp_num').val();
+	alert(emp_num);
+	
 	if(confirm("정말 삭제하시겠습니까?"))
 	{
 		$.ajax({
@@ -117,7 +125,7 @@ function deleteEvent()
 	    	  {
 	    		alert("일정 삭제에 성공하였습니다."); 
 	    		$("#dayModal").modal('hide');
-	    		location.href='<%=context%>/showCalendar';
+	    		location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
 	    	  }
 	      	}
 		});
@@ -125,9 +133,20 @@ function deleteEvent()
 		return false;
 	}
 }
+function searchUsingEmpNum()
+{
+	var emp_num = $('#empName').val();
+	alert("사원 번호: "+emp_num);
+	
+	location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
+
+}
 
 function modifyBtn()
 {
+	  var emp_num = $('#emp_num').val();
+      alert(emp_num);
+	
 	  var stitle = $('#modsname').val(); //글 제목
 	  console.log("글 제목 : " + stitle);
 	  
@@ -183,7 +202,10 @@ function modifyBtn()
 		    allDayCheck = 0;
 	    }
 		
-	    var param = "calendar_id="+modId+"&calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num=${emp.emp_num}";	
+	    var emp_num = $('#emp_num').val();
+	    alert(emp_num);
+	    
+	    var param = "calendar_id="+modId+"&calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num="+emp_num;	
 	    console.log(param);
 
 	    $.ajax(
@@ -202,11 +224,30 @@ function modifyBtn()
 	    	  {
 	    		alert("일정 수정에 성공하였습니다.");  
 	    		$("#modId").modal('hide');
-	    		location.href='<%=context%>/showCalendar';
+	    		location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
 	    	  }
 	      	}
 	  	});
 	  }
+}
+
+function userlistDeptSearch()
+{
+	var deptnum = $('#deptnum').val();
+	
+ 	$.ajax({
+		type: 'POST',
+     	url: "<%=context%>/getEmpByDeptNum",
+     	data: {deptnum : deptnum},
+     	success: function(data) 
+     	{
+     		$("#empName").empty();
+			$.each(data, function(index, element)
+			{
+				$("#empName").append("<option value="+element.emp_num+">"+ element.emp_name +"</option>");
+			});	 
+		}	
+	});
 }
 
 function registBtn()
@@ -265,11 +306,12 @@ function registBtn()
 	    allDayCheck = 0;
     }
 	
+    var emp_num = $('#emp_num').val();
+    alert(emp_num);
     
-    var param = "calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num=${emp.emp_num}";
-    	
+    var param = "calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num=" + emp_num;
     console.log(param);
-
+    
     $.ajax(
     {
     	type: 'POST',
@@ -284,9 +326,10 @@ function registBtn()
     	  }
     	  else
     	  {
+    		  
     		alert("일정 추가에 성공하였습니다.");  
     		$("#myModal").modal('hide');
-    		location.href='<%=context%>/showCalendar';
+    		location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
     	  }
       	}
   	});
@@ -300,7 +343,7 @@ $(document).ready(function()
         method: "POST",
         dataType: "json",
         data: {
-			emp_num : ${emp.emp_num}
+			emp_num : ${emp_num}
 		}
     });
 	
@@ -352,8 +395,25 @@ $(document).ready(function()
 
 </script>
 <body>
+<div>
+	조회:
+	<select name="deptnum" id="deptnum" onchange="userlistDeptSearch()">
+		<c:forEach var="dept" items="${deptlist}">
+			<option value="${dept.dept_num}">${dept.dept_name}</option>
+		</c:forEach>
+	</select>
+	
+	<select name="empName" id="empName">
+		
+	</select>
+	
+	<button type="button" onclick="searchUsingEmpNum()">조회하기</button>
+	<input id="emp_num" type="hidden" value="${emp_num}"> 
+</div>
+
 
 <div id="calendar">
+
 </div>
 	<!-- 일정 확인 모달 -->
 <div class="modal fade" id="dayModal" role="dialog">

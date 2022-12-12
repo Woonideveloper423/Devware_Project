@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.stereotype.Controller;
@@ -14,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oracle.devwareProject.domain.Calendar;
+import com.oracle.devwareProject.domain.Dept;
+import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.service.GH.CalendarService;
+import com.oracle.devwareProject.service.GH.DeptService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -23,51 +28,94 @@ import lombok.RequiredArgsConstructor;
 public class CalendarController 
 {	
 	private final CalendarService calendarService;
-
-	@RequestMapping("/test")
-	public String showCalendar(Model model)
+	private final DeptService deptService;
+	
+	//캘린더 출력 함수
+	@RequestMapping("/showCalendar")
+	public String showCalendar(Model model, HttpSession session)
 	{
-		int user_num = 1805001;
-		model.addAttribute("emp_num",user_num);
+		System.out.println("CalendarController showCalendar Start");
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		
+		System.out.println("유저 번호 : "+emp.getEmp_num());
+		
+		model.addAttribute("emp",emp);
 		return "/calendar/user/calendar";
 	}
 	
+	@RequestMapping("/manageCalendar")
+	public String manageCalendar(Model model, HttpSession session, @RequestParam int emp_num)
+	{
+		System.out.println("CalendarController manageCalendar Start");
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		
+		List <Dept> deptlist = new ArrayList<Dept>();
+		deptlist = deptService.getDeptInfo();
+		
+		System.out.println("유저 번호 : "+emp_num);
+		model.addAttribute("deptlist",deptlist);
+		
+		model.addAttribute("emp",emp);
+		model.addAttribute("emp_num",emp_num);
+		return "/calendar/admin/adminCalendar";
+	}
+	
+	@RequestMapping("/manageCalendarMain")
+	public String manageCalendarMain(Model model, HttpSession session)
+	{
+		System.out.println("CalendarController manageCalendar Start");
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		
+		List <Dept> deptlist = new ArrayList<Dept>();
+		deptlist = deptService.getDeptInfo();
+		
+		model.addAttribute("deptlist",deptlist);
+		model.addAttribute("emp",emp);
+		model.addAttribute("emp_num",emp.getEmp_num());
+		return "/calendar/admin/adminCalendar";
+	}
+	
+	//캘린더 이벤트 삭제 함수
 	@ResponseBody
 	@RequestMapping("/deleteEvent")
 	public int deleteEventOnCalendar(@RequestParam int eventId)
 	{
-		System.out.println("EventId: "+ eventId);
-		int result = 0; 
 		System.out.println("CalendarController deleteEventOnCalendar Start");
+		System.out.println("삭제 이벤트 EventId: "+ eventId);
+		
+		int result = 0; 
 		result = calendarService.deleteEvent(eventId);
 		return result; 
 	}
 	
+	//캘린더 이벤트 출력 함수
 	@ResponseBody
 	@RequestMapping("/addEvent")
 	public int addEventOnCalendar(Calendar calendar)
 	{
 		int result = 0;
 		System.out.println("CalendarController addEventOnCalendar Start");
+		
 		result = calendarService.addEvent(calendar);
 		return result;
 	}
 	
-	
+	//캘린더 이벤트 변경 함수
 	@ResponseBody
 	@RequestMapping("/modifyEvent")
 	public int modifyEventOnCalendar(Calendar calendar)
 	{
 		int result = 0;
 		System.out.println("CalendarController modifyEventOnCalendar Start");
+		
 		result = calendarService.modifyEvent(calendar);
-
 		return result;
 	}
 	
-	
+	//캘린더의 이벤트를 출력하기 위해서 Map, Key를 설정해서 해쉬맵에 저장
 	@ResponseBody
 	@RequestMapping("/searchAll")
+	@SuppressWarnings("unchecked")
 	public List<Map<String, Object>> searchAll(@RequestParam int emp_num)
 	{
 		List <Calendar> calendars = new ArrayList<Calendar>();
@@ -83,7 +131,6 @@ public class CalendarController
 		{
 			hash.put("title",calendars.get(i).getCalendar_title());
 			hash.put("start",calendars.get(i).getCalendar_start());
-			System.out.print("End"+calendars.get(i).getCalendar_end());
 			hash.put("fin",calendars.get(i).getCalendar_end());
             hash.put("content",calendars.get(i).getCalendar_content());
             hash.put("allDay",calendars.get(i).getCalendar_allDay());
