@@ -18,6 +18,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.oracle.devwareProject.dto.jehwan.ChatMessage;
 import com.oracle.devwareProject.dto.jehwan.ChatMessage.MessageType;
 import com.oracle.devwareProject.dto.jehwan.ChatRoom;
@@ -32,6 +33,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Component
 public class WebSockChatHandler extends TextWebSocketHandler {
+	private final ObjectMapper objectMapper;
 	 private final ChatService chatService;
 	 HashMap<String, WebSocketSession> sessionMap = new HashMap<>();
 		// 웹소켓 세션 ID과 Member을 담아둘 JSONObject
@@ -46,12 +48,12 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 		String msgType = (String) jsonObj.get("type");
 		System.out.println("SocketHandler handleTextMessage  msgType->"+msgType);
 		MessageType type   = MessageType.valueOf((String)(jsonObj.get("type")));
-   	    String roomId    = (String) jsonObj.get("roomId");
-   	    String sender  = (String) jsonObj.get("sender");
-   	    String senderName  = (String) jsonObj.get("senderName");
-   	    System.out.println("여긴오나?");
-   	    String messageContent  = (String) jsonObj.get("message");
-   	    ChatMessage chatMessage = new ChatMessage(type, roomId, sender, messageContent);
+  	    String roomId    = (String) jsonObj.get("roomId");
+  	    String sender  = session.getAttributes().get("empno").toString();
+  	    String senderName  = session.getAttributes().get("empName").toString();
+  	    System.out.println("여긴오나?");
+  	    String messageContent  = (String) jsonObj.get("message");
+  	    ChatMessage chatMessage = new ChatMessage(type, roomId, sender, messageContent);
 		switch (msgType) {
 		     // 전체 Message 
 	        case "TALK":
@@ -62,7 +64,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	        	chatMessage.setShowType(showType);
 	            ChatRoom send_room = chatService.findRoomById(chatMessage.getRoomId());
 	            if(send_room !=null) {
-	            	send_room.handleActions(session, chatMessage, chatService);
+	            	send_room.handleActions(chatMessage, chatService);
 	            }
 	            break;	
 	            
@@ -72,7 +74,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	        	String roomName   = (String) jsonObj.get("roomName");
 	        	List<String> empNoList =  (List<String>) jsonObj.get("empNums");
 	        	List<String> empNameList =  (List<String>) jsonObj.get("empNames");
-	        	
+	        	empNoList.add(sender);
 	        	log.info("empNoList length->" + empNoList.size());
 	     	    for(String empnoSession : empNoList) {
 	     	    	WebSocketSession webSocketSession = sessionMap.get(empnoSession);
@@ -91,7 +93,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	     	   chatMessage.setMemberCnt(String.valueOf(empNoList.size()));
 	     	   chatMessage.setShowType("2");
 	     	   chatMessage.setMessage(senderName + "님이" + Arrays.toString(empNameList.toArray()) + "님을 초대했습니다");
-	     	   chatRoom.handleActions(session, chatMessage, chatService);
+	     	   chatRoom.handleActions(chatMessage, chatService);
 
 		       break;
 		    
@@ -101,7 +103,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	        	List<String> readMsgs = (List<String>) jsonObj.get("readMsgs");
 	        	chatMessage.setReadMsg(readMsgs);
 	        	ChatRoom connect_room = chatService.findRoomById(chatMessage.getRoomId());
-	        	connect_room.handleActions(session, chatMessage, chatService);
+	        	connect_room.handleActions(chatMessage, chatService);
 
 		    break;
 	            
@@ -109,15 +111,15 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 //	        case "ENTER":
 //	            // sessionUserMap에 sessionId와  userName 등록  
 //
-//  	          log.info("type ->", type);
+// 	          log.info("type ->", type);
 //	  	      log.info("roomId ->", roomId);
 //	  	      log.info("sender ->", sender);
 //	  	      log.info("messageContent ->", messageContent);
 //	  	    
-//  	        
-//  	          ChatRoom room_enter = chatService.findRoomById(chatMessage.getRoomId());
-//  	          room_enter.handleActions(session, chatMessage, chatService);
-// 	     	    
+// 	        
+// 	          ChatRoom room_enter = chatService.findRoomById(chatMessage.getRoomId());
+// 	          room_enter.handleActions(session, chatMessage, chatService);
+//	     	    
 //		      break;
 		     	
 	        case "LEAVE":   
@@ -127,37 +129,39 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	  	        if(room_leave.getMemberCnt()==1) {
 	  	        	chatService.deleteRoom(chatMessage.getRoomId());
 	  	        }else {
-	  	        	room_leave.handleActions(session, chatMessage, chatService); 
+	  	        	room_leave.handleActions(chatMessage, chatService); 
 	  	        }
-   
+  
 	         break;
 	         
 	        case "INVITE":
 	        	List<String> empNoListInvite =  (List<String>) jsonObj.get("empNums");
 	        	List<String> empNames =  (List<String>) jsonObj.get("empNames");
-	        	
+	        	String InviteroomName   = (String) jsonObj.get("roomName");
 	        	ChatRoom room_invite = chatService.findRoomById(chatMessage.getRoomId());
 	        	ChatRoomInviteLeave chatRoomInviteLeave = new ChatRoomInviteLeave(roomId, empNoListInvite);
 	        	chatService.inviteRoom(chatRoomInviteLeave);
 	        	log.info("empNoList length->" + empNoListInvite.size());
-	     	    for(String empnoSession : empNoListInvite) {
+	     	    
+	        	chatMessage.setSender_name(senderName);
+	        	chatMessage.setShowType("2");
+	        	chatMessage.setMessage(senderName + "님이" + Arrays.toString(empNames.toArray()) + "님을 초대했습니다");
+	  	        room_invite.handleActions(chatMessage, chatService); 
+	  	        chatMessage.setType(MessageType.valueOf("INVITED"));
+	  	        chatMessage.setRoomName(InviteroomName);
+	  	        for(String empnoSession : empNoListInvite) {
 	     	    	WebSocketSession webSocketSession = sessionMap.get(empnoSession);
 	     	    	if(webSocketSession != null) {
 	     	    		log.info("userExist");
 	     	    		room_invite.getSessions().put(empnoSession, webSocketSession);
+	     	    		webSocketSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessage)));
 	     	    	}else {
 	     	    		log.info("userNotExist");
 	     	    	}
 	     	    }
-	        	chatMessage.setSender_name(senderName);
-	        	chatMessage.setShowType("2");
-	        	chatMessage.setMessage(senderName + "님이" + Arrays.toString(empNames.toArray()) + "님을 초대했습니다");
-	  	        room_invite.handleActions(session, chatMessage, chatService); 
-
-   
 	         break;
 		     	
-  	     }  // switch End         
+ 	     }  // switch End         
 
 	}
 	
@@ -182,11 +186,11 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 			if(room != null) {
 				 System.out.println("room연결->" + room.getName());
 				 room.getSessions().put(empno, session);
+			}else {
+				System.out.println("그 방은 없는데?");
 			}
 		}
-
-		
-		 System.out.println("여긴 오나?");
+		System.out.println("연결 끝");
 	}
 	
 	@Override
@@ -197,23 +201,22 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 		log.info("afterConnectionClosed");
 
 		String empno = session.getAttributes().get("empno").toString();
-
+		System.out.println("afterConnectionEstablished sessionMap before remove->" + sessionMap.get(empno));
 		// 연결 소겟을 mAP에 등록 
-		System.out.println("왜 empno 이게 끊기냐고" + empno);
-		if(sessionMap.size() == 1) {
-			sessionMap = new HashMap<String, WebSocketSession>();
-		}else {
-			sessionMap.remove(empno);
-		}
-		System.out.println("afterConnectionEstablished sessionMap getempnosession->" + sessionMap.get(empno));
+		System.out.println("empno 끊기 ->" + empno);
+		sessionMap.remove(empno);
+		
+		System.out.println("afterConnectionEstablished sessionMap after remove->" + sessionMap.get(empno));
 		log.info("sessionMap size->" + sessionMap.size());
 		List<ChatRoom> myRoomList = chatService.findmyRoomId(Integer.parseInt(empno));
-
+		
 		for(ChatRoom room : myRoomList) {
 			if(room != null) {
 				 System.out.println("room끊기->" + room.getName());
-				 room.removeSessions(empno);
-				 room.removeLookMember(empno);
+				 room.getSessions().remove(empno);
+				 room.getLook_member().remove(empno);
+			}else {
+				System.out.println("끊을 방이 없는데?");
 			}
 		}
 		

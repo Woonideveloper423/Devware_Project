@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.oracle.chattingPrototype.chatting">
+<mapper namespace="com.oracle.devwareProject.chatting">
 	
-	 <resultMap type="java.lang.String" id="ReadMessage">
+	<resultMap type="java.lang.String" id="ReadMessage">
     	<result property="java.lang.String" column="log_num"  />
     </resultMap>
 	
@@ -22,7 +22,7 @@
     
    
 	
-	<select id="getMsgCnt" parameterType="int" resultType="int">
+	<select id="getMsgCnt" parameterType="java.lang.String" resultType="int">
 		<!-- select Count(*) from READ_CNT where EMP_NUM = #{empno} -->
 		select COUNT(*)
 		from chat_log cl, 
@@ -59,7 +59,7 @@
 		where EMP_NUM = #{empno}
 	</select>
 	
-	<select id="myChatRoomList" parameterType="int" resultType="ChatRoomDto">
+	<select id="myChatRoomList" parameterType="java.lang.String" resultType="ChatRoomDto">
 		<!-- select cr.ROOM_NUM, ROOM_TITLE,mem_name last_sender, ROOM_CNT, msg_content last_msg, SEND_DATE last_msg_date, not_read_cnt
 		from CHAT_ROOM cr, 
 		(select ROOM_NUM from CHAT_MEMBER where EMP_NUM=#{empno}) cm, 
@@ -74,7 +74,7 @@
 		and cr.ROOM_NUM = rc.ROOM_NUM(+)
 		ORDER BY send_date desc -->
 		
-		select cr.ROOM_NUM, ROOM_TITLE,emp_name last_sender, msg_content last_msg, SEND_DATE last_msg_date, not_read_cnt
+		select cr.ROOM_NUM, ROOM_TITLE,emp_name last_sender, msg_content last_msg, SEND_DATE last_msg_date, NVL(not_read_cnt, 0) not_read_cnt
 		from CHAT_ROOM cr, 
 		(select cl2.room_num, count(*) not_read_cnt
 		from chat_log cl2, 
@@ -89,7 +89,7 @@
 		where cl_sort.SEND_DATE = max_date.SEND_DATE
 		) cl,
         emp e
-		where cr.ROOM_NUM = cm.ROOM_NUM
+		where cr.ROOM_NUM = cm.ROOM_NUM(+)
 		and cr.ROOM_NUM = cl.ROOM_NUM
         and cl.emp_num = e.emp_num
 		ORDER BY send_date desc
@@ -164,7 +164,7 @@
 		</selectKey>
 	</insert>
 	
-	<update id="updateLastLog">
+	<update id="updateLastLog" parameterType="ChatMessageDto">
 		update CHAT_MEMBER 
 		set LAST_READ_LOG = #{log_num}
 		where ROOM_NUM = #{room_num}

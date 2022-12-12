@@ -45,7 +45,7 @@ public class ChatService {
     public List<ChatRoom> findmyRoomId(int empno) {
     	log.info("findmyRoomId start..");
     	List<String> roomNameList = chatDao.findmyRoomId(empno);
-    	
+    	log.info("how many my room?->" + roomNameList.size());
     	List<ChatRoom> chatRoom = new ArrayList<>();
     	for(String roomName : roomNameList) {
     		
@@ -87,7 +87,7 @@ public class ChatService {
 		chatDao.saveMessage(chatMessage);
 	}
 
-	public int getMsgCnt(int empno) {
+	public int getMsgCnt(String empno) {
 		log.info("getMsgCnt start...");
 		int msgCnt = chatDao.getMsgCnt(empno);
 		return msgCnt;
@@ -95,7 +95,7 @@ public class ChatService {
 
 
 
-	public List<ChatRoomDto> getRoomList(int empno) {
+	public List<ChatRoomDto> getRoomList(String empno) {
 		log.info("getRoomList start empno ->" + empno);
 		List<ChatRoomDto> chatRoomDtos = chatDao.getRoomList(empno);
 		return chatRoomDtos;
@@ -142,12 +142,7 @@ public class ChatService {
 
 	public void deleteRoom(String room_num) {
 		log.info("deleteRoom start...");
-		if(chatRooms.size()==1) {
-			log.info("가비지 컬렉션 피하기");
-			chatRooms = new HashMap<String, ChatRoom>();
-		}else {
-			chatRooms.remove(room_num);
-		}
+		chatRooms.remove(room_num);
 		chatDao.deleteRoom(room_num);
 	}
 
@@ -158,7 +153,10 @@ public class ChatService {
 		ChatRoom chatRoom = chatRooms.get(roomId);
 		log.info("chatRoom" + chatRoom);
 		if(chatRoom != null) {
-		chatRoom.getLook_member().remove(empno);
+			System.out.println("나갈 방존재");
+			chatRoom.getLook_member().remove(empno);
+		}else {
+			System.out.println("나갈 방이 없는데?");
 		}
 		log.info("leaveRoomLook end...");
 	}

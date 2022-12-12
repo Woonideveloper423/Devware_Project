@@ -18,9 +18,9 @@ public interface ChatDao {
 
 	void saveMessage(ChatMessageDto chatMessage);
 
-	int getMsgCnt(int empno);
+	int getMsgCnt(String empno);
 
-	List<ChatRoomDto> getRoomList(int empno);
+	List<ChatRoomDto> getRoomList(String empno);
 
 	void detailRoom(ChatMessageProc chatMessageProc);
 
