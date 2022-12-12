@@ -431,13 +431,13 @@ function  wsEvt() {
 		console.log("wsEvt  소켓이 열리면 초기화 세팅하기..");
 	}	
     ws.onclose = function(data){
-    	alert("세션 끊김 다시연결하자");
+    	/* alert("세션 끊김 다시연결하자");
     	console.log("wsOpen  location.host: " + location.host);
 	    var wsUri  = "ws://" + location.host + "${pageContext.request.contextPath}/chating";
 	    // WebSocket 프로토콜을 사용하여 통신하기 위해서는 WebSocket객체를 생성. 
 	    // 객체는 자동으로 서버로의 연결
 	 	ws = new WebSocket(wsUri);
-		wsEvt();
+		wsEvt(); */
     }
     ws.onmessage = function(data) {
 		var msg = data.data;

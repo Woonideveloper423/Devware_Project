@@ -77,7 +77,7 @@ public class EmpController
 			return "/member/user/userMain";
 		}
 	}
-	
+
 	//회원 가입을 위한 유저 리스트 만들기 [관리자 기능]
 	@RequestMapping("/createUserListForm")
 	public String createUserListForm(Model model)
@@ -231,6 +231,25 @@ public class EmpController
 		System.out.println("던지기전 result의 값: "+result);
 		
 		return "/member/admin/makeUserList";
+	}
+	
+	@ResponseBody
+	@RequestMapping("getEmpByDeptNum")
+	public List<EmpForSearch> getEmpByDeptNum(@RequestParam int deptnum)
+	{
+		System.out.println("getEmpByDeptNum Start");
+		List<EmpForSearch> emp = new ArrayList<EmpForSearch>();
+		
+		System.out.println("파라미터 체크 : "+ deptnum);
+		
+		try {
+			emp = empService.getEmpByDeptNum(deptnum);
+			System.out.println("해당 부서의 사원 수: " + emp.size());
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		return emp;
 	}
 	
 	

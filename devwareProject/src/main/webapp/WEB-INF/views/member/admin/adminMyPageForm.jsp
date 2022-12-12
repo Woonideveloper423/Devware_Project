@@ -36,9 +36,6 @@
 			var address = $('#postcode').val() + " " + $('#address').val() + " /" + $('#detailAddress').val();
 			var email = $('#user_email1').val() + "@" +  $('#user_email2').val()
 			
-			alert(address);
-			alert(email);
-			
 			$('#emp_address').attr('value', address);
 			$('#emp_email').attr('value', email);
 			
@@ -184,7 +181,7 @@
 </head>
 <body>
 	<div class="container-fluid">
-		<h3>관리자 용 마이페이지</h3>
+		<h3>관리자용 마이페이지</h3>
 		<form action="/adminEditInfo" method="post">
 			<table class="table table-hover text-center">
 				<tr>
@@ -328,12 +325,12 @@
 					<td><input type="text"  class="form-control" id="detailAddress" name="member_address3">
 					<input type="hidden" id="extraAddress" placeholder="참고항목"></td>
 				</tr>
-				
-				<tr>	
-					<td><input type="submit" onclick="updateUpCheck()" value="수정하기"></td>
-				</tr>
-
 			</table>
+			
+			<div style=" text-align: center;">
+				<button type="submit" style="display: inline-block;" class="btn btn-primary btn-lg" onclick="updateUpCheck()">수정하기</button>
+			</div>
+			
 			<input type="hidden" id="emp_address" name ="emp_address"> 
 			<input type="hidden" id="emp_email" name = "emp_email"> 
 		</form>

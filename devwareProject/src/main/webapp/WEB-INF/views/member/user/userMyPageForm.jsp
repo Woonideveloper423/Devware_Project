@@ -35,10 +35,7 @@
 			var check = true;
 			var address = $('#postcode').val() + " " + $('#address').val() + " /" + $('#detailAddress').val();
 			var email = $('#user_email1').val() + "@" +  $('#user_email2').val()
-			
-			alert(address);
-			alert(email);
-			
+					
 			$('#emp_address').attr('value', address);
 			$('#emp_email').attr('value', email);
 			
@@ -253,11 +250,12 @@
 					<input type="hidden" id="extraAddress" placeholder="참고항목"></td>
 				</tr>
 				
-				<tr>	
-					<td><input type="submit" onclick="updateUpCheck()" value="수정하기"></td>
-				</tr>
-
 			</table>
+			
+			<div style=" text-align: center;">
+				<button type="submit" style="display: inline-block;" class="btn btn-primary btn-lg" onclick="updateUpCheck()">수정하기</button>
+			</div>
+			
 			<input type="hidden" id="emp_address" name ="emp_address"> 
 			<input type="hidden" id="emp_email" name = "emp_email"> 
 		</form>
