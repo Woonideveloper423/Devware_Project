@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.jehwan.ChatMessageProc;
 import com.oracle.devwareProject.dto.jehwan.ChatRoomDto;
 import com.oracle.devwareProject.dto.jehwan.EmpDtoVO;
@@ -47,10 +48,10 @@ private final ChatService chatService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/getMsgCnt")
-	public int getMsgCnt(HttpServletRequest request) {
-		HttpSession session = request.getSession();
-		String empno =  session.getAttribute("empno").toString();
-		System.out.println("empno->" + empno);
+	public int getMsgCnt(HttpSession session) {
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		String empno = String.valueOf(emp.getEmp_num());
+		System.out.println("empno->" + emp.getEmp_num());
 		int msgCnt = chatService.getMsgCnt(empno);
 		
 		return msgCnt;
@@ -58,15 +59,15 @@ private final ChatService chatService;
 	
 	@RequestMapping(value = "/chat/getRoomList")
 	@ResponseBody
-	public List<ChatRoomDto> getRoomList(HttpServletRequest request){
-		HttpSession session = request.getSession();
-		String empno =  session.getAttribute("empno").toString();
+	public List<ChatRoomDto> getRoomList(HttpSession session){
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		String empno = String.valueOf(emp.getEmp_num());
 		log.info("getRoomList start empno ->" + empno);
 		List<ChatRoomDto> chatRoomDtos = chatService.getRoomList(empno);
 		return chatRoomDtos;
 	}
 	
-	@RequestMapping(value = "/chat/roomDetail")
+	@RequestMapping(value = "/roomDetail")
 	public String roomDetail(String roomId,String roomName, Model model) {
 		log.info("roomDetail start roomId ->" + roomId);
 		model.addAttribute("roomName", roomName);
@@ -76,9 +77,9 @@ private final ChatService chatService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/detailRoom")
-	public ChatMessageProc detailRoom(HttpServletRequest request, ChatMessageProc chatMessageProc) {
-		HttpSession session = request.getSession();
-		chatMessageProc.setP_emp_num(Integer.parseInt(session.getAttribute("empno").toString()));
+	public ChatMessageProc detailRoom(HttpSession session, ChatMessageProc chatMessageProc) {
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		chatMessageProc.setP_emp_num(emp.getEmp_num());
 		log.info("detailRoom start chatMessageDto.emp_num ->" + chatMessageProc.getP_emp_num());
 		log.info("detailRoom start chatMessageDto.room_num ->" + chatMessageProc.getP_room_num());
 		chatService.detailRoom(chatMessageProc);
@@ -88,9 +89,9 @@ private final ChatService chatService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/showEmpList")
-	public EmpDtoVO showEmpList(HttpServletRequest request, EmpDtoVO empDtoVo) {
-		HttpSession session = request.getSession();
-		empDtoVo.setEmp_num(Integer.parseInt(session.getAttribute("empno").toString()));
+	public EmpDtoVO showEmpList(HttpSession session, EmpDtoVO empDtoVo) {
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		empDtoVo.setEmp_num(emp.getEmp_num());
 		log.info("detailRoom start empno ->" + empDtoVo.getEmp_num());
 		log.info("detailRoom start roomId ->" + empDtoVo.getRoom_num());
 		log.info("detailRoom start type ->" + empDtoVo.getType());
@@ -101,9 +102,9 @@ private final ChatService chatService;
 	
 	@ResponseBody
 	@RequestMapping(value = "/chat/leaveRoomLook")
-	public String leaveRoomLook(HttpServletRequest request, String roomId) {
-		HttpSession session = request.getSession();
-		String empno = session.getAttribute("empno").toString();
+	public String leaveRoomLook(HttpSession session, String roomId) {
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		String empno = String.valueOf(emp.getEmp_num());
 		log.info("leaveRoomLook start... empno->" + empno);
 		log.info("leaveRoomLook start... roomId->" + roomId);
 		chatService.leaveRoomLook(empno, roomId);

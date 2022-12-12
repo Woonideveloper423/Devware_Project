@@ -54,7 +54,7 @@ public class ChatDaoImpl implements ChatDao {
 			session.insert("saveMessage", chatMessage);
 			if(chatMessage.getLook_member().size() != 0) {
 				log.info("채팅 번호는?->" + chatMessage.getLog_num());
-				log.info("보고있는사람존재");
+				log.info("보고있는사람존재->" + chatMessage.getLook_member().get(0));
 				session.update("updateLastLog", chatMessage);
 			}
 		} catch (Exception e) {

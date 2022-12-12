@@ -19,6 +19,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.jehwan.ChatMessage;
 import com.oracle.devwareProject.dto.jehwan.ChatMessage.MessageType;
 import com.oracle.devwareProject.dto.jehwan.ChatRoom;
@@ -42,15 +43,15 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
 		String msg = message.getPayload();
 		System.out.println("SocketHandler handleTextMessage msg->"+msg);
-		
+		EmpForSearch emp = (EmpForSearch) session.getAttributes().get("empForSearch");
 		JSONObject jsonObj = jsonToObjectParser(msg);
 		// type을 Get하여 분기 
 		String msgType = (String) jsonObj.get("type");
 		System.out.println("SocketHandler handleTextMessage  msgType->"+msgType);
 		MessageType type   = MessageType.valueOf((String)(jsonObj.get("type")));
   	    String roomId    = (String) jsonObj.get("roomId");
-  	    String sender  = session.getAttributes().get("empno").toString();
-  	    String senderName  = session.getAttributes().get("empName").toString();
+  	    String sender  = String.valueOf(emp.getEmp_num());
+  	    String senderName  = String.valueOf(emp.getEmp_name());
   	    System.out.println("여긴오나?");
   	    String messageContent  = (String) jsonObj.get("message");
   	    ChatMessage chatMessage = new ChatMessage(type, roomId, sender, messageContent);
@@ -172,9 +173,10 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 		
 		// 웹소켓  연결이 되면 동작
 		super.afterConnectionEstablished(session);
-		String empno = session.getAttributes().get("empno").toString();
+		EmpForSearch emp = (EmpForSearch) session.getAttributes().get("empForSearch");
+		String empno = String.valueOf(emp.getEmp_num());
 		// 연결 소겟을 mAP에 등록 
-		System.out.println("다시 연결됬나? ->" + session.getAttributes().get("empno"));
+		System.out.println("다시 연결됬나? ->" + empno);
 		
 		sessionMap.put(empno, session);
 		
@@ -199,8 +201,9 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 		
 		super.afterConnectionClosed(session, status);
 		log.info("afterConnectionClosed");
-
-		String empno = session.getAttributes().get("empno").toString();
+		EmpForSearch emp = (EmpForSearch) session.getAttributes().get("empForSearch");
+		String empno = String.valueOf(emp.getEmp_num());
+		
 		System.out.println("afterConnectionEstablished sessionMap before remove->" + sessionMap.get(empno));
 		// 연결 소겟을 mAP에 등록 
 		System.out.println("empno 끊기 ->" + empno);
@@ -219,7 +222,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 				System.out.println("끊을 방이 없는데?");
 			}
 		}
-		
+		log.info("끊기 성공");
 	}
 	
 	

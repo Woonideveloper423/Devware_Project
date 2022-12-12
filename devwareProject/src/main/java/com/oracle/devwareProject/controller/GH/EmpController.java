@@ -339,7 +339,7 @@ public class EmpController
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
+		System.out.println(emp_id +"and" + emp_passwd);
 		// 위 단계에서 조회한 암호화된 데이터베이스에 존재하는 Emp의 비밀번호와 현재 로그인을 요청한 비밀번호와 비교 
 		if(encoder.matches(emp_passwd,emp.getEmp_passwd()))
 		{
