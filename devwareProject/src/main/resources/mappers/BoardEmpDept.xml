@@ -21,7 +21,6 @@
 		                         #{brd_content},
 		                         SYSDATE,
 		                         0,  <!-- 조회수 -->
-		                         0,  <!-- 추천수 -->
 		                         0,  <!--  삭제여부 -->
 		                         <choose>
 		                        	<when test="brd_type==1">brd1_num_seq.currval,</when>
@@ -39,9 +38,25 @@
 								0) <!-- 댓글수 -->	                       
 	</insert>                       	
 	
+	<!-- 유형별 게시판 게시글 수정 -->
+	<update id="jwBoardUpdate" parameterType="BoardEmpDept">
+		<choose>
+	    	<when test="brd_type!=2">
+	    		UPDATE Board set brd_title=#{brd_title},brd_content=#{brd_content}
+				where brd_type=#{brd_type} and brd_num=#{brd_num} and emp_num=#{emp_num}		
+	    	</when>
+	    	<when test="brd_type==2"> 
+	    		update (select b.brd_title,b.brd_content from board b,emp e,dept d
+		         where  b.emp_num=e.emp_num and e.dept_num=d.dept_num
+		         and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_num=#{brd_num})
+		         set brd_title=#{brd_title},brd_content=#{brd_content}	 	
+	    	</when>
+	    </choose>             
+	</update>
+	
 	<!-- 유형별 게시판 게시글 삭제  -->
 	<update id="jwBoardDelete" parameterType="BoardEmpDept">
-		<choose>
+			<choose>
 		    	<when test="brd_type!=2">
 		    		UPDATE Board set brd_deleteyn=1 where brd_type=#{brd_type} and brd_ref=#{brd_num}
 		    	</when>
@@ -54,7 +69,23 @@
 		    </choose>             
 	</update>
 	
-	                       
+	<!-- 검색조건 -->
+<!-- 	<sql id="search">
+		<if test='searchType!=null and keyword!=null'>
+			<trim prefix="AND" suffix=")" prefixOverrides="OR">
+			<if test="searchType==W"
+			
+			
+			
+			</trim>
+				
+		
+		</if>
+	
+	
+	</sql>
+	 -->
+	
 	<!--   유형별 게시판 게시물 총 개수   -->            
     <select id="jwcheckListTotal" parameterType="BoardEmpDept" resultType="int">
 		 <choose>
@@ -63,13 +94,13 @@
 				                     from board b
 				                     inner join emp e
 				                     on b.emp_num=e.emp_num
-				                     where e.dept_num=#{dept_num} and b.brd_type=2 and brd_deleteYn=0)
+				                     where e.dept_num=#{dept_num} and b.brd_type=2 and and b.brd_re_step=0 and b.brd_deleteYn=0)
 			 </when>
-			  <when test="brd_type==5">
-			 	select count(*) from Board where emp_num=#{emp_num} and brd_deleteYn=0
+			  <when test='brd_type==5'>
+			 	select count(*) from Board where emp_num=#{emp_num} and brd_re_step=0 and brd_deleteYn=0
 			 </when>
 			 <otherwise>
-			 	select count(*) from Board where brd_type=#{brd_type} and brd_deleteYn=0
+			 	select count(*) from Board where brd_type=#{brd_type} and brd_re_step=0 and brd_deleteYn=0
 			 </otherwise>
 		 </choose>
 	</select>                   	
@@ -117,7 +148,7 @@
 				    (select b.*,d.dept_name,e.emp_name
 				    from board b
 				    inner join emp e
-				    on e.emp_num=b.emp_num
+				    on e.emp_num=b.emp_num   
 				    inner join dept d
 				    on d.dept_num = e.dept_num 
 				    where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0
@@ -147,7 +178,7 @@
 					board
 					set brd_view=brd_view+1
 					where
-					brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0
+					brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0 
 			</when>
 		<when test="brd_type==2">
 			update 
@@ -223,7 +254,7 @@
 		                        	<when test="brd_type==3">brd3_num_seq.nextval,</when>
 		                        	<when test="brd_type==4">brd4_num_seq.nextval,</when>
 		                        </choose>
-		                     'null',#{brd_content},SYSDATE,0,0,0,#{brd_ref},    
+		                     'null',#{brd_content},SYSDATE,0,0,#{brd_ref},    
 	                          <choose>
 	                        	<when test="brd_re_step==0">
 	                        	#{brd_re_step_max},
@@ -232,6 +263,8 @@
 	                        </choose>	
 	                        #{brd_re_level}+1,0,0) 
 	</insert>
+	
+	<!-- 게시글 댓글 목록 -->
 	<select id="jwGetReplyList" parameterType="BoardEmpDept" resultType="BoardEmpDept">
 		SELECT *
       		FROM

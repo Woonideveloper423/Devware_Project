@@ -21,7 +21,6 @@
 	
 <script type="text/javascript">
 $(document).ready(function(){
-
 	$('#brd_content').summernote({
 		  lang: 'ko-KR',
 	      height: 400,
@@ -50,9 +49,8 @@ $(document).ready(function(){
 			        }
 				}
 	  });
-}) // SummerNote ready end
-</script>
-<script>
+	}) // SummerNote ready end
+
 	function chkInputValue(id, msg) {
 		if ($.trim($(id).val()) == "") {
 			alert(msg + " 입력해주세요.");
@@ -85,8 +83,8 @@ $(document).ready(function(){
 						<label class="brd_label" for="title">제목:</label> <input placeholder="제목을 입력해 주세요" type="text" class="form-control" id="brd_title" name="brd_title">
 					</div>
 					<div class="form-group">
-						<label class="brd_label" for="brd_label">작성자 아이디:</label>
-						<input type='text' class="form-control" id="emp_id" name="emp_id" value="${emp.emp_id}" readonly="readonly">
+						<label class="brd_label" for="brd_label">작성자 정보:</label>
+						<input style="width: 120px;" type='text' class="form-control" id="emp_id" name="emp_id" value="${emp.dept.dept_name} ${emp.emp_name}" readonly="readonly">
 						<input type='hidden' id='dept_num' name='dept_num' value='${emp.dept.dept_num }'>
 						<input type='hidden' id='emp_num' name='emp_num' value="${emp.emp_num }">
 						<input type='hidden' id='dept_name' name='dept_name' value="${emp.dept.dept_name }">
@@ -94,13 +92,14 @@ $(document).ready(function(){
 					</div>
 					<div class="form-group">
 						<label class="brd_label" for="title">작성게시판:</label><br>
-						<select id='brd_type' name='brd_type' class="form-select-lg mb-3" aria-label=".form-select-lg example">
+						<select id='brd_type' name='brd_type' class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
 						  <option selected="selected" disabled="disabled">게시판 종류</option>
 						  <option value='1'>사내게시판</option>
 						  <option value='2'>${emp.dept.dept_name} 게시판</option>
 						  <option value='3'>Q&A 게시판</option>
 						  <option value='4'>스터디&동호회 게시판</option>
 						</select>
+						
 					</div>	
 					
 					<div style="margin-top: -20px;" class="form-group">
@@ -126,7 +125,7 @@ $(document).ready(function(){
 					</div> --%>
 
 					<div class="form-submit" align="right">
-							<a href="${pageContext.request.contextPath}/typeBoardList?brd_type=${brd_type}" class="btn-lg btn btn-primary">돌아가기</a>  
+							<a href="${pageContext.request.contextPath}/board/checkList?brd_type=${enterBrdType}" class="btn-lg btn btn-primary">돌아가기</a>  
 							<input type="submit" class="btn-lg btn btn-primary" onclick="fn_formSubmit()" value="작성">
 					</div>
 

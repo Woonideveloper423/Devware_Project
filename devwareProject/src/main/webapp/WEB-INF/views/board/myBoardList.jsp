@@ -14,6 +14,79 @@
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin-2.min.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/resources/css/board/searchForm.css" rel="stylesheet"/>
   <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
+  <!-- include libraries(jQuery, bootstrap) -->
+<script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
+<script type="text/javascript">
+ $(function(){  // 게시글 목록 불러오기
+	getBoardList();
+
+}) 
+function getBoardList(currentPage){ // 게시글 목록 출력
+	$.ajax({
+        url:'/board/ajaxCheckList',
+        type:'GET',
+        data: {"brd_type":'${brd_type}',"currentPage":currentPage},
+        dataType:'JSON',
+        success : function(data){
+        	/* alert("목록조회 성공"); */
+            console.log(data); // ajax 데이터 확인용
+        	brdListStr ="";
+        	$(data.brdCheckList).each(function(){
+        		brdListStr+="<tr>";
+        		brdListStr+="<td>"+this.rn+"</td>";
+        		brdListStr+="<td>";
+        		brdListStr+="<a href='/board/detail?emp_num="+this.emp_num+"&brd_type="+parseInt(this.brd_type)+"&brd_num="+parseInt(this.brd_num)+"'>";
+        		brdListStr+=this.brd_title+"</a></td>";
+        		brdListStr+="<td>"+this.dept_name+" "+this.emp_name+"</td>";
+        		brdListStr+="<td>"+this.reply_cnt+"</td>";
+        		brdListStr+="<th>"+this.brd_view+"</th>";
+        		brdListStr+="<th>"+this.brd_date+"</th>";
+        		if(this.brd_type==1){
+        			brdListStr+="<th><a href='/board/checkList?brd_type=1'>사내 게시판</th>";
+        		}else if(this.brd_type==2){
+        			brdListStr+="<th><a href='/board/checkList?brd_type=2'>"+this.dept_name+" 게시판</th>";
+        		}else if(this.brd_type==3){
+        			brdListStr+="<th><a href='/board/checkList?brd_type=3'>Q&A 게시판</th>";
+        		}else if(this.brd_type==4){
+        			brdListStr+="<th><a href='/board/checkList?brd_type=4'>스터디&동호회 게시판</th>";
+        		}
+        		
+        		brdListStr+="</tr>";
+        	});
+        	$('#tbody').html(brdListStr);
+        	
+        	/* 페이징 */
+        	var pageInfo = "";
+    		var startPage = parseInt(data.page.startPage);
+    		var endPage   = parseInt(data.page.endPage);
+    		var blockSize   = parseInt(data.page.pageBlock);
+    		var pageCnt = parseInt(data.page.totalPage);
+    		var currentPage = parseInt(data.page.currentPage)
+    		if(startPage > blockSize){
+    			pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
+    			pageInfo+="onclick=getBoardList("+startPage-blockSize+")>이전</a></li>";
+    		}
+    		for(startPage ; startPage<=endPage ; startPage++){
+    				pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
+    				pageInfo+="onclick=getBoardList("+startPage+")>"+startPage+"</a></li>";
+    		}
+    		if(endPage < pageCnt){
+    			pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
+    			pageInfo+="onclick=getBoardList("+startPage+blockSize+")>다음</a></li>";
+    		}
+    		$('#pagingNation').html(pageInfo);
+     		
+        }, 
+        
+     	error:function(request,status,error){
+            alert('code = '+ request.status + ' message = ' + request.responseText + ' error = ' + error); // 실패 시 처리
+        },
+        complete : function(data){
+			
+        }
+    });
+}
+</script> 
 </head>
 <body>
 	<div class="body_box">
@@ -34,7 +107,7 @@
 		            <div class="input-select">
 		              <select   data-trigger="" name="choices-single-defaul">
 		                <option value="brd_title" selected="selected">제목</option>
-		                <option value="brd_type">게시판종류</option>
+		                <option value="brd_type">작성게시판</option>
 		            </select>
 		            </div>
 		          </div>
@@ -79,11 +152,11 @@
 		   			<th>댓글 수</th>
 		   			<th>조회 수</th>
 		   			<th>작성일</th>
-		   			<th>게시판 종류</th>
+		   			<th>작성 게시판</th>
 		   		</tr>
 		   		</thead>
-		   		<tbody align="center">
-		   		<c:forEach var="board" items="${brdCheckList}">
+		   		<tbody id='tbody' align="center">
+		   		<%-- <c:forEach var="board" items="${brdCheckList}">
 			   		<tr>
 			   			<td>${num }</td>
 			   			<td align="center"><a href="/board/detail?emp_num=${board.emp_num }&brd_type=${board.brd_type }&brd_num=${board.brd_num}">${board.brd_title }</a></td>
@@ -99,7 +172,7 @@
 			   			</c:choose>
 			   		<c:set var="num" value="${num - 1 }"></c:set>
 			   		</tr>
-		   		</c:forEach>
+		   		</c:forEach> --%>
 		   		</tbody>
 		   </table>
 		   <hr/>

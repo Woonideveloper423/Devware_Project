@@ -58,18 +58,8 @@ h1{
     display: inline;
 }
 
-/* 네비게이션(nav) 영역 레이아웃 지정 */
-nav{
-    grid-area: nav;
-    background-color: rgb(208, 218, 224);
-    align-self: start;
-    position: sticky;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content:space-between;
-    height: 100vh; /* 뷰포트(전체 화면)의 전체 100% 차지 */
-}
+
+
 /* 네비게이션 안의 컨텐츠 스타일 지정 */
 /* 친구리스트/채팅리스트의 html 파일에서 동일한 스타일을 갖기 때문에 공통된 스타일로 구분했음 */
 .main-menu i, .sub-menu i{

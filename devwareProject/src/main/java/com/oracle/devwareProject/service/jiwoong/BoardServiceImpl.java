@@ -23,23 +23,23 @@ public class BoardServiceImpl implements BoardService {
 	
 	@Override
 	public int brdInsert(BoardEmpDept bEmp) {
-		System.out.println("BoardServiceImpl brdInsert start");
+		log.info("brdInsert start");
 		int brdInsertCnt = bd.boardInsert(bEmp);
-		System.out.println("BoardServiceImpl brdInsertCnt=>" +brdInsertCnt);
+		log.info("brdInsertCnt=>" +brdInsertCnt);
 		return brdInsertCnt;
 	}
 	
 	@Override
 	public int checkListTotalCnt(BoardEmpDept bEmp) {
-		System.out.println("BoardServiceImpl checkListTotalCnt start");
+		log.info("checkListTotalCnt start");
 		int checkListTotalCnt =bd.checkListTotalCnt(bEmp);
-		System.out.println("BoardServiceImpl checkListTotalCnt=>" +checkListTotalCnt);
+		log.info("checkListTotalCnt=>" +checkListTotalCnt);
 		return checkListTotalCnt;
 	}
 	
 	@Override
 	public List<BoardEmpDept> boardCheckList(BoardEmpDept bEmp) {
-		System.out.println("BoardServiceImpl boardCheckList start");
+		log.info("boardCheckList start");
 		List<BoardEmpDept> brdCheckList = bd.boardCheckList(bEmp);
 		return brdCheckList;
 		}
@@ -65,6 +65,15 @@ public class BoardServiceImpl implements BoardService {
 		brdDeleteCnt=bd.brdDelete(bEmpDept);
 		log.info("brdDeleteCnt:" +brdDeleteCnt);
 		return brdDeleteCnt;
+	}
+
+	@Override
+	public int brdUpdate(BoardEmpDept bEmpDept) {
+		log.info("brdUpdate start");
+		int brdUpdateCnt=0;
+		brdUpdateCnt=bd.brdUpdate(bEmpDept);
+		log.info("brdUpdateCnt:" +brdUpdateCnt);
+		return brdUpdateCnt;
 	}
 
 	
