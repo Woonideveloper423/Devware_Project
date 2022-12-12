@@ -44,8 +44,9 @@ function authChkBtn(){
 	  if(ChkCtn.style.display !== 'none') {
 		  ChkCtn.style.display = 'none';
 		  $.ajax({
-				url : "<%=context%>/authApprove",
+				url  : "<%=context%>/authApprove",
 				type : 'post'
+				data : chkBtn,
 	  }
 	  // btn` 보이기 (display: block)
 	  else {
@@ -115,7 +116,7 @@ function authChkBtn(){
 						<c:choose>
 							<c:when test="${ allApv.prg_num1==sessionScope.empForSearch.emp_num }">
 								<c:if test="${allApv.prg_auth1 == '0' }">
-									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()">결재</button>
+									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()" value="1">결재</button>
 								</c:if>
 								<c:if test="${allApv.prg_auth1 == '1' }">
 									결재완료
@@ -133,7 +134,7 @@ function authChkBtn(){
 						<c:choose>
 							<c:when test="${ allApv.prg_num2==sessionScope.empForSearch.emp_num }">
 								<c:if test="${allApv.prg_auth2 == '0' }">
-									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()">결재</button>
+									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()" value="1">결재</button>
 								</c:if>
 								<c:if test="${allApv.prg_auth2 == '1' }">
 									결재완료
@@ -151,7 +152,7 @@ function authChkBtn(){
 						<c:choose>
 							<c:when test="${ allApv.prg_num3==sessionScope.empForSearch.emp_num }">
 								<c:if test="${allApv.prg_auth3 == '0' }">
-									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()">결재</button>
+									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()" value="1">결재</button>
 								</c:if>
 								<c:if test="${allApv.prg_auth3 == '1' }">
 									결재완료
