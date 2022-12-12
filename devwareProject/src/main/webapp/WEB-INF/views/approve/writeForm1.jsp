@@ -134,6 +134,8 @@ function sendApv(){
 							app_title 	 : $('#app_title').val(),
 							app_content  : $('#summernote').val(),
 							docs_app 	 : $('#docs_app').val(),
+							
+							emp_num 	 : ${ sessionScope.empForSearch.emp_num }
 						},
 				success:function(data){
 					alert('성공한듯?')
@@ -234,14 +236,14 @@ function selectMem(){
 	</tr>
 	
 	<tr>
-		<td>${ sessionScope.empForSearch.emp_name }멤버 이름</td>
+		<td>${ sessionScope.empForSearch.emp_name }</td>
 		<td id="authName1"></td>
 		<td id="authName2"></td>
 		<td id="authName3"></td>
 	</tr>
 	
 	<tr>
-		<td>${ sessionScope.empForSearch.emp_num }숫자</td>
+		<td>${ sessionScope.empForSearch.emp_num }</td>
 		<td id="apv_mem1"></td>
 		<td id="apv_mem2"></td>
 		<td id="apv_mem3"></td>

@@ -3,6 +3,9 @@
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
 <!DOCTYPE html>
+<%
+	String context = request.getContextPath();
+%>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -31,6 +34,28 @@
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   
 </head>
+
+<script type="text/javascript">
+authCheck1
+function authChkBtn(){
+	const ChkCtn = document.getElementById('chkBtn');
+	  
+	  // btn1 숨기기 (display: none)
+	  if(ChkCtn.style.display !== 'none') {
+		  ChkCtn.style.display = 'none';
+		  $.ajax({
+				url : "<%=context%>/authApprove",
+				type : 'post'
+	  }
+	  // btn` 보이기 (display: block)
+	  else {
+	    btn1.style.display = 'block';
+	  }
+	
+	
+}
+
+</script>
 <body id="body">
 
 
@@ -56,7 +81,7 @@
 			<table border="1" style="display: inline-block">
 
 				<tr>
-					<td class="tt" rowspan='3'>결재</td>
+					<td class="tt" rowspan='4'>결재</td>
 					<td class="aa">${allApv.position_name }</td>
 					
 					<td class="aa">${allApv.position_name1 }</td>
@@ -77,10 +102,69 @@
 
 				<tr>
 
-					<td>제출</td>
+					<td>${ allApv.emp_num }</td>
 					<td id="authName1">${ allApv.prg_num1 }</td>
 					<td id="authName2">${ allApv.prg_num2 }</td>
 					<td id="authName3">${ allApv.prg_num3 }</td>
+
+				</tr>
+				<tr>
+
+					<td>제출</td>
+					<td id="authCheck1">
+						<c:choose>
+							<c:when test="${ allApv.prg_num1==sessionScope.empForSearch.emp_num }">
+								<c:if test="${allApv.prg_auth1 == '0' }">
+									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()">결재</button>
+								</c:if>
+								<c:if test="${allApv.prg_auth1 == '1' }">
+									결재완료
+								</c:if>
+							</c:when>
+							<c:when  test="${ allApv.prg_num1 } == null">
+							
+							</c:when>
+							<c:otherwise>
+								미결재
+							</c:otherwise>
+						</c:choose>				
+					</td>
+					<td id="authCheck2">
+						<c:choose>
+							<c:when test="${ allApv.prg_num2==sessionScope.empForSearch.emp_num }">
+								<c:if test="${allApv.prg_auth2 == '0' }">
+									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()">결재</button>
+								</c:if>
+								<c:if test="${allApv.prg_auth2 == '1' }">
+									결재완료
+								</c:if>
+							</c:when>
+							<c:when test="${ allApv.prg_num2 } == null">
+							
+							</c:when>
+							<c:otherwise>
+								미결재
+							</c:otherwise>
+						</c:choose>	
+					</td>
+					<td id="authCheck3">
+						<c:choose>
+							<c:when test="${ allApv.prg_num3==sessionScope.empForSearch.emp_num }">
+								<c:if test="${allApv.prg_auth3 == '0' }">
+									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()">결재</button>
+								</c:if>
+								<c:if test="${allApv.prg_auth3 == '1' }">
+									결재완료
+								</c:if>
+							</c:when>
+							<c:when test="${ allApv.prg_num3 } != null">
+							
+							</c:when>
+							<c:otherwise>
+								미결재
+							</c:otherwise>
+						</c:choose>	
+					</td>
 
 				</tr>
 
@@ -98,41 +182,7 @@
 
 				<tr>
 					<th width="20%">문서상태</th>
-
-				<%-- 	<c:choose>
-
-						<c:when
-							test="${ empty allApv.member_name3 || allApv.approval_auth3 == 3 || allApv.approval_auth3 == 4 }">
-							<c:choose>
-								<c:when
-									test="${ empty allApv.member_name2 || allApv.approval_auth2 == 3 || allApv.approval_auth2 == 4}">
-									<td>${ allApv.apv_auth_name1 }</td>
-								</c:when>
-								<c:when
-									test="${ allApv.approval_auth2 == 0 && allApv.approval_auth1 == 0 }">
-									<td>${ allApv.apv_auth_name1 }</td>
-								</c:when>
-								<c:when test="${ allApv.approval_auth2 == 4 }">
-									<td>${ allApv.apv_auth_name1 }</td>
-								</c:when>
-								<c:otherwise>
-									<td>${ allApv.apv_auth_name2 }</td>
-								</c:otherwise>
-							</c:choose>
-						</c:when>
-
-						<c:when test="${ allApv.approval_auth2 == 0 }">
-							<td>${ allApv.apv_auth_name1 }</td>
-						</c:when>
-						<c:when
-							test="${ allApv.approval_auth2 == 3 && allApv.approval_auth1 == 0 }">
-							<td>${ allApv.apv_auth_name1 }</td>
-						</c:when>
-						<c:otherwise>
-							<td>${ allApv.apv_auth_name3 }</td>
-						</c:otherwise>
-
-					</c:choose> --%>
+					<td>${ allApv.app_prg }</td>
 
 					<th>문서번호</th>
 					<td>${ allApv.emp_num }_${ allApv.app_num }</td>
@@ -172,29 +222,6 @@
 			<!-- 결재기록 --> 
 			<table class="table table" border="1">
 
-			<%-- <tr>
-				<th rowspan="3" width="20%">결재기록</th>
-				<td style="height: 30px;"><c:if
-						test="${ not empty allApv.approval_auth_date1 }">[<fmt:formatDate
-							value="${ allApv.approval_auth_date1 }"
-							pattern="yyyy-MM-dd HH:mm:ss" />]&nbsp;&nbsp;${ allApv.department_name1 }&nbsp;${ allApv.member_name1 }&nbsp;${ allApv.rank_name1 }&nbsp;<Strong>${ allApv.apv_auth_name1 }</Strong>
-					</c:if></td>
-			</tr>
-			<tr>
-				<td style="height: 30px;"><c:if
-						test="${ not empty allApv.approval_auth_date2 }">[<fmt:formatDate
-							value="${ allApv.approval_auth_date2 }"
-							pattern="yyyy-MM-dd HH:mm:ss" />]&nbsp;&nbsp;${ allApv.department_name2 }&nbsp;${ allApv.member_name2 }&nbsp;${ allApv.rank_name2 }&nbsp;<Strong>${ allApv.apv_auth_name2 }</Strong>
-					</c:if></td>
-			</tr>
-			<tr>
-				<td style="height: 30px;"><c:if
-						test="${ not empty allApv.approval_auth_date3 }">[<fmt:formatDate
-							value="${ allApv.approval_auth_date3 }"
-							pattern="yyyy-MM-dd HH:mm:ss" />]&nbsp;&nbsp;${ allApv.department_name3 }&nbsp;${ allApv.member_name3 }&nbsp;${ allApv.rank_name3 }&nbsp;<Strong>${ allApv.apv_auth_name3 }</Strong>
-					</c:if></td>
-			</tr> --%>
-
 			<c:if test="${ not empty allApv.prg_return }">
 				<th>반려사유</th>
 				<td>${ allApv.prg_return }</td>
@@ -213,7 +240,7 @@
 		</table>
 		
 			<div>
-			<p align="right" style="font-weight: bold;">(주)그룹웨어</p>
+			<p align="right" style="font-weight: bold;">(주)DevWare</p>
 		</div>
 		
 			</div> 
@@ -228,37 +255,11 @@
 
 	</div>
 
-<%-- 	<c:choose>
-		임시저장 문서
-		<c:when test="${ auth == 2 }">
-			
-				<button class="btn btn-outline-primary"  onclick="reWrite()">재작성</button>
-				<button class="btn btn-outline-primary"  onclick="deleteApv()">삭제</button>
-			
-		</c:when>
-
-		관리자 삭제 버튼
-		<c:when test="${ auth == 3 }">
-			
-				<button class="btn btn-outline-primary"  onclick="deleteApv()">삭제</button>
-			
-		</c:when>
-
-
-		삭제 요청 버튼
-		<c:when
-			test="${ allApv.approval_member_id == sessionScope.member.member_id }">
-			<div class="float-right">
-				<button class="btn btn-outline-primary"  data-toggle="modal" data-target="#wantToDel">삭제요청</button>
-			</div>
-		</c:when>
-	</c:choose> --%>
-
 
 	<c:if
-		test="${ allApv.emp_num == sessionScope.allApv.emp_num}">
+		test="${ allApv.emp_num == sessionScope.empForSearch.emp_num}">
 		
-			<button class="btn btn-outline-primary"  onclick="reWrite()">재상신</button>
+			<button class="btn btn-outline-primary"  onclick="reWrite()">재수정</button>
 		
 	</c:if>
 	

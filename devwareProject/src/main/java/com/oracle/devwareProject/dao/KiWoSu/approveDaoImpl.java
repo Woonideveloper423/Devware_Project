@@ -8,6 +8,7 @@ import javax.transaction.Transactional;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
+import com.oracle.devwareProject.domain.Calendar;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
@@ -52,7 +53,7 @@ public class approveDaoImpl implements approveDao {
 	}
 
 	@Override
-	public int writeApv(Approve approve, Approve_Progress approve_Progress) {
+	public int writeApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar) {
 		int result = 0;
 		System.out.println("approveDaoImpl writeApv Start..." );
 		System.out.println("appgetApp_content ->" +approve.getApp_content());
@@ -65,6 +66,13 @@ public class approveDaoImpl implements approveDao {
 			approve_Progress.setApp_num(approve.getApp_num());
 			System.out.println("writeApv getApp_num2->" + approve_Progress.getApp_num());
 			session.insert("wsWriteApvPrg", approve_Progress);
+			if (approve.getComu_app() != null) {
+				System.out.println("writeApv date->" + calendar.getCalendar_start());
+				System.out.println("writeApv date->" + calendar.getCalendar_end());
+				calendar.setcalendar_emp_num(approve.getEmp_num());
+				System.out.println("writeApv date->" + calendar.getcalendar_emp_num());
+				session.update("wsUpdate", calendar);
+			}
 		} catch (Exception e) {
 			System.out.println("approveDaoImpl writeApv Exception->"+e.getMessage());
 		}
@@ -125,6 +133,7 @@ public class approveDaoImpl implements approveDao {
 			System.out.println("approveDaoImpl detailApv getPosition_name1->"+allForApprove.getPosition_name1());
 			System.out.println("approveDaoImpl detailApv getPosition_name2->"+allForApprove.getPosition_name2());
 			System.out.println("approveDaoImpl detailApv getPosition_name3->"+allForApprove.getPosition_name3());
+			System.out.println("approveDaoImpl detailApv getPrg_auth1->"+allForApprove.getPrg_auth1());
 		} catch (Exception e) {
 			System.out.println("approveDaoImpl detailApv Exception->"+e.getMessage());
 		}

@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class Approve {
 	private int app_num;
-	private int app_prg;
+	private String app_prg;
 	private String app_start;
 	private String app_end;
 	private String app_title;
