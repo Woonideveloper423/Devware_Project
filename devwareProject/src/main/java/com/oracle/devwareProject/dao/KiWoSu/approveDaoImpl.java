@@ -13,6 +13,7 @@ import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
 import com.oracle.devwareProject.dto.KiWoSu.Approve;
 import com.oracle.devwareProject.dto.KiWoSu.Approve_Progress;
+import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 
 import lombok.RequiredArgsConstructor;
 
@@ -129,6 +130,20 @@ public class approveDaoImpl implements approveDao {
 		}
 		
 		return allForApprove;
+	}
+
+	@Override
+	public Vacation getVacation(int emp_num) {
+		System.out.println("approveDaoImpl getVacation Start..." );
+		Vacation vacation = new Vacation();
+		try {
+			System.out.println("approveDaoImpl getVacation emp_num ->"+emp_num );
+			vacation = session.selectOne("wsGetVacation", emp_num);
+			System.out.println("approveDaoImpl getVacation ->"+ vacation.getVa_stock());
+		} catch (Exception e) {
+			System.out.println("approveDaoImpl getVacation Exception->"+e.getMessage());
+		}
+		return vacation;
 	}
 
 }

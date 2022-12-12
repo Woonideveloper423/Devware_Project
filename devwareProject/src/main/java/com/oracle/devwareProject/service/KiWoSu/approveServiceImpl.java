@@ -11,6 +11,7 @@ import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
 import com.oracle.devwareProject.dto.KiWoSu.Approve;
 import com.oracle.devwareProject.dto.KiWoSu.Approve_Progress;
+import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 
 import lombok.RequiredArgsConstructor;
 
@@ -75,6 +76,15 @@ public class approveServiceImpl implements approveService {
 		AllForApprove allForApprove = null;
 		allForApprove = ad.detailApv(app_num);
 		return allForApprove;
+	}
+
+	@Override
+	public Vacation getVacation(int emp_num) {
+		System.out.println("approveServiceImpl getVacation ...");
+		Vacation vacation = null;
+		vacation = ad.getVacation(emp_num);
+		
+		return vacation;
 	}
 
 }

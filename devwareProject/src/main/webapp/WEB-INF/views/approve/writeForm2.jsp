@@ -174,15 +174,20 @@ $(document).ready(function(){
 			        }
 				}
 	  });
-	  
+	  alert("${sessionScope.empForSearch.emp_num}");
+	  var emp_num = ${sessionScope.empForSearch.emp_num}
 	  $.ajax({
-          type: 'POST',
-          url: "${pageContext.request.contextPath}/apv_Vacat/getVacation",
-          success: function(data) {
-				console.log(data);
+          type	: 'POST',
+          url	: "${pageContext.request.contextPath}/getVacation",
+          data 	: {
+        	  		emp_num
+         			 },
+         dataType : 'json',
+          success: function(vacatcion) {
+				console.log(vacatcion);
               // Call the "updateEvent" method
               
-              $('#leftVacat').text(data);
+              $('#leftVacat').text(vacatcion.va_stock);
               
           }
         });
@@ -245,14 +250,17 @@ function sendApv(){
 	
 	if($('#authId1').val() == ''){
 		alert('결재라인을 선택해주세요')
+		check = false;
 		return;
 	}
-	if(($('#approval_title').val()).trim() == ''){
+	if(($('#app_title').val()).trim() == ''){
 		alert('제목을 입력해주세요')
+		check = false;
 		return;
 	}
 	if(($('#summernote').val()).trim() == ''){
 		alert('내용을 입력해주세요')
+		check = false;
 		return;
 	}
 	
@@ -308,7 +316,40 @@ function sendApv(){
 					$('#approval_enddate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#PM_end').val()));
 				}
 			}
+			doubleSubmitFlag = false;
 
+			$.ajax({
+				url : "<%=context%>/writeApprove",
+				type : 'post',
+				data : { 	
+							"prg_name1"  : $('#authName_ath1').val(),
+							"prg_name2"	 : $('#authName_ath2').val(),
+							"prg_name3"	 : $('#authName_ath3').val(),
+							
+							"prg_num1" 	 : $('#authId1').val(),
+							"prg_num2" 	 : $('#authId2').val(),
+							"prg_num3" 	 : $('#authId3').val(),
+							
+							app_title 	 : $('#app_title').val(),
+							app_content  : $('#summernote').val(),
+							comu_app 	 : $('#whatV').val(),
+							start_date	 : $('#approval_startdate').val,
+							end_date	 : $('#approval_enddate').val,
+						},
+				success:function(data){
+					alert('성공한듯?')
+		 			location.replace("<%=context%>/myApvList");
+		 			
+				} ,
+				error: function (err) {
+					//400과 404를 제외한 에러가 발생했을시
+						if(err.status !== 400 && err.status !== 404){
+							alert(`네트워크 오류로 서버와의 통신이 실패하였습니다.${err.status}`);
+						}
+				} 
+				
+			});
+			
 
 		
 		}else{
@@ -387,7 +428,9 @@ function timeChk(){
 	</div>
 	
 	</td>
-	
+<form id="sendApv" method="POST" enctype="multipart/form-data"> <!-- ============================================================================================================================================================= -->
+  	
+		
 	<td rowspan="3"> 
 	<!-- 내부테이블 -->
 	<table border="1" style="display: inline-block">
@@ -478,11 +521,16 @@ function timeChk(){
 
 	<div>
 	
+	<input type="hidden" id="authId1" name="approval_mem1" >
+	<input type="hidden" id="authId2" name="approval_mem2" >
+	<input type="hidden" id="authId3" name="approval_mem3" > 
+	
+	<input type="hidden" id="authName_ath1" name="authName_ath1" >
+	<input type="hidden" id="authName_ath2" name="authName_ath2" >
+	<input type="hidden" id="authName_ath3" name="authName_ath3" > 
 	
 	
-<form id="sendApv" action="${ pageContext.request.contextPath }/approval" method="POST" enctype="multipart/form-data"> <!-- ============================================================================================================================================================= -->
-	
-	
+
 	&nbsp;제목 : <input class="form-control" id="app_title" type="text" name="app_title" ">
 	<br>
 	

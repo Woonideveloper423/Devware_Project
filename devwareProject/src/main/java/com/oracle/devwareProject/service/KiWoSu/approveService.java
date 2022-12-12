@@ -7,6 +7,7 @@ import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
 import com.oracle.devwareProject.dto.KiWoSu.Approve;
 import com.oracle.devwareProject.dto.KiWoSu.Approve_Progress;
+import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 
 public interface approveService {
 
@@ -23,5 +24,7 @@ public interface approveService {
 	List<EmpForSearch> getempDeptInfo(Dept dept);
 
 	AllForApprove myApvDetail(String app_num);
+
+	Vacation getVacation(int emp_num);
 
 }

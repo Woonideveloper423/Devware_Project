@@ -96,7 +96,7 @@
 
 
 
-<select id="wsPositioName" resultType="AllForApprove" >
+	<select id="wsPositioName" resultType="AllForApprove" >
 		<![CDATA[
 		 	select    get_position_name(e1.position_num) position_name1
 			       ,  get_position_name(e2.position_num) position_name2
@@ -106,6 +106,15 @@
 			and       ap.prg_num2    = e2.emp_num(+)
 			and       ap.prg_num3    = e3.emp_num(+)
 			and       ap.app_num 	 = #{app_num}
+		]]>	
+ 	</select>
+
+
+	<select id="wsGetVacation"  parameterType="int"  resultType="Vacation" >
+		<![CDATA[
+		select 	*
+		from 	vacation
+		where 	emp_num = #{ emp_num }
 		]]>	
  	</select>
 
