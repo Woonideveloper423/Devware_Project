@@ -57,13 +57,13 @@
 			<td><a href="myApvDetail?app_num=${apv.app_num}">${apv.app_title}</a></td><!-- 제목인데 나중에 추가 로 넣음 -->
 			<td>${apv.emp_name}</td>
 			<td><fmt:formatDate pattern="yyyy/MM/dd" value="${apv.app_date}"/></td>
-			<c:if test="${apv.comu_app != ''}">
+			<c:if test="${apv.comu_app != null}">
 				<td>근태</td>
 			</c:if>
-			<c:if test="${apv.docs_app != ''}">
+			<c:if test="${apv.docs_app != null}">
 				<td>문서</td>
 			</c:if>
-			<td>결제중 혹은 결제완료 표기</td>
+			<td>${apv.app_prg }</td>
 		</tr>
 		<c:set var="num" value="${num - 1}"></c:set>
 	
@@ -89,12 +89,7 @@
 				
 				<input type="checkbox" id="cate1" value="1" > 문서결제문서
 				<input type="checkbox" id="cate2" value="2" > 근태결제문서 <br>
-				<input type="radio" name="length" value="all" checked="checked"> 전체 
-				<input type="radio" name="length" value="today" > 당일
-				<input type="radio" name="length" value="week" > 1주일
-				<input type="radio" name="length" value="month" > 1개월
-				<input type="radio" name="length" value="three" > 3개월
-				<input type="radio" name="length" value="half" > 6개월 <br>
+				
 				
 				
 				<div class="group" style="align:center;">

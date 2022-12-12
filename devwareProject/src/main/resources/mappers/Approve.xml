@@ -31,13 +31,14 @@
 		 )   
  		WHERE  rn >= #{start} 
  		and    rn <= #{end} 
+ 		and	   emp_num = #{emp_num}
  	  ]]>	
     </select>
     
     <insert id="wsWriteApv" parameterType="Approve" useGeneratedKeys="true" 
     						keyColumn="app_num" 	keyProperty="app_num" >
-     insert into approve(app_num, APP_START, app_title, APP_CONTENT, app_date, emp_num, docs_app)
-      values ( apv_seq.nextval, sysdate, #{app_title}, #{app_content}, sysdate, 1, #{docs_app}) 
+     insert into approve(app_num, app_prg, APP_START, app_title, APP_CONTENT, app_date, emp_num, docs_app, comu_app)
+      values ( apv_seq.nextval,'미결재', sysdate, #{app_title}, #{app_content}, sysdate, #{ emp_num }, #{docs_app , jdbcType=VARCHAR}, VACATIONCUS(#{comu_app , jdbcType=VARCHAR})) 
     
     </insert>
     
@@ -118,4 +119,20 @@
 		]]>	
  	</select>
 
+	<update id="wsUpdate" parameterType="Calendar">
+		update vacation
+		set 
+		va_stock = (
+        (SELECT
+            va_stock
+        FROM vacation
+        where emp_num = #{ calendar_emp_num }
+        ) - (
+        SELECT (TO_DATE(#{calendar_end, jdbcType=VARCHAR}, 'YYYY-MM-DD') -  TO_DATE(#{calendar_start, jdbcType=VARCHAR}, 'YYYY-MM-DD'))+1 FROM DUAL
+            )
+        )
+		where emp_num = #{ calendar_emp_num }
+		
+	
+	</update>
 </mapper>

@@ -174,7 +174,6 @@ $(document).ready(function(){
 			        }
 				}
 	  });
-	  alert("${sessionScope.empForSearch.emp_num}");
 	  var emp_num = ${sessionScope.empForSearch.emp_num}
 	  $.ajax({
           type	: 'POST',
@@ -302,22 +301,28 @@ function sendApv(){
 			console.log("approval_cc "+$('#whatV').val())
 			
 			if($('#whatV').val() == '1_wholeVacat'){ // 연차휴가
+					alert('연차');
 					$('#approval_cc').val($('#whatV').val());
-					$('#approval_startdate').val(new Date(moment($('#from').val()).format('YYYY-MM-DD')+" "+$('#whole_start').val()));
-					$('#approval_enddate').val(new Date(moment($('#to').val()).add(1, 'days').format('YYYY-MM-DD')+" "+$('#whole_end').val()));
+					$('#approval_startdate').val(moment($('#from').val()).format('YYYY-MM-DD')+" ");
+					$('#approval_enddate').val(moment($('#to').val()).format('YYYY-MM-DD')+" ");
 			}else{ // 반차
 				if($(':radio[name="AMPM"]:checked').val() == 'AM'){
+					alert('반차 오전');
 					$('#approval_cc').val($('#whatV').val()+'_AM');
 					$('#approval_startdate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#AM_start').val()));
 					$('#approval_enddate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#AM_end').val()));
 				}else if($(':radio[name="AMPM"]:checked').val() == 'PM'){
+					alert('반차 오후');
 					$('#approval_cc').val($('#whatV').val()+'_PM');
 					$('#approval_startdate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#PM_start').val()));
 					$('#approval_enddate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#PM_end').val()));
 				}
 			}
 			doubleSubmitFlag = false;
-
+			
+			alert($('#approval_startdate').val());
+			alert($('#approval_enddate').val());
+			
 			$.ajax({
 				url : "<%=context%>/writeApprove",
 				type : 'post',
@@ -332,9 +337,10 @@ function sendApv(){
 							
 							app_title 	 : $('#app_title').val(),
 							app_content  : $('#summernote').val(),
-							comu_app 	 : $('#whatV').val(),
-							start_date	 : $('#approval_startdate').val,
-							end_date	 : $('#approval_enddate').val,
+							comu_app 	 : $('#whatV').val(), 
+							start_date	 : $('#approval_startdate').val(),
+							end_date	 : $('#approval_enddate').val(), 
+							emp_num 	 : ${ sessionScope.empForSearch.emp_num },
 						},
 				success:function(data){
 					alert('성공한듯?')
@@ -444,14 +450,14 @@ function timeChk(){
 	</tr>
 		
 	<tr>
-		<td>${ sessionScope.empForSearch.emp_name }멤버 이름</td>
+		<td>${ sessionScope.empForSearch.emp_name }</td>
 		<td id="authName1"></td>
 		<td id="authName2"></td>
 		<td id="authName3"></td>
 	</tr>
 	
 	<tr>
-		<td>${ sessionScope.empForSearch.emp_num }숫자</td>
+		<td>${ sessionScope.empForSearch.emp_num }</td>
 		<td id="apv_mem1"></td>
 		<td id="apv_mem2"></td>
 		<td id="apv_mem3"></td>
@@ -528,6 +534,9 @@ function timeChk(){
 	<input type="hidden" id="authName_ath1" name="authName_ath1" >
 	<input type="hidden" id="authName_ath2" name="authName_ath2" >
 	<input type="hidden" id="authName_ath3" name="authName_ath3" > 
+	
+	<input type="hidden" id="approval_startdate" name="approval_startdate">
+	<input type="hidden" id="approval_enddate" name="approval_enddate" >
 	
 	
 

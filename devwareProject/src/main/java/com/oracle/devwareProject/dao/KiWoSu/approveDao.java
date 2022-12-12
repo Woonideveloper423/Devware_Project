@@ -2,6 +2,7 @@ package com.oracle.devwareProject.dao.KiWoSu;
 
 import java.util.List;
 
+import com.oracle.devwareProject.domain.Calendar;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
@@ -15,7 +16,7 @@ public interface approveDao {
 
 	List<Approve> listApv(Approve approve);
 
-	int writeApv(Approve approve, Approve_Progress approve_Progress);
+	int writeApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar);
 
 	List<EmpForSearch> getAllUserInfo();
 
