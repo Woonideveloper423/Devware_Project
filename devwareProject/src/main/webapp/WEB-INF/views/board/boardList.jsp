@@ -23,13 +23,20 @@
 <script type="text/javascript">
  $(function(){  // 게시글 목록 불러오기
 	getBoardList();
-
 }) 
+
+function searchBtnChk(){
+	 getBoardList();
+ }
+ 
 function getBoardList(currentPage){ // 게시글 목록 출력
-	$.ajax({
+	 var searchType=$('#searchType').val(); 
+	 var keyword=$('#keyword').val();
+	 
+	 $.ajax({
         url:'/board/ajaxCheckList',
         type:'GET',
-        data: {"brd_type":'${brd_type}',"currentPage":currentPage},
+        data: {"brd_type":'${brd_type}',"currentPage":currentPage,"searchType":searchType,"keyword":keyword},
         dataType:'JSON',
         success : function(data){
         	/* alert("목록조회 성공"); */
@@ -38,7 +45,17 @@ function getBoardList(currentPage){ // 게시글 목록 출력
         	$(data.brdCheckList).each(function(){
         		brdListStr+="<tr>";
         		brdListStr+="<td>"+this.rn+"</td>";
-        		brdListStr+="<td align='center'><a href='/board/detail?emp_num="+this.emp_num+"&brd_type="+parseInt(this.brd_type)+"&brd_num="+parseInt(this.brd_num)+"'>"+this.brd_title+"</a></td>";
+        		if(this.brd_type==4&&this.qa_status==0){
+        			brdListStr+="<td><img alt='error' src='${pageContext.request.contextPath}/resources/css/images/recruiting.png'></td>";
+        		}else if(this.brd_type==4&&this.qa_status==1){
+        			brdListStr+="<td><img alt='error' src='${pageContext.request.contextPath}/resources/css/images/recruited.png'></td>";
+        		}else if(this.brd_type==3&&this.qa_status==0){
+        			brdListStr+="<td><img alt='error' src='${pageContext.request.contextPath}/resources/css/images/answering.png'></td>";
+        		}else if(this.brd_type==3&&this.qa_status==1){
+        			brdListStr+="<td><img alt='error' src='${pageContext.request.contextPath}/resources/css/images/answered.png'></td>";
+        		}
+        		brdListStr+="<td><a href='/board/detail?emp_num="+this.emp_num+"&brd_type="+parseInt(this.brd_type)+"&brd_num="+parseInt(this.brd_num)+"'>";
+        		brdListStr+=this.brd_title+"</a></td>";
         		brdListStr+="<td>"+this.dept_name+" "+this.emp_name+"</td>";
         		brdListStr+="<td>"+this.reply_cnt+"</td>";
         		brdListStr+="<th>"+this.brd_view+"</th>";
@@ -48,13 +65,15 @@ function getBoardList(currentPage){ // 게시글 목록 출력
         	});
         	$('#tbody').html(brdListStr);
         	
-        	//페이징
+        	/* 페이징 */
         	var pageInfo = "";
     		var startPage = parseInt(data.page.startPage);
     		var endPage   = parseInt(data.page.endPage);
     		var blockSize   = parseInt(data.page.pageBlock);
     		var pageCnt = parseInt(data.page.totalPage);
-    		var currentPage = parseInt(data.page.currentPage)
+    		var currentPage = parseInt(data.page.currentPage);
+    		console.log(startPage);
+    		console.log(endPage);
     		if(startPage > blockSize){
     			pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
     			pageInfo+="onclick=getBoardList("+startPage-blockSize+")>이전</a></li>";
@@ -83,6 +102,7 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 </script> 
 </head>
 <body>
+
 	<div class="body_box">
 			<!-- 게시판 title 분기 -->
 			<div class="titlebox" align="center">
@@ -98,22 +118,23 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 			 
 			<!-- 검색폼 -->
 			<div class="s003">
-		      <form id=search_form>
+		      <form id=search_form  name='search_form'>
 		        <div class="inner-form">
 		          <div class="input-field first-wrap">
 		            <div class="input-select">
-		              <select   data-trigger="" name='select_type'>
+		              <select   data-trigger=""  id='searchType' name='searchType'>
 		                <option value='W' selected="selected">작성자</option>
 		                <option value='T'>제목</option>
-		                <option value='WT'>제목+작성자</option>
+		                <option value="C">내용</option>
+		                <option value='TC'>제목+내용</option>
 		              </select>
 		            </div>
 		          </div>
 		          <div class="input-field second-wrap">
-		            <input id="keyword_input" type="text" name='keyword' placeholder='검색어를 입력하세요'/>
+		            <input id="keyword" type="text" name='keyword' placeholder='검색어를 입력하세요'/>
 		          </div>
 		          <div class="input-field third-wrap">
-		            <button class="btn-search">
+		            <button class="btn-search" id='btn-search' onclick='searchBtnChk()'>
 		              <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 		                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
 		              </svg>
@@ -143,6 +164,7 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 		   		<thead align="center">
 		   		<tr>
 		   			<th>글번호</th>
+		   			<c:if test="${brd_type==4||brd_type==3}"><th>상태</th></c:if>
 		   			<th>제목</th>
 		   			<th>작성자</th>
 		   			<th>댓글 수</th>
@@ -152,19 +174,7 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 		   		</tr>
 		   		</thead>
 		   		<tbody id="tbody" align="center">
-		   		<%-- <c:forEach var="board" items="${brdCheckList}">
-			   		<tr>
-			   			<td>${num }</td>
-			   			<td align="center"><a href="/board/detail?emp_num=${board.emp_num }&brd_type=${board.brd_type }&brd_num=${board.brd_num}">${board.brd_title }</a></td>
-			   			<td>${board.dept_name } ${board.emp_name }</td>
-			   			<td>${board.reply_cnt}</td>
-			   			<th>0</th>
-			   			<th>${board.brd_date }</th>
-			   			<th>${board.brd_type }</th>
-			   			
-			   		<c:set var="num" value="${num - 1 }"></c:set>
-			   		</tr>
-		   		</c:forEach> --%>
+		   		<!-- js로 body 구현 -->
 		   		</tbody>
 		   </table>
 		   <hr/>
@@ -182,16 +192,15 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 		 </div>
 	</div>
 	
-	
 	 <script src="${pageContext.request.contextPath}/resources/js/extention/choices.js"></script>
 	<script type="text/javascript">
 	
-	/* 	검색폼 관련 js */
+ 	/* 	검색폼 관련 js */
       const choices = new Choices('[data-trigger]',
       {
         searchEnabled: false,
         itemSelectText: '',
-      });
+      }); 
 
     </script>		
 	

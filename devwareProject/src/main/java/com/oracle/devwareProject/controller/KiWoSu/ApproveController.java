@@ -44,15 +44,16 @@ public class ApproveController {
 		}
 		
 		@RequestMapping("/myApvDetail")
-		public String myApvDetail(String app_num, Model model) {
+		public String myApvDetail(String app_num, HttpSession session, Model model) {
 			System.out.println("CommuteController myApvDetail start....");
+			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
 			
 			System.out.println("CommuteController myApvDetail ->"+app_num);
 			AllForApprove allForApprove = new AllForApprove();
 			try {
 				allForApprove = as.myApvDetail(app_num); 
 			} catch (Exception e) {
-				System.out.println("CommuteController writeApproveForm error ->" + e.getMessage());
+				System.out.println("CommuteController myApvDetail error ->" + e.getMessage());
 			}
 			System.out.println("allForApprove->"+ allForApprove.getPrg_name1());
 			model.addAttribute("allApv", allForApprove);
@@ -95,24 +96,6 @@ public class ApproveController {
 			
 			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
 			
-//			model.addAttribute("empForSearch",empForSearch);
-//			System.out.println(emp.getEmp_name()+"님은 "+empForSearch.getAuth_name()+" 입니다");
-			
-			//관리자 일 경우 
-//			if(empForSearch.getAuth_num() == 0)
-//			{
-//				model.addAttribute("emp",emp);
-//				model.addAttribute("empForSearch",empForSearch);
-//				return "/member/admin/adminMain";
-//			}
-//			//일반 유저 일 경우 
-//			else
-//			{	
-//				model.addAttribute("emp",emp);
-//				model.addAttribute("empForSearch",empForSearch);
-//				return "/member/user/userMain";
-//			}
-			
 
 			return "/approve/writeForm1";
 			
@@ -129,16 +112,20 @@ public class ApproveController {
 		
 		
 		@RequestMapping("myApvList")
-		public String myApvList(Approve approve, String currentPage, Model model) {
+		public String myApvList(Approve approve, String currentPage, HttpSession session, Model model) {
 			System.out.println("approveController myApvList Start...");
 			int totalApv = as.totalApv();
 			System.out.println("approveController totalApv=>" + totalApv);
+			
+			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
 			
 			Paging   page = new Paging(totalApv, currentPage);
 			// Parameter emp --> Page만 추가 Setting
 			approve.setStart(page.getStart());   // 시작시 1
 			approve.setEnd(page.getEnd());       // 시작시 10 
 			
+			approve.setEmp_num(empForSearch.getEmp_num());
+			System.out.println("approve.setEmp_num ->" + approve.getEmp_num());
 			//리스트 생성
 			List<Approve> listApv = as.listApv(approve);
 			System.out.println("approveController myApvList listApv.size()=>" + listApv.size());
@@ -156,6 +143,7 @@ public class ApproveController {
 		public String writeApproveForm(Approve approve, 
 										Approve_Progress approve_Progress, 
 										com.oracle.devwareProject.domain.Calendar calendar,
+										int emp_num,
 										String prg_name1,
 										String prg_name2,
 										String prg_name3,
@@ -185,10 +173,12 @@ public class ApproveController {
 			System.out.println("writeApproveForm getPrg_name2 -> " + approve_Progress.getPrg_name2());
 			System.out.println("writeApproveForm getPrg_name3 -> " + approve_Progress.getPrg_name3());
 			
+			approve.setEmp_num(emp_num);
 			approve.setApp_title(app_title);
 			approve.setApp_content(app_content);
 			approve.setDocs_app(docs_app);
 			approve.setComu_app(comu_app);
+			System.out.println("emp_num->"+emp_num);
 			
 			model.addAttribute("docs_app", approve.getDocs_app());
 			System.out.println("test docs_app->" + approve.getDocs_app());
@@ -196,18 +186,19 @@ public class ApproveController {
 			model.addAttribute("comu_app", approve.getComu_app());
 			System.out.println("test comu_app->" + approve.getComu_app());
 			
+			System.out.println("test comu_app->" + start_date);
+			System.out.println("test comu_app->" + end_date);
+
+			calendar.setCalendar_start(start_date);
+			calendar.setCalendar_end(end_date);
+			
 			System.out.println("test comu_app->" + calendar.getCalendar_start());
 			System.out.println("test comu_app->" + calendar.getCalendar_end());
-			if (approve.getComu_app() == "1_wholeVacat") {
-				String change = "1";
-				approve.setComu_app(change);
-			}
-			System.out.println("test comu_app->" + approve.getComu_app());
+			
 			try {
-				int writeResult = as.writeApv(approve, approve_Progress); 
+				int writeResult = as.writeApv(approve, approve_Progress, calendar); 
 			} catch (Exception e) {
 				System.out.println("CommuteController writeApproveForm error ->" + e.getMessage());
-				return "/approve/writeForm1";
 			}
 			return "/approve/myApvList";
 			
@@ -223,5 +214,14 @@ public class ApproveController {
 			model.addAttribute("vacation", vacation.getVa_stock());
 
 			return vacation;
+		}
+		
+		@ResponseBody
+		@RequestMapping("/authApprove")
+		public Approve_Progress authApprove(Approve_Progress approve_Progress, Model model) {
+			
+			System.out.println("CommuteController getVacation start....");
+
+			return approve_Progress;
 		}
 }

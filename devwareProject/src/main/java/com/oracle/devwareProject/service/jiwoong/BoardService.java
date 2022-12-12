@@ -21,6 +21,8 @@ public interface BoardService {
 
 	int brdDelete(BoardEmpDept bEmpDept);
 
+	int brdUpdate(BoardEmpDept bEmpDept);
+
 	
 
 

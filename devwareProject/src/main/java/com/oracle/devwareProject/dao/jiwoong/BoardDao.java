@@ -24,4 +24,6 @@ public interface BoardDao {
 
 	int brdDelete(BoardEmpDept bEmpDept);
 
+	int brdUpdate(BoardEmpDept bEmpDept);
+
 	}

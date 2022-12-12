@@ -22,32 +22,27 @@ public class BoardDaolmpl implements BoardDao {
 	
 	@Override
 	public int boardInsert(BoardEmpDept bEmp) {
-		System.out.println("BoardDaolmpl boardInsert Start...");
+		log.info("boardInsert Start");
 		int brdInsertCnt = 0;
 		try {
-			System.out.println(bEmp);
-			
 			brdInsertCnt=session.insert("jwBoardInsert",bEmp);
-			
+		log.info("brdInsertCnt:"+brdInsertCnt);	
 		} catch (Exception e) {
-			System.out.println("BoardDaolmpl insertBoard Exception=>" +e.getMessage());
+			log.info("Exception=>" +e.getMessage());
 		}
 		return brdInsertCnt;
 	}
 	
 	@Override
 	public int checkListTotalCnt(BoardEmpDept bEmp) {
-		System.out.println("BoardDaolmpl checkListTotalCnt start");
+		log.info("checkListTotalCnt start");
 		int checkListTotalCnt=0;
 		try {
-			System.out.println(bEmp);
-			
 			checkListTotalCnt=session.selectOne("jwcheckListTotal",bEmp);
-			
+			log.info("checkListTotalCnt:" +checkListTotalCnt);
 		} catch (Exception e) {
-			System.out.println("BoardDaolmpl checkListTotalCnt Exception=>"+e.getMessage());
+			log.info(" Exception=>"+e.getMessage());
 		}
-		System.out.println("BoardDaolmpl checkListTotalCnt=>" + checkListTotalCnt);
 		return checkListTotalCnt;
 	}
 	
@@ -67,7 +62,7 @@ public class BoardDaolmpl implements BoardDao {
 	// 게시물 상세조회
 	@Override
 	public BoardEmpDept detailBoard(BoardEmpDept bEmpDept) {
-		System.out.println("BoardDaolmpl detailBoard start...");
+		log.info("detailBoard start");
 		BoardEmpDept boardinfo =null; 
 		try {
 			boardinfo=session.selectOne("jwBoardSelOne",bEmpDept);
@@ -75,9 +70,8 @@ public class BoardDaolmpl implements BoardDao {
 			log.info("boardinfo.getBrd_type()=>"+boardinfo.getBrd_type());
 			log.info("boardinfo.getBrd_num()=>"+boardinfo.getBrd_num());
 		} catch (Exception e) {
-			System.out.println("BoardDaolmpl detailBoard Exception=>" +e.getMessage());
+			log.info("Exception=>" +e.getMessage());
 		}
-		
 		return boardinfo;
 	}
 
@@ -104,5 +98,18 @@ public class BoardDaolmpl implements BoardDao {
 			log.info("Exception:" +e.getMessage());
 		}
 		return 0;
+	}
+
+	@Override
+	public int brdUpdate(BoardEmpDept bEmpDept) {
+		log.info("brdUpdate start");
+		int brdUpdateCnt=0;
+		try {
+			brdUpdateCnt=session.update("jwBoardUpdate",bEmpDept);
+			log.info("brdUpdateCnt:"+brdUpdateCnt);
+		} catch (Exception e) {
+			log.info("Exception:"+e.getMessage());
+		}
+		return brdUpdateCnt;
 	}
 }

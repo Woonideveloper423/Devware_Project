@@ -14,17 +14,25 @@
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
 
 <script type='text/javascript'>
-
 $(function(){ 
 	getReplyList();   // 댓글목록 ajax 조회
-	$('#delete_btn').hide();
-	 if(${board.emp_num}==${emp.emp_num}){ // 게시글 삭제 버튼 동적 생성
+	
+	$('#update_btn').hide(); 
+	$('#delete_btn').hide(); 
+	
+	if(${board.emp_num}==${emp.emp_num}){ // 게시글 삭제 버튼 동적 생성
 		$('#delete_btn').show();
 	}else{
 		$('#delete_btn').hide();
-		
-	} 
-		
+	}
+	
+	 
+	 if(${board.emp_num}==${emp.emp_num}){ // 게시글 수정 버튼 동적 생성
+		$('#update_btn').show();
+	}else{
+		$('#update_btn').hide();
+	}
+	
 	$(document).on('click','.re_reply_btn',function(){ // 답글쓰기 버튼 이벤트
 		var brdNum=$(this).attr('id');
 		var replyFormLength= $('#reply'+$(this).attr('id'));
@@ -68,12 +76,15 @@ $(function(){
             }
         });
 	}
-	
+
 function showReplyList(dept_name,emp_name,brd_content,brd_date,brd_num,brd_re_level,brd_re_step){ // 게시물 댓글 목록 출력 함수
 	replyStr+="<div style='margin-left:"+ (parseInt(brd_re_level) * 30) +"px' class='d-flex mb-4'>";
 	replyStr+="<input type='hidden' id='step"+brd_num+"'  value='"+brd_re_step+"'>";
 	replyStr+="<input type='hidden' id='level"+brd_num+"' value='"+brd_re_level+"'>";
-	replyStr+="<div class='flex-shrink-0'><img class='rounded-circle' src='https://dummyimage.com/50x50/ced4da/6c757d.jpg' alt='...' /></div>";
+	replyStr+="<div class='flex-shrink-0'>";
+    if(parseInt(brd_re_step)>=2){
+  	replyStr+="&#8627;&nbsp;&nbsp;";}
+	replyStr+="<img class='rounded-circle' src='${pageContext.request.contextPath}/resources/css/images/man.png' alt='...' /></div>";
 	replyStr+="<div class='ms-3'>";
 	replyStr+="<div class='fw-bold'>" +dept_name+"&nbsp;&nbsp;"+emp_name+"</div>";
 	replyStr+=brd_content;
@@ -83,7 +94,6 @@ function showReplyList(dept_name,emp_name,brd_content,brd_date,brd_num,brd_re_le
 	replyStr+="</div>";
 }
     
-
 function writeReReply(brd_num,step,level){ // 답글 등록폼 show 이벤트
 
 	var str="<form class='mb-4' id='re_reply_form'name='re_reply_form' action='/ajaxWriteReply' method='post'>";
@@ -95,7 +105,7 @@ function writeReReply(brd_num,step,level){ // 답글 등록폼 show 이벤트
 	   	str+="<input type='hidden' name='brd_re_step'	value='"+step+"'>" ; 
 	   	str+="<input type='hidden' name='brd_num'	value='${board.brd_num}'>";
 	    str+="<input type='hidden' name='dept_num' 	value='${emp.dept.dept_num}'>";
-	   	str+="<div style='margin-top: 5px' align='right'><button type='button' name='re_reply_btn' id='re_reply_btn'  class='btn btn-primary' onclick='reReplyBtn()'>등록</button></div>";
+	   	str+="<div style='margin-top: 5px' align='right'><button type='button' name='re_reply_btn' id='re_reply_btn'  class='btn btn-primary' onclick='reReplyBtn()'><i class='fa-solid fa-pen'></i>등록</button></div>";
 	   	str+="</form>";
 	
 	$('#reply'+brd_num).html(str); 
@@ -154,6 +164,13 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 	 	delete_info.method="POST";
 	 	delete_info.submit();
  }
+ 
+ function updateBtn(detail_info){ // 게시글 수정 버튼 클릭 이벤트
+	 	detail_info.action="/board/UpdateForm";
+	 	detail_info.method="GET";
+	 	detail_info.submit();
+}
+ 
     </script>
 </head>
 <body>
@@ -162,6 +179,7 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 		<input type="hidden" name="brd_type" value="${board.brd_type }">
 		<input type="hidden" name="brd_num"  value="${board.brd_num }">
 		<input type="hidden" name="dept_num" value="${emp.dept.dept_num}">
+		<input type="hidden" name="emp_num"  value="${emp.emp_num }">
 	</form>
 	
 	<!-- 게시글 삭제 POST form -->
@@ -171,14 +189,13 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 		<input type="hidden" name="dept_num" value="${emp.dept.dept_num}">
 	</form>
 	
-	
 	<!-- 게시글 상세 -->
 	<h2>${board.brd_title }</h2>
 	<br>
 	<div id="board_detail">
 	<h5>${board.dept_name } ${board.emp_name } &emsp; ${board.brd_date}</h5>
 	<hr>
-	${board.brd_content } 
+	${board.brd_content} 
 	
 	<div class='upload_File'>
 		<첨부파일 구현>
@@ -201,7 +218,7 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 						   <input type='hidden' name='brd_re_step'	value='${board.brd_re_step}'>
 						   <input type='hidden' name='dept_num' 	value='${emp.dept.dept_num }'> 
 						   <input type='hidden' name='brd_num' 	value='${board.brd_num}'> 
-	                       <div style='margin-top: 5px' align='right'><button type='button' name='reply_btn' id='reply_btn'  class='btn btn-primary' onclick='replyBtn()'>등록</button></div>
+	                       <div style='margin-top: 5px' align='right'><button type='button' name='reply_btn' id='reply_btn'  class='btn btn-primary' onclick='replyBtn()'><i class="fa-solid fa-pen"></i>등록</button></div>
                        </form>
                        <!-- 댓글 List 영역(javascript 구현) -->
                       <div class='reply_data' id='reply_data'></div>
@@ -211,16 +228,17 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
      
      <!-- 게시글 목록,삭제,수정 버튼 div -->
      <div align='right'>
-		<button class='btn btn-primary btn-lg' onclick="location.href='/board/checkList?brd_type=${board.brd_type}'">
-		<i class="fa-solid fa-list"></i>목록</button>
-		<!-- 삭제 trigger modal -->
-		<button id='delete_btn' class="btn btn-danger btn-lg" data-toggle="modal" data-target="#exampleModal"><i class="fa-solid fa-trash"></i>삭제</button>
+		
+		<button id='update_btn' class='btn btn-info btn-lg' onclick="updateBtn(detail_info)">
+		<i class="fa-solid fa-pen-to-square"></i>수정</button>
+		<!-- 삭제 버튼 및 trigger modal -->
+		<button id='delete_btn' class="btn btn-danger btn-lg" data-toggle="modal" data-target="#deleteModal"><i class="fa-solid fa-trash"></i>삭제</button>
 		<!-- 삭제 Modal -->
-		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		  <div class="modal-dialog" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title" id="exampleModalLabel"><i class="fa-solid fa-circle-exclamation"></i>게시물 삭제</h5>
+		        <h5 style="font-weight: bold;" class="modal-title" id="exampleModalLabel"><i style="color: red;" class="fa-solid fa-circle-exclamation"></i>&nbsp;게시물 삭제</h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
 		          <span aria-hidden="true">&times;</span>
 		        </button>
@@ -234,7 +252,9 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 		      </div>
 		    </div>
 		  </div>
-		</div>	
+		</div>
+		<button class='btn btn-primary btn-lg' onclick="location.href='/board/checkList?brd_type=${board.brd_type}'">
+		<i class="fa-solid fa-list"></i>목록</button>	
 	</div>
 	
 

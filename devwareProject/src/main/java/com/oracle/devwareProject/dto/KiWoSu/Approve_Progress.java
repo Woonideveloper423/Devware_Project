@@ -9,10 +9,13 @@ public class Approve_Progress {
 	private int app_num;
 	private String prg_num1;
 	private String prg_name1;
+	private int prg_auth1;
 	private String prg_num2;
 	private String prg_name2;
+	private int prg_auth2;
 	private String prg_num3;
 	private String prg_name3;
+	private int prg_auth3;
 	private String prg_status;
 	private Date prg_date;
 	//반려사유

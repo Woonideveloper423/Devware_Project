@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.oracle.devwareProject.dao.KiWoSu.approveDao;
+import com.oracle.devwareProject.domain.Calendar;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
@@ -37,10 +38,10 @@ public class approveServiceImpl implements approveService {
 	}
 
 	@Override
-	public int writeApv(Approve approve, Approve_Progress approve_Progress) {
+	public int writeApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar) {
 		int result = 0;
 		System.out.println("approveServiceImpl writeApv start...");
-		result = ad.writeApv(approve, approve_Progress);
+		result = ad.writeApv(approve, approve_Progress, calendar);
 		
 		return result;
 	}
