@@ -28,4 +28,6 @@ public interface approveService {
 
 	Vacation getVacation(int emp_num);
 
+	int authApprove(int chkBtn);
+
 }

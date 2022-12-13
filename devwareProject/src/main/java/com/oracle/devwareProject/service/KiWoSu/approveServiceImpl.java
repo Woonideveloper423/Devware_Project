@@ -88,4 +88,12 @@ public class approveServiceImpl implements approveService {
 		return vacation;
 	}
 
+	@Override
+	public int authApprove(int chkBtn) {
+		System.out.println("approveServiceImpl authApprove ...");
+		int result = 0;
+		result = ad.authApprove(chkBtn);
+		return 0;
+	}
+
 }

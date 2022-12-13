@@ -218,10 +218,40 @@ public class ApproveController {
 		
 		@ResponseBody
 		@RequestMapping("/authApprove")
-		public Approve_Progress authApprove(Approve_Progress approve_Progress, Model model) {
+		public int authApprove(int chkBtn, Model model) {
 			
 			System.out.println("CommuteController getVacation start....");
-
-			return approve_Progress;
+			int result = as.authApprove(chkBtn);
+			
+			return result;
+		}
+		
+		@RequestMapping("notAuthApvList")
+		public String notAuthApvList(Approve approve, String currentPage, HttpSession session, Model model) {
+			System.out.println("approveController myApvList Start...");
+			int totalApv = as.totalApv();
+			System.out.println("approveController totalApv=>" + totalApv);
+			
+			//허가 값이 0 인 사람만 나오게 표시
+			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
+			
+			Paging   page = new Paging(totalApv, currentPage);
+			// Parameter emp --> Page만 추가 Setting
+			approve.setStart(page.getStart());   // 시작시 1
+			approve.setEnd(page.getEnd());       // 시작시 10 
+			
+			approve.setEmp_num(empForSearch.getEmp_num());
+			System.out.println("approve.setEmp_num ->" + approve.getEmp_num());
+			//리스트 생성
+			List<Approve> listApv = as.listApv(approve);
+			System.out.println("approveController myApvList listApv.size()=>" + listApv.size());
+			
+			model.addAttribute("totalAPv", totalApv);
+			model.addAttribute("listApv" , listApv);
+			model.addAttribute("page"    , page);
+			System.out.println("approveController myApvList page -> "+ page);
+			System.out.println("approveController myApvList page -> "+ page);
+			
+			return "/approve/notAuthApvList";
 		}
 }

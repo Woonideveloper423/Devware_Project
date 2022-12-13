@@ -155,4 +155,17 @@ public class approveDaoImpl implements approveDao {
 		return vacation;
 	}
 
+	@Override
+	public int authApprove(int chkBtn) {
+		int result = 0;
+		System.out.println("approveDaoImpl authApprove Start..." );
+		try {
+			result = session.update("wsAuthApv", chkBtn);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+		return result;
+	}
+
 }
