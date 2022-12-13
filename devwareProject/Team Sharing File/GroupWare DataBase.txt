@@ -52,3 +52,89 @@ CREATE TABLE CALENDAR
 )
 
 CREATE SEQUENCE  CALENDARCOUNT;
+
+
+/* 제환 */
+/* 테이블 데이터 삽입은 없습니다 */
+/* 시퀀스 생성 */
+CREATE SEQUENCE  CHAT_LOG_SEQ;
+CREATE SEQUENCE  CHAT_ROOM_SEQ;
+
+/* 프로시저 생성 */
+
+create or replace Procedure Chat_Message_Proc
+(p_room_num IN chat_log.room_num%TYPE, 
+p_emp_num IN chat_log.emp_num%type,
+Read_Cursor OUT SYS_REFCURSOR,
+Msg_Cursor OUT SYS_REFCURSOR)
+ is
+    CURSOR update_cursor IS
+    select cl.log_num
+        from chat_log cl, 
+        (select room_num, last_read_log
+        from chat_member 
+        where room_num = p_room_num
+        and emp_num = p_emp_num) cm
+        where cl.room_num = cm.room_num
+        and cl.log_num > cm.last_read_log
+        order by log_num asc;
+
+v_log_num chat_log.log_num%TYPE;
+v_last_read_num chat_log.log_num%TYPE;
+ begin
+    DBMS_OUTPUT.ENABLE;
+     DBMS_OUTPUT.PUT_LINE('start...');
+     select last_read_log
+     into v_last_read_num
+     from chat_member
+     where room_num = p_room_num
+     and emp_num = p_emp_num;
+     
+    open Read_Cursor FOR
+    select cl.log_num
+        from chat_log cl, 
+        (select room_num, last_read_log
+        from chat_member 
+        where room_num = p_room_num
+        and emp_num = p_emp_num) cm
+        where cl.room_num = cm.room_num
+        and cl.log_num > v_last_read_num
+        order by log_num asc;
+
+    OPEN update_cursor;
+    LOOP
+        FETCH update_cursor INTO v_log_num;
+        EXIT WHEN update_cursor%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE(v_log_num);
+        update chat_log set not_read_cnt = not_read_cnt-1 where log_num= v_log_num;
+    END LOOP;
+    CLOSE update_cursor;
+    
+    update chat_member 
+    set last_read_log = v_log_num 
+    where room_num = p_room_num
+    and emp_num = p_emp_num;
+    commit;
+    
+    open Msg_Cursor FOR
+       select cl.room_num, cl.emp_num, emp_name, cl.log_num, msg_type, msg_content, attach_name, send_date, not_read_cnt
+        from (select * from chat_log where room_num=p_room_num) cl,
+        emp e
+        where cl.emp_num = e.emp_num;
+
+END Chat_Message_Proc;
+
+
+/* 테이블 수정 */
+read_cnt -> 테이블 삭제
+
+chat_room
+- room_title크기 50으로 변경
+- mem_cnt삭제
+
+chat_member
+- last_read_log (size number 5)추가
+
+chat_log
+- not_read_cnt (size number 5)추가
+- attach_name size 100으로 변경
