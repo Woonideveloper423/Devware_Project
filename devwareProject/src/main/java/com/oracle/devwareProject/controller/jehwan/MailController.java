@@ -41,7 +41,7 @@ public class MailController {
 			
 			model.addAttribute("replyMail", replyMail);
 			model.addAttribute("replyName", replyName);
-			return "/mail/mailWriteForm";
+			return "/mail/user/mailWriteForm";
 		}
 		
 		
@@ -53,7 +53,7 @@ public class MailController {
 			int mailSendResult = mailservice.sendEmail(request, mail);
 			log.info("mailSendResult -> " + mailSendResult);
 			model.addAttribute("mailType",0);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 		@GetMapping(value="/mail/receiveMessage")
@@ -61,35 +61,35 @@ public class MailController {
 			log.info("MailController2 receiveMessage start..");
 			int mailReceiveResult = mailservice.receiveMail(request);
 			model.addAttribute("mailType",1);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 
 		@GetMapping(value = "/mail/sendMailList")
 		public String sendMailList(Model model) {
 			log.info("sendMailList Start...");
 			model.addAttribute("mailType",0);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 		@GetMapping(value = "/mail/receiveMailList")
 		public String receiveMailList(Model model) {
 			log.info("receiveMailList Start...");
 			model.addAttribute("mailType",1);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 
 		@GetMapping(value = "/mail/importantMailList")
 		public String importantMailList(Model model) {
 			log.info("importantMailList Start...");
 			model.addAttribute("mailType",2);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 		@GetMapping(value = "/mail/deletedMailList")
 		public String deletedMailList(Model model) {
 			log.info("deletedMailList Start...");
 			model.addAttribute("mailType",3);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 		@ResponseBody
@@ -182,7 +182,7 @@ public class MailController {
 //			
 //			model.addAttribute("mailDetail", mailDetail);
 //			
-			return "/mail/mailDetail";
+			return "/mail/user/mailDetail";
 		}
 		
 		@RequestMapping(value = "/mail/deleteNotRead")
@@ -268,7 +268,7 @@ public class MailController {
 			mailservice.deleteDetailMail(uploadFolder, mailNum, mailType);
 			
 			model.addAttribute("mailType", mailType);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 		@RequestMapping(value = "/mail/restoreDetailMail")
@@ -278,7 +278,7 @@ public class MailController {
 			mailservice.restoreDetailMail(mailNum);
 			
 			model.addAttribute("mailType", 3);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 

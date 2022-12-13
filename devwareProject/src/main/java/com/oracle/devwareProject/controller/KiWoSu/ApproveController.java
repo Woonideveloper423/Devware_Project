@@ -80,14 +80,7 @@ public class ApproveController {
 //			
 //		}
 		
-		@RequestMapping("/notAuthApvList")
-		public String notAuthApvList() {
-
-			System.out.println("CommuteController listCommute start....");
-
-			return "/approve/notAuthApvList";
-			
-		}
+		
 		
 		@RequestMapping("/writeForm1")
 		public String writeForm(HttpSession session, Model model) {

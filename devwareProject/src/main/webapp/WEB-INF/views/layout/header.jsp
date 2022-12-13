@@ -19,7 +19,7 @@
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 $(function(){
-	console.log("empno는?" + '${empno}');
+	console.log("empno는?" + '${empForSearch.emp_num}');
 	getMsgCnt();
 	console.log("wsOpen  location.host: " + location.host);
     var wsUri  = "ws://" + location.host + "${pageContext.request.contextPath}/chating";
@@ -244,8 +244,7 @@ function leaveLookRoom(){
 	$.ajax(
 			{
 				url:"/chat/leaveRoomLook",
-				data:{"empno" : '${empno}',
-					  "roomId"  : $("#chattingRoomId").val()},
+				data:{"roomId"  : $("#chattingRoomId").val()},
 				dataType:'text',
 				success:function(data){
 					
@@ -290,8 +289,9 @@ function showEmpList(empType) {
 								str += this.emp_name + "<i class='fa-regular fa-circle-check'></i>";
 								str += "</div>";
 							});
-							str += "</main></div>"
+							str += "</main>"
 						}
+						str += "</div>"
 						$("#chatContainer").append(str);
 					}
 				}		
@@ -347,7 +347,7 @@ function detailRoom(roomNum, roomName) {
 					str += "<main><div class='chat-content'><div id='chatting' class='main-chat'>";
 					$(data.chatMessageDtos).each(function(){
 						if(this.msg_type == "1"){
-							if(this.emp_num == '${empno}'){
+							if(this.emp_num == '${empForSearch.emp_num}'){
 								str += "<div class = 'me-chat'><div class='me-chat-col'><span class='balloon'>" + this.msg_content + "<input class='save_attach' type='button' value='첨부다운' id='" + this.attach_name + "' name='"+ this.msg_content +"'></span></div><div class='time'>" + this.send_date +"</div><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div></div>";
 							}else{
 								str += "<div class='friend-chat'><img class='profile-img' src='${pageContext.request.contextPath}/resources/img/chatImg.png' alt='채팅이미지'><div class = 'friend-chat-col'><span class='profile-name'>" + this.member_name + "</span><span class='balloon'>" + this.msg_content + "<input class='save_attach' type='button' value='첨부다운' id='" + this.attach_name + "' name='"+ this.msg_content +"'></span></div><div class='time'>" + this.send_date +"</div><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div></div>";
@@ -356,7 +356,7 @@ function detailRoom(roomNum, roomName) {
 								str += "<div class = 'notice-chat'><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div>" + this.member_name + " : " + this.msg_content + "<br>" + this.send_date +"</div>";
 
 						}else{
-							if(this.emp_num == '${empno}'){
+							if(this.emp_num == '${empForSearch.emp_num}'){
 								str += "<div class = 'me-chat'><div class='me-chat-col'><span class='balloon'>" + this.msg_content + "</span></div><div class='time'>" + this.send_date +"</div><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div></div>";
 							}else{
 								str += "<div class='friend-chat'><img class='profile-img' src='${pageContext.request.contextPath}/resources/img/chatImg.png' alt='채팅이미지'><div class = 'friend-chat-col'><span class='profile-name'>" + this.member_name + "</span><span class='balloon'>" + this.msg_content + "</span></div><div class='time'>" + this.send_date +"</div><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div></div>";
@@ -461,7 +461,7 @@ function  wsEvt() {
 		// 파싱한 객체의 type값을 확인하여 getId값이면 초기 설정된 값이므로 채팅창에 값을 입력하는게 아니라
 		// 추가한 태그 sessionId에 값을 세팅
 		if(jsonMsg.type == "CREATE"){
-			if(jsonMsg.sender == '${empno}'){
+			if(jsonMsg.sender == '${empForSearch.emp_num}'){
 				var str ="<div id='detailRoom'>";
 				str += "<div class='setting_bar'><input type='hidden' id='chattingRoomId' value='" + jsonMsg.roomId +"'>";
 				str += "<i class='fa-solid fa-arrow-left' onclick='cancelAction(1)'></i>";
@@ -480,6 +480,7 @@ function  wsEvt() {
 				$('#empList').remove();
 				$("#chatContainer").append(str);
 			}else{
+				$('#msgCnt').html(parseInt($('#msgCnt').html())+1);
 				str =  "<div id='"+ jsonMsg.roomId +"' name ='" + jsonMsg.roomName +"' class='roomEnter'>";
 				str +=  "<div class='talk'>";
 				str += "<p class='friend-name'> " + jsonMsg.roomName + "</p><p id='content"+ jsonMsg.roomId +"' class='chat-content'>" + jsonMsg.sender_name + " : " + jsonMsg.message +"</p></div>";
@@ -501,7 +502,7 @@ function  wsEvt() {
 				if(jsonMsg.showType == "1"){
 					console.log("방에 들어가있음");
 					var str = "";
-					if(jsonMsg.sender == '${empno}'){
+					if(jsonMsg.sender == '${empForSearch.emp_num}'){
 						str += "<div class = 'me-chat'><div class='me-chat-col'><span class='balloon'>" + jsonMsg.message + "<input class='save_attach' type='button' value='첨부다운' id='" + jsonMsg.attachName + "' name='"+ jsonMsg.message +"'></span></div><div class='time'>" + new Date() +"</div><div id='msgCnt" + jsonMsg.logNum +"' class='notRead'>" + jsonMsg.notReadCnt + "</div></div>";
 					}else{
 						str += "<div class='friend-chat'><img class='profile-img' src='${pageContext.request.contextPath}/resources/img/chatImg.png' alt='채팅이미지'><div class = 'friend-chat-col'><span class='profile-name'>" + jsonMsg.sender_name + "</span><span class='balloon'>" + jsonMsg.message + "<input class='save_attach' type='button' value='첨부다운' id='" + jsonMsg.attachName + "' name='"+ jsonMsg.message +"'></span></div><div class='time'>" + new Date() +"</div><div id='msgCnt" + jsonMsg.logNum +"' class='notRead'>" + jsonMsg.notReadCnt + "</div></div>";
@@ -511,7 +512,7 @@ function  wsEvt() {
 					str += "<div class = 'notice-chat'><div id='msgCnt" + jsonMsg.logNum +"' class='notRead'>" + jsonMsg.notReadCnt + "</div>" + jsonMsg.message + "</div>";
 				}else{
 					var str = "";
-					if(jsonMsg.sender == '${empno}'){
+					if(jsonMsg.sender == '${empForSearch.emp_num}'){
 						str += "<div class = 'me-chat'><div class='me-chat-col'><span class='balloon'>" + jsonMsg.message + "</span></div><div class='time'>" + new Date() +"</div><div id='msgCnt" + jsonMsg.logNum +"' class='notRead'>" + jsonMsg.notReadCnt + "</div></div>";
 					}else{
 						str += "<div class='friend-chat'><img class='profile-img' src='${pageContext.request.contextPath}/resources/img/chatImg.png' alt='채팅이미지'><div class = 'friend-chat-col'><span class='profile-name'>" + jsonMsg.sender_name + "</span><span class='balloon'>" + jsonMsg.message + "</span></div><div class='time'>" + new Date() +"</div><div id='msgCnt" + jsonMsg.logNum +"' class='notRead'>" + jsonMsg.notReadCnt + "</div></div>";
@@ -520,7 +521,7 @@ function  wsEvt() {
 				$("#chatting").append(str);
 			}
 		}else if(jsonMsg.type == "CONNECT"){
-			if(jsonMsg.sender != '${empno}'){
+			if(jsonMsg.sender != '${empForSearch.emp_num}'){
 				$(jsonMsg.readMsg).each(function(){
 					var readCount = parseInt($("#msgCnt"+ this).html()) - 1;
 					console.log(readCount);
