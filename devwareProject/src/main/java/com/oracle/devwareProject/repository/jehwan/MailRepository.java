@@ -3,6 +3,7 @@ package com.oracle.devwareProject.repository.jehwan;
 import java.util.List;
 
 import com.oracle.devwareProject.domain.jehwan.Mail;
+import com.oracle.devwareProject.domain.jehwan.MailAccount;
 import com.oracle.devwareProject.domain.jehwan.MailAttach;
 
 
@@ -50,6 +51,13 @@ public interface MailRepository {
 
 	void restoreDetailMail(Long mailNum);
 
+	int mailCreateDone(int emp_num);
+
+	Long permitCheck(int emp_num);
+
+	Long countNotReadMail(String mailAccount);
+
+	
 	
 
 }

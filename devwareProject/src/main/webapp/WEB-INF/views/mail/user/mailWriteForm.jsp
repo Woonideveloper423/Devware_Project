@@ -43,16 +43,25 @@
 	</script>
 <body>
 	<h1>메일 작성</h1>
-	<form action="/mail/writeMail" method="post" enctype="multipart/form-data">
-		<input type="hidden" name="emp_num" value="1">
-		<input type="hidden" name="sender_mail" value="jehwan@devware.shop">
-		<input type="hidden" name="sender_name" value="제환">
-		제목 : <input type="text" name="mail_title"><p>
-		받는이 : <input type="text" name="receiver_name" id="receiver_name">
-		받는이 메일 : <input type="text" name="receiver_mail" id="receiver_mail"><p/>
-		첨부파일 : <input type="file" name="uploadFile" multiple="multiple" >
-		<textarea name="mail_content" id="summernote"></textarea><p/>
-		<input type="submit" value="작성">
-	</form>
+	<c:choose>
+		<c:when test="${empForSearch.permit_status eq 0}">
+			<div class="row board text-center">
+				아직 메일이 생성되지 않았습니다 관리자에게 문의해주세요 xxx-xxxx-xxxx
+			</div>
+		</c:when>
+		<c:otherwise>
+			<form action="/mail/writeMail" method="post" enctype="multipart/form-data">
+				<input type="hidden" name="emp_num" value="1">
+				<input type="hidden" name="sender_mail" value="jehwan@devware.shop">
+				<input type="hidden" name="sender_name" value="제환">
+				제목 : <input type="text" name="mail_title"><p>
+				받는이 : <input type="text" name="receiver_name" id="receiver_name">
+				받는이 메일 : <input type="text" name="receiver_mail" id="receiver_mail"><p/>
+				첨부파일 : <input type="file" name="uploadFile" multiple="multiple" >
+				<textarea name="mail_content" id="summernote"></textarea><p/>
+				<input type="submit" value="작성">
+			</form>
+		</c:otherwise>
+	</c:choose>
 </body>
 </html>

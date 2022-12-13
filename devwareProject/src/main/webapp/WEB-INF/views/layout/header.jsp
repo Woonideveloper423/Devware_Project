@@ -20,6 +20,9 @@
 <script type="text/javascript">
 $(function(){
 	console.log("empno는?" + '${empForSearch.emp_num}');
+	email();
+	setInterval('email()', 30000);
+
 	getMsgCnt();
 	console.log("wsOpen  location.host: " + location.host);
     var wsUri  = "ws://" + location.host + "${pageContext.request.contextPath}/chating";
@@ -554,40 +557,32 @@ function  wsEvt() {
 			$('#apvCount3').text(data);
 		}
 	})
-	$.ajax({
-		type:"POST",
-		url:"${ pageContext.request.contextPath }/email/count",
-		success:function(data){
-			$("#email_count").html(data);
-			$("#menu_email_count").html(data);
-			$("#main_email_count").html(data);
-			$("#header_email_count").html(data);
-			$("#header_email_count2").html(data);
-		}
-	});
-	setInterval('email()', 30000)
-
-	function email(){
-		if($("#emp.emp_num").val() == "") {
-			$(location).attr("href", "/logoutForm");
-		}
-		$.ajax({
-			type:"POST",
-			url:"${ pageContext.request.contextPath }/email/pop3",
-			success:function(data){
-				$("#email_count").html(data);
-				$("#menu_email_count").html(data);
-				$("#main_email_count").html(data);
-				$("#header_email_count").html(data);
-				$("#header_email_count2").html(data);
-			}
-		});
-	}
+	
 	$(document).ready(function() {
 		if($("#emp.emp_num").val() == "") {
 			$(location).attr("href", "/logoutForm");
 		}
 	}); */
+	
+	
+	function email(){
+		console.log("empno permit은?" + '${empForSearch.permit_status}');
+		if($("#emp.emp_num").val() == "") {
+			$(location).attr("href", "/logoutForm");
+		}
+		$.ajax({
+				type:"POST",
+				url:"/mail/countMail",
+				success:function(data){
+					$("#email_count").html(data);
+					$("#menu_email_count").html(data);
+					$("#main_email_count").html(data);
+					$("#header_email_count").html(data);
+					$("#header_email_count2").html(data);
+				}
+		});
+	}
+	
 	
 	
 </script>
@@ -692,7 +687,7 @@ function  wsEvt() {
                 
                 
                 
-                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/email/receive">받은 메일함으로 가기</a>
+                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/mail/MailList?listType=0">받은 메일함으로 가기</a>
               </div>
             </li>
 

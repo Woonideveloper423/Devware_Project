@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.domain.EmpList;
+import com.oracle.devwareProject.domain.jehwan.MailAccount;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,6 +29,10 @@ public class EmpRepositoryImpl implements EmpRepository {
 			System.out.println("EmpDaoImpl empSave Start");
 			System.out.println("test getEmp_hireDate: " + emp.getEmp_hireDate());
 			em.persist(emp);
+			MailAccount mailAccount = new MailAccount();
+			mailAccount.setEmp_num(emp.getEmp_num());
+			mailAccount.setPermit_status(0L);
+			em.persist(mailAccount);
 			result++;
 		} catch (Exception e) {
 			System.out.println("EmpDaoImpl empSave Error: " + e.getMessage());
@@ -97,12 +102,13 @@ public class EmpRepositoryImpl implements EmpRepository {
 		System.out.println("EmpDaoImpl emp_id : " + emp_id);
 		
 		Emp emp = new Emp();
-		
 		try {
 			emp = em.createQuery("SELECT e FROM Emp e where e.emp_id = :emp_id", Emp.class)
 								.setParameter("emp_id", emp_id)
 								.getSingleResult();
 			System.out.println("login 쿼리문 결과 값: " + emp.getEmp_id());
+			emp.setMailAccount(em.find(MailAccount.class, emp.getEmp_num()));
+			System.out.println("생성된 메일 있는지 체크 : " + emp.getMailAccount());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}

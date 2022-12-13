@@ -6,15 +6,18 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.domain.jehwan.Mail;
+import com.oracle.devwareProject.domain.jehwan.MailAccount;
 
 
 public interface MailService {
 
-	int sendEmail(HttpServletRequest request, Mail mail);
+	int sendEmail(HttpSession session, Mail mail);
 
-	int receiveMail(HttpServletRequest request) throws MessagingException, IOException;
+	Long receiveMail(HttpSession session) throws MessagingException, IOException;
 
 	Long countMail(String MailAccount, int mailType, String search, String keyword);
 
@@ -39,4 +42,9 @@ public interface MailService {
 	void saveAttach(HttpServletRequest request, HttpServletResponse response, String saveName, String realName,
 			String uploadFolder);
 
+	int mailCreateDone(int emp_num);
+
+	Long permitCheck(int emp_num);
+
+	
 }

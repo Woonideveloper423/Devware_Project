@@ -50,6 +50,13 @@ public class MailRepositoryImpl implements MailRepository {
 	}
 	
 	@Override
+	public Long countNotReadMail(String mailAccount) {
+		Long result = 0L;
+		result = (Long) em.createQuery("SELECT COUNT(m) From Mail m where SENDER_MAIL = :SENDER_MAIL and READ_CHK = 0").setParameter("SENDER_MAIL", mailAccount).getSingleResult();
+		return result;
+	}
+	
+	@Override
 	public Long countSendMail(String mailAccount, String search, String keyword) {
 		Long result = 0L;
 		if(keyword==null || keyword == "") {
@@ -359,6 +366,40 @@ public class MailRepositoryImpl implements MailRepository {
 		em.remove(mail);
 		return deleteFileName;
 	}
+
+	@Override
+	public int mailCreateDone(int emp_num) {
+		System.out.println("MailRepositoryImpl mailCreateDone start...");
+		int result = 0;
+		try {
+			MailAccount mailAccount = em.find(MailAccount.class, emp_num);
+			mailAccount.setPermit_status(1L);
+			em.persist(mailAccount);
+			result = 1;
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return result;
+	}
+
+	@Override
+	public Long permitCheck(int emp_num) {
+		System.out.println("MailRepositoryImpl mailCreateDone start...");
+		Long permit_check = 0L;
+		try {
+			MailAccount mailAccount = em.find(MailAccount.class, emp_num);
+			permit_check = mailAccount.getPermit_status();
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+
+		return permit_check;
+	}
+
+	
+
+	
 
 //	@Override
 //	public List<MailAttach> mailDetail(Long mail_num) {
