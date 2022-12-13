@@ -12,7 +12,7 @@ import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 
 public interface approveDao {
 
-	int totalApv();
+	int totalApv(EmpForSearch empForSearch);
 
 	List<Approve> listApv(Approve approve);
 
@@ -28,6 +28,10 @@ public interface approveDao {
 
 	Vacation getVacation(int emp_num);
 
-	int authApprove(int chkBtn);
+	int authApprove(String chkBtn, String sendData, String app_num);
+
+	int totalNotApv(EmpForSearch empForSearch);
+
+	List<Approve> listNotApv(Approve approve);
 
 }
