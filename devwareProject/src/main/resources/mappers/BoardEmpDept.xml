@@ -69,32 +69,12 @@
 		    </choose>             
 	</update>
 	
-	<!-- 검색조건 -->
-<!-- 	<sql id="search">
-		<if test='searchType!=null and keyword!=null'>
-			<trim prefix="AND" suffix=")" prefixOverrides="OR">
-			<if test="searchType==W"
-			
-			
-			
-			</trim>
-				
-		
-		</if>
-	
-	
-	</sql>
-	 -->
-	
 	<!--   유형별 게시판 게시물 총 개수   -->            
     <select id="jwcheckListTotal" parameterType="BoardEmpDept" resultType="int">
 		 <choose>
 			 <when test="brd_type==2">
-			 	select count(*) from(select b.*
-				                     from board b
-				                     inner join emp e
-				                     on b.emp_num=e.emp_num
-				                     where e.dept_num=#{dept_num} and b.brd_type=2 and and b.brd_re_step=0 and b.brd_deleteYn=0)
+			 	select count(*) from(select b.* from board b inner join emp e on b.emp_num=e.emp_num
+				                     where e.dept_num=#{dept_num} and b.brd_type=2 and b.brd_re_step=0 and b.brd_deleteYn=0)
 			 </when>
 			  <when test='brd_type==5'>
 			 	select count(*) from Board where emp_num=#{emp_num} and brd_re_step=0 and brd_deleteYn=0
@@ -105,91 +85,188 @@
 		 </choose>
 	</select>                   	
 	
+	<!-- 조건 검색 select sql include  -->
+	<sql id="selectCount">
+		select count(*) from(SELECT b.*,e.emp_name,d.dept_name,d.dept_num from 
+   		 board b,emp e,dept d where b.emp_num=e.emp_num and e.dept_num=d.dept_num)
+	</sql>
+	 <!-- 조건검색 게시판 게시물 총 개수 -->
+	<select id="jwSearchListTotal" parameterType="BoardEmpDept" resultType="int">
+		<choose>
+			<when test="searchType =='W'.toString()">
+				<if test="brd_type==2">
+					<include refid="selectCount"></include>
+				    where brd_type=2 and dept_num=#{dept_num} and brd_re_level=0 and brd_deleteYn=0 and emp_name || dept_name like '%' ||#{keyword}||'%'  
+				</if>
+				<if test="brd_type!=2 and brd_type!=5">
+					<include refid="selectCount"></include>
+				   	 where brd_type=#{brd_type} and brd_re_level=0 and brd_deleteYn=0 and emp_name || dept_name like '%' ||#{keyword}||'%'  
+				</if>			   
+		   </when>
+		   <when test="searchType =='T'.toString()">
+		   		<if test="brd_type==2">
+					<include refid="selectCount"></include>
+				    where brd_type=2 and dept_num=#{dept_num} and brd_re_level=0 and brd_deleteYn=0 and brd_title like '%' ||#{keyword}||'%'  
+				</if>
+				<if test="brd_type==5">
+					<include refid="selectCount"></include>
+				    where emp_num=#{emp_num} and brd_re_level=0 and brd_deleteYn=0 and emp_name || brd_title like '%' ||#{keyword}||'%'  
+				</if>
+				<if test="brd_type!=2 and brd_type!=5">
+					<include refid="selectCount"></include>
+		    		where brd_type=#{brd_type} and brd_re_level=0 and brd_deleteYn=0 and brd_title like '%' ||#{keyword}||'%'  
+				</if>			   
+		   </when>
+		   <when test="searchType =='C'.toString()">
+		   		<if test="brd_type==2">
+					<include refid="selectCount"></include>
+				    where brd_type=2 and dept_num=#{dept_num} and brd_re_level=0 and brd_deleteYn=0 and brd_content like '%' ||#{keyword}||'%'  
+				</if>
+				<if test="brd_type==5">
+					<include refid="selectCount"></include>
+				    where emp_num=#{emp_num} and brd_re_level=0 and brd_deleteYn=0 and emp_name || brd_content like '%' ||#{keyword}||'%'  
+				</if>
+				<if test="brd_type!=2 and brd_type!=5">
+					<include refid="selectCount"></include>
+				    where brd_type=#{brd_type} and brd_re_level=0 and brd_deleteYn=0 and brd_content like '%' ||#{keyword}||'%'  
+				</if>			   
+		   </when>
+		     <when test="searchType =='TC'.toString()">
+		   		<if test="brd_type==2">
+					<include refid="selectCount"></include>
+				    where brd_type=2 and dept_num=#{dept_num} and brd_re_level=0 and brd_deleteYn=0 and brd_title || brd_content like '%' ||#{keyword}||'%'  
+				</if>
+				<if test="brd_type==5">
+					<include refid="selectCount"></include>
+				    where emp_num=#{emp_num} and brd_re_level=0 and brd_deleteYn=0 and emp_name || brd_title || brd_content like '%' ||#{keyword}||'%'  
+				</if>
+				<if test="brd_type!=2 and brd_type!=5">
+					<include refid="selectCount"></include>
+				    where brd_type=#{brd_type} and brd_re_level=0 and brd_deleteYn=0 and brd_title || brd_content like '%' ||#{keyword}||'%'  
+				</if>			   
+		   </when>
+	   </choose>
+	</select>
+	
+	 <!-- 게시물 목록 select sql include -->
+	<sql id="selectList">
+		SELECT * FROM(SELECT rownum rn , a.*FROM(select b.*,d.dept_name,e.emp_name from board b inner join emp e  on e.emp_num=b.emp_num
+				    																			 inner join dept d on d.dept_num = e.dept_num 
+	</sql>
+
 	<!-- 유형별 게시판 게시물 목록 GET -->
 	<select id="jwBrdCheckList" parameterType="BoardEmpDept" resultType="BoardEmpDept">
 		<choose>
 			<when test="brd_type==2">
-				SELECT *
-				    FROM
-				    (SELECT rownum rn , a.*
-				    FROM
-				    (select b.*,d.dept_name,e.emp_name
-				    from board b
-				    inner join emp e
-				    on e.emp_num=b.emp_num
-				    inner join dept d
-				    on d.dept_num = e.dept_num 
-				    where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0
-				    order by b.brd_date) a)
-				    WHERE rn BETWEEN #{start} and #{end}
-				    order by brd_date desc
+				<include refid="selectList"></include>  where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0
+				      									order by b.brd_date desc) a)
+				    								    WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
 		    </when>
+				     									
 		    <when test="brd_type==5">
-			SELECT *
-		        FROM
-		        (SELECT rownum rn , a.*
-		        FROM
-		        (select b.*,d.dept_name,e.emp_name
-		        from board b
-		        inner join emp e
-		        on e.emp_num=b.emp_num
-		        inner join dept d
-		        on d.dept_num = e.dept_num 
-		        where b.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0
-		        order by b.brd_date) a)
-		        WHERE rn BETWEEN #{start} and #{end}
-		        order by brd_date desc
+				<include refid="selectList"></include>  where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0
+		       										    order by b.brd_date desc) a)
+		      										    WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
 		    </when>
+			       										  
 		     <otherwise>
-			 	SELECT *
-				    FROM
-				    (SELECT rownum rn , a.*
-				    FROM
-				    (select b.*,d.dept_name,e.emp_name
-				    from board b
-				    inner join emp e
-				    on e.emp_num=b.emp_num   
-				    inner join dept d
-				    on d.dept_num = e.dept_num 
-				    where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0
-				    order by b.brd_date) a)
-				    WHERE rn BETWEEN #{start} and #{end}
-				    order by brd_date desc
+				<include refid="selectList"></include> 	where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 
+		       										    order by b.brd_date desc) a)
+		      										    WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
 			 </otherwise>
 		  </choose>       
-	</select>		
+	</select>
 	
+	<!-- 조건 검색 게시판 게시글 목록 -->
+	<select id="jwSearchList" parameterType="BoardEmpDept" resultType="BoardEmpDept">
+		<choose>
+			<when test="searchType =='W'.toString()">
+				<if test="brd_type==2">
+					<include refid="selectList"></include>  where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+							     							e.emp_name || d.dept_name like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+							      							WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
+							     							
+				</if>
+				
+				<if test="brd_type!=2">
+					<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+							     							e.emp_name || d.dept_name like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+				</if>			   
+		   </when>
+		   <when test="searchType =='T'.toString()">
+		   		<if test="brd_type==2">
+					<include refid="selectList"></include>  where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+							     							b.brd_title like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+							      							WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
+				</if>
+				<if test="brd_type==5">
+					<include refid="selectList"></include> where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and
+			       										   b.brd_title like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+			      										   WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
+		    	</if>
+				<if test="brd_type!=2 and brd_type!=5">
+					<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+							     							b.brd_title like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+							      							WHERE rn BETWEEN #{start} and #{end} order by  brd_date desc
+				</if>			   
+		   </when>
+		   <when test="searchType =='C'.toString()">
+		   		<if test="brd_type==2">
+					<include refid="selectList"></include> where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+							     							b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+							      							WHERE rn BETWEEN #{start} and #{end} order by brd_date desc  
+							     							
+				</if>
+				<if test="brd_type==5">
+					<include refid="selectList"></include> where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and
+			       										   b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+			      										   WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
+			       										   
+		    	</if>
+				<if test="brd_type!=2 and brd_type!=5">
+					<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+							     							b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+							      							WHERE rn BETWEEN #{start} and #{end} order by brd_date desc  
+							     							
+				</if>			   
+		   </when>
+		     <when test="searchType =='TC'.toString()">
+		   		<if test="brd_type==2">
+					<include refid="selectList"></include>	where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+							     							b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+							      							WHERE rn BETWEEN #{start} and #{end} order by brd_date desc   
+							     						
+				</if>
+				<if test="brd_type==5">
+					<include refid="selectList"></include> where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and
+			       										   b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
+			      										   WHERE rn BETWEEN #{start} and #{end} order by brd_date desc
+			       										   
+		    	</if>
+				<if test="brd_type!=2 and brd_type!=5">
+			     	<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
+						     								b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date) a)
+						      							    WHERE rn BETWEEN #{start} and #{end} order by brd_date desc  
+				</if>			   
+		   </when>
+	   </choose>	
+	</select>
 	<!-- 게시글 상세 조회 -->
 	<select id="jwBoardSelOne" parameterType="BoardEmpDept" resultType="BoardEmpDept">
-		select b.*,d.dept_name,e.emp_name
-		    from board b
-		    inner join emp e
-		    on e.emp_num=b.emp_num
-		    inner join dept d
-		    on d.dept_num = e.dept_num 
-		    where b.emp_num=#{emp_num} and b.brd_type=${brd_type} and b.brd_num=${brd_num}
+		select b.*,d.dept_name,e.emp_name from board b inner join emp e on e.emp_num=b.emp_num
+		     								  		   inner join dept d on d.dept_num = e.dept_num 
+		 											   where b.emp_num=#{emp_num} and b.brd_type=${brd_type} and b.brd_num=${brd_num}
 	</select>
 	
 	<!-- 게시글 조회수 증가 -->
 	<update id="jwViewUpdate" parameterType="BoardEmpDept">
 		<choose>
 			<when test="brd_type!=2">
-				update
-					board
-					set brd_view=brd_view+1
-					where
-					brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0 
+				update board set brd_view=brd_view+1 where brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0 
 			</when>
 		<when test="brd_type==2">
-			update 
-			    (select b.brd_view
-			        from
-			        board b,emp e,dept d
-			    where
-			    b.emp_num=e.emp_num and e.dept_num=d.dept_num
-			    and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_re_step=0
-			    )
-				set brd_view=brd_view+1
+			update (select b.brd_view from board b,emp e,dept d where b.emp_num=e.emp_num and e.dept_num=d.dept_num
+			        and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_re_step=0)   set brd_view=brd_view+1
 		</when>
 		</choose>
 	</update>
@@ -198,17 +275,11 @@
 	<select id="jwTotalReply" parameterType="BoardEmpDept" resultType="int">
 		<choose>
 			<when test="brd_type!=2">
-				select count(*) from board 
-				where brd_type=#{brd_type} and  brd_ref=#{brd_num} and brd_re_step !=0
+				select count(*) from board where brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step!=0
 			</when>
 			<when test="brd_type=2">
-				select count(*) from( select b.*,d.dept_name
-                        			  from board b
-                        			  inner join emp e
-                        		      on b.emp_num=e.emp_num
-                        			  inner join dept d
-                        		      on d.dept_num = e.dept_num 
-                       			      where b.brd_type=2 and b.brd_ref=#{brd_ref} and d.dept_num=#{dept_num} and b.brd_re_step!=0)
+				select count(*) from( select b.*,d.dept_name from board b  inner join emp e   on b.emp_num=e.emp_num inner join dept d  on d.dept_num = e.dept_num 
+                        			  									   where b.brd_type=2 and b.brd_ref=#{brd_ref} and d.dept_num=#{dept_num} and b.brd_re_step!=0)
 			</when>
 		</choose>
 	</select>
@@ -217,31 +288,26 @@
 	<update id="jwUpdateReplyCnt" parameterType="BoardEmpDept">
         	<choose>
 		    	<when test="brd_type!=2">
-		    		UPDATE Board set reply_cnt=reply_cnt+1 
-					where brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0
+		    		UPDATE Board set reply_cnt=reply_cnt+1 where brd_type=#{brd_type} and brd_ref=#{brd_num} and brd_re_step=0
 		    	</when>
 		    	<when test="brd_type==2"> 
-		    		update 
-    					(select b.reply_cnt from board b,emp e,dept d
-       					  where  b.emp_num=e.emp_num and e.dept_num=d.dept_num
-					       and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_re_step=0)
-					set
-					reply_cnt=reply_cnt+1		    
+		    		update (select b.reply_cnt from board b,emp e,dept d  where  b.emp_num=e.emp_num and e.dept_num=d.dept_num
+					        and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_re_step=0) set reply_cnt=reply_cnt+1	
 		    	</when>
 		    </choose>                        
 	</update>
 	
 	<!-- 답글 작성시 앞 댓글들 번호 push -->
 	<update id="jwPushReply" parameterType="BoardEmpDept">
-		UPDATE Board set brd_re_step=brd_re_step+1
-		where brd_re_step>#{brd_re_step}
+		UPDATE Board set brd_re_step=brd_re_step+1 where brd_re_step>#{brd_re_step}
+		
 	</update>
 	
 	<!-- 댓글 insert -->
 	<insert id="jwInsertReply" parameterType="BoardEmpDept">
 		<selectKey resultType="integer" keyProperty="brd_re_step_max" order="BEFORE">  
-			select Max(brd_re_step)+1 from board
-				where brd_ref=#{brd_num} 
+			select Max(brd_re_step)+1 from board where brd_ref=#{brd_num} 
+				
 		</selectKey>
 		INSERT INTO Board values(#{emp_num}, #{brd_type},     
 	                        	<choose>
@@ -266,21 +332,12 @@
 	
 	<!-- 게시글 댓글 목록 -->
 	<select id="jwGetReplyList" parameterType="BoardEmpDept" resultType="BoardEmpDept">
-		SELECT *
-      		FROM
-		    (SELECT rownum rn , a.*
-		    FROM
-		    (select b.*,d.dept_name,e.emp_name
-		    from board b
-		    inner join emp e
-		    on e.emp_num=b.emp_num
-		    inner join dept d
-		    on d.dept_num = e.dept_num
+		SELECT *FROM (SELECT rownum rn , a.* FROM (select b.*,d.dept_name,e.emp_name from board b  inner join emp e on e.emp_num=b.emp_num
+      		  																					   inner join dept d on d.dept_num = e.dept_num
 		    <choose>
 		    	<when test="brd_type!=2">where b.brd_type=#{brd_type} and b.brd_ref=#{brd_num}  and b.brd_re_step!=0</when>
 		    	<when test="brd_type==2">where b.brd_type=2 and b.brd_ref=#{brd_num} and d.dept_num=#{dept_num}  and b.brd_re_step!=0</when>
 		    </choose> 
 		    order by brd_re_step) a)
 	</select>
-	
 </mapper>

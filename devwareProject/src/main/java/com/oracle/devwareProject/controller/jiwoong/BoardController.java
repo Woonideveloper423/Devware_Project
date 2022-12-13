@@ -60,7 +60,7 @@ public class BoardController {
 		log.info("brd_num:"+bEmpDept.getBrd_num());
 		log.info("dept_num:"+bEmpDept.getDept_num());
 		model.addAttribute("board",bEmpDept);
-		return "/board/updateForm";
+		return "/member/user/updateForm";
 		}
 	
 	// 게시판 게시글 수정
@@ -97,9 +97,9 @@ public class BoardController {
 	  log.info("/board/checkList start"); 
 	  model.addAttribute("brd_type",brd_type);
 	  if(brd_type==5) {
-		  return "/board/myBoardList"; 
+		  return "/member/user/myBoardList"; 
 	  }else {
-		  return "/board/boardList"; 
+		  return "/member/user/boardList"; 
 		  }
 	  
 	}
@@ -114,8 +114,11 @@ public class BoardController {
 		  bEmp.setDept_name(emp.getDept().getDept_name());
 		  bEmp.setEmp_num(emp.getEmp_num()); 
 		  log.info("brd_type:"+bEmp.getBrd_type());
+		  log.info("dept_num:"+bEmp.getDept_num());
+		  log.info("emp_num:" +bEmp.getEmp_num());
 		  log.info("searchType:"+bEmp.getSearchType());
 		  log.info("keyword:"+bEmp.getKeyword());
+		  log.info("orderType:"+bEmp.getOrderType());
 		  log.info("currentPage:"+currentPage);
 		  
 		  int brdTotalCnt = bs.checkListTotalCnt(bEmp);
@@ -130,7 +133,6 @@ public class BoardController {
 		  BoardEmpDeptVo boardList=new BoardEmpDeptVo();
 		  boardList.setBrdCheckList(brdCheckList);
 		  boardList.setPage(page);
-		  
 		  return boardList;
 		  }
 
@@ -152,7 +154,7 @@ public class BoardController {
 		  bEmpDept.setDept_num(emp.getDept().getDept_num());
 		  BoardEmpDept detailInfo=bs.detailBoard(bEmpDept);
 		  model.addAttribute("board",detailInfo);
-		  return "/board/detailBoard"; 
+		  return "/member/user/detailBoard"; 
 	  }
 }
 	 

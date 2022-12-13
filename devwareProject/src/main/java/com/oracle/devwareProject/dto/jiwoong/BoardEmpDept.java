@@ -30,7 +30,7 @@ public class BoardEmpDept {
 		private String pageNum;				private int rn;	 // 글번호용
 		private int    start;				private int end;
 		
-	
+		private String orderType; // 게시물 정렬
 		private int brd_re_step_max;
 		
 		
