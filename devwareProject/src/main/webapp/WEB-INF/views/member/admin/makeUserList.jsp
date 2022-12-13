@@ -59,7 +59,7 @@
 	<title>Insert title here</title>
 </head>
 <body>
-		<h2>유저 리스트 입력</h2>
+		<h2>유저 등록하기</h2>
 		<div class="container-fluid">
 			<form action="/createUserList">
 				<table class="table table-hover text-center">
@@ -81,9 +81,9 @@
 					<tr> 
 						<th>부서</th>
 						<td>	
-							<select name="auth_num" id="auth_num">
-								<c:forEach var="auth" items="${authlist}">
-									<option value="${auth.auth_num}">${auth.auth_name}</option>
+							<select name="dept_num" id="dept_num">
+								<c:forEach var="dept" items="${deptlist}">
+									<option value="${dept.dept_num}">${dept.dept_name}</option>
 								</c:forEach>
 							</select>					
 						</td>
@@ -123,11 +123,12 @@
 					</tr>
 				</table>
 				
-				<div class="form-group" id="sendBut">
-					<input type="submit"  class="btn btn-primary btn-lg" onclick="return checkData()" value="유저 리스트 등록">
+				<div style=" text-align: center;" class="form-group" id="sendBut">
+					<button type="submit" class="btn btn-primary btn-lg" onclick="return checkData()">등록하기</button>
 				</div>
-			
+				
 			</form>
+			
 		</div>
 </body>
 </html>

@@ -384,7 +384,7 @@
 
         <div class="card o-hidden border-0 shadow-lg my-5">
         <div class="card-body p-0">
-		   <form id="form_join" action="/empSave" method="post">
+		   <form id="form_join" action="<%=context%>/empSave" method="post">
 			<div class="row">
         
             <div class="col-lg-6 d" style="background-color:#eaf8ff">

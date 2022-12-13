@@ -18,17 +18,17 @@
     <put-attribute name="body" value="/WEB-INF/views/{1}/{2}/{3}.jsp" />     
 </definition>
 
-<definition name="/*/*" extends="tilesbase">     
+<!-- <definition name="/*/*" extends="tilesbase">     
     <put-attribute name="title" value="Devware 2022 for Everywhere" />   
     <put-attribute name="body" value="/WEB-INF/views/{1}/{2}.jsp" />     
-</definition>
+</definition> -->
 
 <definition name="empty" template="/WEB-INF/views/layout/empty.jsp">    
     <put-attribute name="content" value="" />
 </definition>     
 
-<definition name="/member/login" extends="empty">
-    <put-attribute name="content" value="/WEB-INF/views/member/login.jsp"></put-attribute>
+<definition name="/member/loginForm" extends="empty">
+    <put-attribute name="content" value="/WEB-INF/views/member/loginForm.jsp"></put-attribute>
 </definition>
 
 <definition name="/approval/pikAuthMem" extends="empty">

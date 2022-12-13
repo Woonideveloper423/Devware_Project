@@ -7,6 +7,6 @@
 <title>유저 메인 페이지</title>
 </head>
 <body>
-	<a href="/showCalendar">캘린더 테스트</a>
+	
 </body>
 </html>
