@@ -36,22 +36,43 @@
 </head>
 
 <script type="text/javascript">
-authCheck1
-function authChkBtn(){
+
+function authChkBtn(prg_auth){
 	const ChkCtn = document.getElementById('chkBtn');
+	const ChkInput = document.getElementById('chkInput');
+	  var sendData = "";
+	  if ( prg_auth == 1 ) {
+		  sendData = "1";  
+	  } else if  ( prg_auth == 2 ) {
+		  sendData = "2";  
+	  } else if  ( prg_auth == 3 ) {
+		  sendData = "3";  
+	  }
 	  
-	  // btn1 숨기기 (display: none)
-	  if(ChkCtn.style.display !== 'none') {
-		  ChkCtn.style.display = 'none';
-		  $.ajax({
+	  confirm("결재 하시겠습니까?");
+	    $.ajax({
 				url  : "<%=context%>/authApprove",
-				type : 'post'
-				data : chkBtn,
-	  }
-	  // btn` 보이기 (display: block)
-	  else {
-	    btn1.style.display = 'block';
-	  }
+				type : 'post',
+				data : 	{
+							"sendData" 	: sendData,
+							"chkBtn"	: $('#chkBtn').val(),
+							"app_num" 	: ${allApv.app_num},
+						},
+			    success:function(data){
+			    	alert('성공한듯?')
+			    	if(ChkCtn.style.display !== 'none') {
+			    		ChkCtn.style.display = 'none';
+			    		if(ChkInput.style.display == 'none'){
+			    			ChkInput.style.display = 'block';
+			    		}
+			    		
+			    		
+			  	  }
+		} ,
+	
+	  }); 
+	  
+		  
 	
 	
 }
@@ -115,54 +136,63 @@ function authChkBtn(){
 					<td id="authCheck1">
 						<c:choose>
 							<c:when test="${ allApv.prg_num1==sessionScope.empForSearch.emp_num }">
-								<c:if test="${allApv.prg_auth1 == '0' }">
-									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()" value="1">결재</button>
-								</c:if>
-								<c:if test="${allApv.prg_auth1 == '1' }">
-									결재완료
+								<c:if test="${ allApv.prg_num2 !=null }">
+									<c:if test="${allApv.prg_auth1 == '0' }">
+										<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(1)" value="1">결재</button>
+										<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
+									</c:if>
 								</c:if>
 							</c:when>
-							<c:when  test="${ allApv.prg_num1 } == null">
-							
+							<c:when test="${allApv.prg_auth1 == '1' }">
+									결재완료
+							</c:when>
+							<c:when  test="${allApv.prg_auth1 == '0' and allApv.prg_num1 != null}">
+								미결재
 							</c:when>
 							<c:otherwise>
-								미결재
+								
 							</c:otherwise>
 						</c:choose>				
 					</td>
 					<td id="authCheck2">
 						<c:choose>
 							<c:when test="${ allApv.prg_num2==sessionScope.empForSearch.emp_num }">
-								<c:if test="${allApv.prg_auth2 == '0' }">
-									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()" value="1">결재</button>
-								</c:if>
-								<c:if test="${allApv.prg_auth2 == '1' }">
-									결재완료
+								<c:if test="${ allApv.prg_num2 !=null }">
+									<c:if test="${allApv.prg_auth2 == '0' }">
+										<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(2)" value="1">결재</button>
+										<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
+									</c:if>
 								</c:if>
 							</c:when>
-							<c:when test="${ allApv.prg_num2 } == null">
-							
+							<c:when test="${allApv.prg_auth2 == '1' }">
+									결재완료
+							</c:when>
+							<c:when  test="${allApv.prg_auth2 == '0' and allApv.prg_num2 != null}">
+								미결재
 							</c:when>
 							<c:otherwise>
-								미결재
+								
 							</c:otherwise>
 						</c:choose>	
 					</td>
 					<td id="authCheck3">
 						<c:choose>
 							<c:when test="${ allApv.prg_num3==sessionScope.empForSearch.emp_num }">
-								<c:if test="${allApv.prg_auth3 == '0' }">
-									<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn()" value="1">결재</button>
-								</c:if>
-								<c:if test="${allApv.prg_auth3 == '1' }">
-									결재완료
+								<c:if test="${ allApv.prg_num3 !=null }">
+									<c:if test="${allApv.prg_auth3 == '0' }">
+										<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(3)" value="1">결재</button>
+										<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
+									</c:if>
 								</c:if>
 							</c:when>
-							<c:when test="${ allApv.prg_num3 } != null">
-							
+							<c:when test="${allApv.prg_auth3 == '1' }">
+									결재완료
+							</c:when>
+							<c:when  test="${allApv.prg_auth3 == '0' and allApv.prg_num3 != null}">
+								미결재
 							</c:when>
 							<c:otherwise>
-								미결재
+								
 							</c:otherwise>
 						</c:choose>	
 					</td>
@@ -201,7 +231,7 @@ function authChkBtn(){
 
 				<tr>
 					<th>기안부서</th>
-					<td colspan="3">부서 작성</td>
+					<td colspan="3">${ allApv.dept_name }</td>
 				</tr>
 
 				<tr>

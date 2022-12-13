@@ -53,7 +53,7 @@
 	
 	<c:forEach var="apv" items="${listApv }">
 		<tr>
-			<td>${apv.rn}</td>
+			<td>${ apv.emp_num }_${ apv.app_num }</td>
 			<td><a href="myApvDetail?app_num=${apv.app_num}">${apv.app_title}</a></td><!-- 제목인데 나중에 추가 로 넣음 -->
 			<td>${apv.emp_name}</td>
 			<td><fmt:formatDate pattern="yyyy/MM/dd" value="${apv.app_date}"/></td>

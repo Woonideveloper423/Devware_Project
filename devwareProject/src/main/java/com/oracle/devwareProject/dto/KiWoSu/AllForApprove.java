@@ -37,6 +37,8 @@ public class AllForApprove {
 	
 	//리스트 추가 목록
 	private String emp_name;
+	private String dept_name;
+	private String dept_num;
 	private String ca_content;
 	
 	private String position_name1;

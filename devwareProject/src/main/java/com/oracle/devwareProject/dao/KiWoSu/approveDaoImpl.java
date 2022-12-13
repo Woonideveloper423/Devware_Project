@@ -25,17 +25,31 @@ public class approveDaoImpl implements approveDao {
 		private final SqlSession session;
 	
 	@Override
-	public int totalApv() {
+	public int totalApv(EmpForSearch empForSearch) {
 		int totApvCount = 0;
 		System.out.println("approveDaoImpl totalApv start...");
 		
 		try {
-			totApvCount = session.selectOne("ApvTotal");
+			totApvCount = session.selectOne("ApvTotal", empForSearch);
 			System.out.println("approveDaoImpl totalApv totApvCount->" +totApvCount);
 		} catch (Exception e) {
 			System.out.println("approveDaoImpl totalApv Exception->"+e.getMessage());
 		}
 		return totApvCount;
+	}
+	
+	@Override
+	public int totalNotApv(EmpForSearch empForSearch) {
+		int totNotApvCount = 0;
+		System.out.println("approveDaoImpl totalNotApv start...");
+		
+		try {
+			totNotApvCount = session.selectOne("NotApvTotal", empForSearch);
+			System.out.println("approveDaoImpl totalNotApv totApvCount->" +totNotApvCount);
+		} catch (Exception e) {
+			System.out.println("approveDaoImpl totalNotApv Exception->"+e.getMessage());
+		}
+		return totNotApvCount;
 	}
 
 	@Override
@@ -50,6 +64,20 @@ public class approveDaoImpl implements approveDao {
 		}
 		
 		return apvList;
+	}
+	
+	@Override
+	public List<Approve> listNotApv(Approve approve) {
+		List<Approve> notApvList = null;
+		System.out.println("approveDaoImpl listApv start...");
+		try {
+			notApvList = session.selectList("wsNotApvListAll", approve);
+			System.out.println("approveDaoImpl listApv apvList.size()->"+notApvList.size());
+		} catch (Exception e) {
+			System.out.println("approveDaoImpl listApv Exception->"+e.getMessage());
+		}
+		
+		return notApvList;
 	}
 
 	@Override
@@ -156,13 +184,43 @@ public class approveDaoImpl implements approveDao {
 	}
 
 	@Override
-	public int authApprove(int chkBtn) {
+	public int authApprove(String chkBtn, String sendData, String app_num) {
 		int result = 0;
 		System.out.println("approveDaoImpl authApprove Start..." );
+		System.out.println("approveDaoImpl chkBtn ->"+ chkBtn);
+		System.out.println("approveDaoImpl sendData ->"+ sendData);
+		System.out.println("approveDaoImpl app_num ->"+ app_num);
 		try {
-			result = session.update("wsAuthApv", chkBtn);
+			System.out.println("try Start..." );
+			
+			System.out.println("approveDaoImpl app_num ->"+ app_num);
+			int numCnt = 0;
+			int authCnt = 0;
+			int authResult = 0;
+			
+			if (sendData.equals("1")) {
+				System.out.println("approveDaoImpl 1 Start..." );
+				result = session.update("wsAuthApv1", app_num);
+			} else if (sendData.equals("2")) {
+				System.out.println("approveDaoImpl 2 Start..." );
+				result = session.update("wsAuthApv2", app_num);
+			} else if (sendData.equals("3")) {
+				System.out.println("approveDaoImpl 3 Start..." );
+				result = session.update("wsAuthApv3", app_num);
+			}
+			
+			numCnt = session.selectOne("wsAuthNumCnt", app_num);
+			System.out.println("approveDaoImpl numCnt ->"+ numCnt);
+			
+			authCnt = session.selectOne("wsAuthCnt", app_num);
+			System.out.println("approveDaoImpl authCnt ->"+ authCnt);
+			
+			if(numCnt == authCnt) {
+				authResult = session.update("wsAuthResult", app_num);
+			}
+			
 		} catch (Exception e) {
-			// TODO: handle exception
+			System.out.println("approveDaoImpl authApprove Exception->"+e.getMessage());
 		}
 		
 		return result;

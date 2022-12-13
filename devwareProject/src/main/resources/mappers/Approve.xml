@@ -6,7 +6,15 @@
 <mapper namespace="com.oracle.devwareProject.ApproveMapper">
 
 	<select id="ApvTotal" resultType="int">
-	 	select Count(*) FROM approve
+	 	select Count(*) FROM approve where emp_num = #{emp_num}
+ 	</select>
+ 	
+ 	<select id="NotApvTotal" resultType="int">
+	 	select Count(*) FROM approve_progress 
+		where 	(prg_num1 = #{emp_num} and prg_auth1 = 0) OR 
+		        (prg_num2 = #{emp_num} and prg_auth2 = 0) OR 
+		        (prg_num3 = #{emp_num} and prg_auth3 = 0);
+        
  	</select>
  	
  	 <select id="wsApvListAll" parameterType="Approve" resultType="Approve">
@@ -35,6 +43,39 @@
  	  ]]>	
     </select>
     
+    <select id="wsNotApvListAll" parameterType="Approve" resultType="Approve">
+      <![CDATA[
+			SELECT *
+		FROM
+		(
+		        SELECT rownum rn , a.*
+		        FROM
+		                   (
+                        select p.*, e.emp_name, c.ca_content,
+                        g.prg_num1, g.prg_name1, g.prg_auth1,
+                        g.prg_num2, g.prg_name2, g.prg_auth2,
+                        g.prg_num3, g.prg_name3, g.prg_auth3
+                        from approve p
+                        inner join emp e
+                        on e.emp_num=p.emp_num
+                        inner join common_approve c
+                        on 
+                        p.comu_type + p.comu_app = c.ca_num + c.ca_appnum 
+                        or
+                        p.docs_type + p.docs_app = c.ca_num + c.ca_appnum 
+                        inner join approve_progress g
+                        on p.app_num = g.app_num
+                        ORDER BY app_date desc
+                            ) a
+		 )   
+ 		WHERE  rn >= 1
+ 		and    rn <= 10
+ 		and	   ((prg_num1 = #{emp_num} and prg_auth1 = 0) OR 
+		        (prg_num2 = #{emp_num} and prg_auth2 = 0) OR 
+		        (prg_num3 = #{emp_num} and prg_auth3 = 0))
+ 	  ]]>	
+    </select>
+    
     <insert id="wsWriteApv" parameterType="Approve" useGeneratedKeys="true" 
     						keyColumn="app_num" 	keyProperty="app_num" >
      insert into approve(app_num, app_prg, APP_START, app_title, APP_CONTENT, app_date, emp_num, docs_app, comu_app)
@@ -43,11 +84,16 @@
     </insert>
     
     <insert id="wsWriteApvPrg" parameterType="Approve_Progress" >
-     insert into approve_progress(app_num, prg_num1, prg_name1, 
-    							 prg_num2, prg_name2, prg_num3, prg_name3,
+     insert into approve_progress(app_num, 
+     							 prg_num1, prg_name1, prg_auth1, 
+    							 prg_num2, prg_name2, prg_auth2,  
+    							 prg_num3, prg_name3, prg_auth3, 
     							 PRG_STATUS, prg_date)
-      values ( #{app_num}, #{prg_num1}, #{prg_name1}, #{prg_num2}, #{prg_name2},
-      			#{prg_num3}, #{prg_name3}, '미결재', sysdate) 
+      values ( #{app_num}, 
+      			#{prg_num1}, #{prg_name1}, 0, 
+      			#{prg_num2}, #{prg_name2}, 0,
+      			#{prg_num3}, #{prg_name3}, 0, 
+      			'미결재', sysdate) 
     
     </insert>
     
@@ -85,8 +131,9 @@
 		<![CDATA[
 		SELECT
 		    *
-		FROM emp e, approve a, approve_progress g, position p
+		FROM emp e, approve a, approve_progress g, position p, dept d
 		where   e.emp_num = a.emp_num 
+            and e.dept_num = d.dept_num
 			and a.app_num = g.app_num 
 			and e.position_num = p.position_num
 			and a.app_num = #{app_num}
@@ -132,7 +179,47 @@
             )
         )
 		where emp_num = #{ calendar_emp_num }
-		
-	
+
 	</update>
+	
+	
+	<update id="wsAuthApv1" parameterType="String">
+		UPDATE approve_progress
+		  SET prg_auth1 = 1
+		  where app_num = #{ app_num }
+	</update>
+	
+	<update id="wsAuthApv2" parameterType="String">
+		UPDATE approve_progress
+		  SET prg_auth2 = 1
+		  where app_num = #{ app_num }
+	</update>
+	
+	<update id="wsAuthApv3" parameterType="String">
+		UPDATE approve_progress
+		  SET prg_auth3 = 1
+		  where app_num = #{app_num}
+	</update>
+	
+	 <select id="wsAuthNumCnt" resultType="int" >
+    select  count(prg_num1)+count(prg_num2)+count(prg_num3)
+	from 	approve_progress
+	where 	app_num = #{app_num}
+    </select>
+    
+     <select id="wsAuthCnt" resultType="int">
+    select  sum(prg_auth1 + prg_auth2 + prg_auth3)
+	from 	approve_progress
+	where 	app_num = #{app_num}
+    </select>
+	
+	
+	<update id="wsAuthResult" parameterType="String">
+		UPDATE approve_progress
+		  SET PRG_STATUS = '결재승인'
+		  where app_num = #{ app_num }
+	</update>
+	
+
+
 </mapper>

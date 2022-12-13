@@ -40,8 +40,8 @@
 		<thead>
 	<tr>
 	<th>문서번호</th>
-	<th>작성자</th>
 	<th>제목</th>
+	<th>작성자</th>
 	<th>문서분류</th>
 	<th>상태</th>
 	<th>기안일</th>
@@ -53,10 +53,9 @@
 	
 	<c:forEach var="apv" items="${listApv }">
 		<tr>
-			<td>${apv.rn}</td>
+			<td>${ apv.emp_num }_${ apv.app_num }</td>
 			<td><a href="myApvDetail?app_num=${apv.app_num}">${apv.app_title}</a></td><!-- 제목인데 나중에 추가 로 넣음 -->
 			<td>${apv.emp_name}</td>
-			<td><fmt:formatDate pattern="yyyy/MM/dd" value="${apv.app_date}"/></td>
 			<c:if test="${apv.comu_app != null}">
 				<td>근태</td>
 			</c:if>
@@ -64,7 +63,7 @@
 				<td>문서</td>
 			</c:if>
 			<td>${apv.app_prg }</td>
-			<td>${apv.app_date }</td>
+			<td><fmt:formatDate pattern="yyyy/MM/dd" value="${apv.app_date}"/></td>
 		</tr>
 		<c:set var="num" value="${num - 1}"></c:set>
 	

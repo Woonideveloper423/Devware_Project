@@ -22,9 +22,9 @@ public class approveServiceImpl implements approveService {
 	private final approveDao ad;
 	
 	@Override
-	public int totalApv() {
+	public int totalApv(EmpForSearch empForSearch) {
 		System.out.println("approveServiceImpl totalApv start...");
-		int totApvCnt = ad.totalApv();
+		int totApvCnt = ad.totalApv(empForSearch);
 		return totApvCnt;
 	}
 
@@ -89,11 +89,27 @@ public class approveServiceImpl implements approveService {
 	}
 
 	@Override
-	public int authApprove(int chkBtn) {
+	public int authApprove(String chkBtn, String sendData, String app_num) {
 		System.out.println("approveServiceImpl authApprove ...");
 		int result = 0;
-		result = ad.authApprove(chkBtn);
-		return 0;
+		result = ad.authApprove(chkBtn, sendData, app_num);
+		return result;
+	}
+
+	@Override
+	public int notAuthApv(EmpForSearch empForSearch) {
+		System.out.println("approveServiceImpl totalApv start...");
+		int totNotApvCnt = ad.totalNotApv(empForSearch);
+		return totNotApvCnt;
+	}
+
+	@Override
+	public List<Approve> listNotApv(Approve approve) {
+		List<Approve> listNotApv = null;
+		System.out.println("approveServiceImpl listApv start...");
+		listNotApv = ad.listNotApv(approve);
+		System.out.println("approveServiceImpl listApv listApv.size()->" +listNotApv.size());
+		return listNotApv;
 	}
 
 }
