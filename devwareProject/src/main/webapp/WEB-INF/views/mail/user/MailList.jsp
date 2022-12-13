@@ -318,48 +318,56 @@ $(function(){
 </script>
 <body>
 <div class="body_box">
-	<div class="titlebox" align="center">
-		<c:if test="${mailType eq '0'}">
-			<h2>보낸 메일함</h2>
-			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
-		</c:if>
-		<c:if test="${mailType eq '1'}">
-			<h2>받은 메일함</h2>
-			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='delete_not_read'>안 읽은 메일 삭제</button>
-		</c:if>
-		<c:if test="${mailType eq '2'}">
-			<h2>중요 메일함</h2>
-			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
-		</c:if>
-		<c:if test="${mailType eq '3'}">
-			<h2>휴지통</h2>
-			<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='restore_mail'>복원</button>
-		</c:if>
-	</div>
-	<div class="s003">
-		
-			<div class="inner-form">
-		          <div class="input-field first-wrap">
-		            <div class="input-select">
-		           	 <select id="search">
-						<option value="s_title">제목</option>
-						<option value="s_content">내용</option>
-						<option value="s_mail">메일</option>
-					</select>
+	<c:choose>
+		<c:when test="${empForSearch.permit_status eq 0}">
+			<div class="row board text-center">
+				아직 메일이 생성되지 않았습니다 관리자에게 문의해주세요 xxx-xxxx-xxxx
+			</div>
+		</c:when>
+		<c:otherwise>
+			<div class="titlebox" align="center">
+				<c:if test="${mailType eq '0'}">
+					<h2>보낸 메일함</h2>
+					<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
+				</c:if>
+				<c:if test="${mailType eq '1'}">
+					<h2>받은 메일함</h2>
+					<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='delete_not_read'>안 읽은 메일 삭제</button>
+				</c:if>
+				<c:if test="${mailType eq '2'}">
+					<h2>중요 메일함</h2>
+					<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button>
+				</c:if>
+				<c:if test="${mailType eq '3'}">
+					<h2>휴지통</h2>
+					<button id='select_all'>전체 선택</button><button id='delete_mail'>선택삭제</button><button id='restore_mail'>복원</button>
+				</c:if>
+			</div>
+			<div class="s003">
+				
+					<div class="inner-form">
+				          <div class="input-field first-wrap">
+				            <div class="input-select">
+				           	 <select id="search">
+								<option value="s_title">제목</option>
+								<option value="s_content">내용</option>
+								<option value="s_mail">메일</option>
+							</select>
+							</div>
+						</div>
 					</div>
-				</div>
+					<div class="input-field second-wrap">
+						<input type="text" id="keyword" placeholder="검색어를 입력하세요">
+					</div>
 			</div>
-			<div class="input-field second-wrap">
-				<input type="text" id="keyword" placeholder="검색어를 입력하세요">
+			<div class="input-field third-wrap">
+				<button class="btn-search" id="searchResult">검색</button><p>
 			</div>
-	</div>
-	<div class="input-field third-wrap">
-		<button class="btn-search" id="searchResult">검색</button><p>
-	</div>
-	<table id="mailList" style="margin-top: 20px"  class="table table-hover">
-	</table>
-	<div id="paging" class="pagination pagination-lg justify-content-center"></div>
-	
+			<table id="mailList" style="margin-top: 20px"  class="table table-hover">
+			</table>
+			<div id="paging" class="pagination pagination-lg justify-content-center"></div>
+		</c:otherwise>
+	</c:choose>
 </div>
 </body>
 </html>

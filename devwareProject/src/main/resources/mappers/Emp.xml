@@ -5,13 +5,13 @@
 <mapper namespace="com.oracle.j20221102_P.EmpMapper">
 
 	<select id="getAllUserInfo_Paging" parameterType="Page"  resultType="EmpForSearch">
-	 	SELECT * 
+	 	SELECT rn, emp_name, emp_id, e.emp_num, emp_gender, auth_name, status_name, position_name, dept_name, permit_status
 		FROM 
 		(
 		    SELECT rownum rn, q.* 
 		    FROM ( select e.emp_name, e.emp_id, e.emp_num, e.emp_gender, a.auth_name, s.status_name, p.position_name, d.dept_name from emp e, authority a , dept d , position p, status s where e.auth_num = a.auth_num and e.dept_num = d.dept_num and e.position_num = p.position_num and s.status_num = e.status_num order by e.emp_name
 		) q
-		) WHERE rn BETWEEN #{start} and #{end}
+		)e  ,mail_account ma WHERE rn BETWEEN #{start} and #{end} and e.emp_num = ma.emp_num(+)
  	</select>
 	
 	<select id="getAllUserInfo_All" resultType="EmpForSearch">

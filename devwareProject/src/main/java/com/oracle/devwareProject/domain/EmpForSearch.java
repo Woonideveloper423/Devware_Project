@@ -28,4 +28,5 @@ public class EmpForSearch
 	private int status_num;		//상태 번호
 	private String status_name;	//상태 이름
 	
+	private Long permit_status; //허용요청
 }	

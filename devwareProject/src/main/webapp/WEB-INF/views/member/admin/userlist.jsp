@@ -19,7 +19,23 @@
 		location.href='<%=context%>/userlistDeptSearch?deptnum='+ deptnum;
 	}
 	
-	
+	function mailCreateDone(emp_num){
+		$.ajax(
+				{
+					url:"/mail/mailCreateDone",
+					data:{"emp_num" : emp_num},
+					dataType:'text',
+					success:function(data){
+						if(data == 'success'){
+							alert("처리완료");
+							$('#mailPermit' + emp_num).html("생성완료")
+						}else{
+							alert("처리실패")
+						}
+					}
+				}		
+		);
+	}
 </script>
 </head>
 <body>
@@ -48,7 +64,11 @@
 					<td>${emp.auth_name}</td>
 					<td>${emp.status_name}</td>
 					<td><button type="button" class="btn btn-primary" onclick="location.href = '/adminGetUserInfo?emp_num=${emp.emp_num}'">정보 수정</button></td>
-					<td><button type="button" class="btn btn-primary" onclick="">사내 메일 허락</button></td>
+					<td id="mailPermit${emp.emp_num}">
+						<c:if test="${empty emp.permit_status}">요청 없음</c:if>
+						<c:if test="${emp.permit_status eq 0}"><button type="button" class="btn btn-primary" onclick="mailCreateDone(${emp.emp_num})">사내 메일 생성</button></c:if>
+						<c:if test="${emp.permit_status eq 1}">생성 완료</c:if>
+					</td>
 				</tr>
 				<c:set var="num" value="${num - 1 }"></c:set>
 	

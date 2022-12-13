@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oracle.devwareProject.domain.jehwan.MailAccount;
 
 import lombok.Data;
 
@@ -62,4 +63,7 @@ public class Emp
 	
 	@Transient
 	private int auth_num; //권한 
+	
+	@Transient
+	private MailAccount mailAccount; //메일 있는지 체크 
 }
