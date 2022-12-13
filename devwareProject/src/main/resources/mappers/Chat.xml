@@ -168,8 +168,9 @@
 		update CHAT_MEMBER 
 		set LAST_READ_LOG = #{log_num}
 		where ROOM_NUM = #{room_num}
-		<foreach collection="look_member" item="item" separator=" ">
-			and emp_num = #{item}
+		and emp_num in
+		<foreach collection="look_member" item="item" open="(" separator="," close=")">
+			#{item}
 		</foreach>
 	</update>
 	
