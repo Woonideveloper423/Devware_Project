@@ -59,6 +59,10 @@ public class Emp
 	private String msg; //결과 메시지
 	
 	@Transient
+	private String role; //결과 메시지
+	
+	
+	@Transient
 	private int result; //결과 상태창
 	
 	@Transient

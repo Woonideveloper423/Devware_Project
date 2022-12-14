@@ -16,7 +16,7 @@
 	function userlistDeptSearch()
 	{
 		var deptnum = $('#deptnum').val();
-		location.href='<%=context%>/userlistDeptSearch?deptnum='+ deptnum;
+		location.href='<%=context%>/admin/userlistDeptSearch?deptnum='+ deptnum;
 	}
 	
 	function mailCreateDone(emp_num){
@@ -78,25 +78,25 @@
 		<c:choose>
 			<c:when test="${deptnum eq 0}">
 				<c:if test="${page.startPage > page.pageBlock }">
-					<a href="userlist?currentPage=${page.startPage-page.pageBlock}">[이전]</a>
+					<a href="/admin/userlist?currentPage=${page.startPage-page.pageBlock}">[이전]</a>
 				</c:if>
 				<c:forEach var="i" begin="${page.startPage}" end="${page.endPage}">
-					<a href="userlist?currentPage=${i}">[${i}]</a>
+					<a href="/admin/userlist?currentPage=${i}">[${i}]</a>
 				</c:forEach>
 				<c:if test="${page.endPage < page.totalPage }">
-					<a href="userlist?currentPage=${page.startPage+page.pageBlock}">[다음]</a>
+					<a href="/admin/userlist?currentPage=${page.startPage+page.pageBlock}">[다음]</a>
 				</c:if>	
 			</c:when>
 			
 			<c:otherwise>
 				<c:if test="${page.startPage > page.pageBlock }">
-					<a href="userlistDeptSearch?currentPage=${page.startPage-page.pageBlock}&&deptnum=${deptnum}">[이전]</a>
+					<a href="/admin/userlistDeptSearch?currentPage=${page.startPage-page.pageBlock}&&deptnum=${deptnum}">[이전]</a>
 				</c:if>
 				<c:forEach var="i" begin="${page.startPage}" end="${page.endPage}">
-					<a href="userlistDeptSearch?currentPage=${i}&&deptnum=${deptnum}">[${i}]</a>
+					<a href="/admin/userlistDeptSearch?currentPage=${i}&&deptnum=${deptnum}">[${i}]</a>
 				</c:forEach>
 				<c:if test="${page.endPage < page.totalPage }">
-					<a href="userlistDeptSearch?currentPage=${page.startPage+page.pageBlock}&&deptnum=${deptnum}">[다음]</a>
+					<a href="/admin/userlistDeptSearch?currentPage=${page.startPage+page.pageBlock}&&deptnum=${deptnum}">[다음]</a>
 				</c:if>	
 			</c:otherwise>
 		</c:choose>

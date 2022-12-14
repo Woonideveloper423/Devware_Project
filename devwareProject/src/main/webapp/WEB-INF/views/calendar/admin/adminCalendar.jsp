@@ -125,7 +125,7 @@ function deleteEvent()
 	    	  {
 	    		alert("일정 삭제에 성공하였습니다."); 
 	    		$("#dayModal").modal('hide');
-	    		location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
+	    		location.href='<%=context%>/admin/manageCalendar?emp_num='+emp_num;
 	    	  }
 	      	}
 		});
@@ -138,7 +138,7 @@ function searchUsingEmpNum()
 	var emp_num = $('#empName').val();
 	alert("사원 번호: "+emp_num);
 	
-	location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
+	location.href='<%=context%>/admin/manageCalendar?emp_num='+emp_num;
 
 }
 
@@ -224,7 +224,7 @@ function modifyBtn()
 	    	  {
 	    		alert("일정 수정에 성공하였습니다.");  
 	    		$("#modId").modal('hide');
-	    		location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
+	    		location.href='<%=context%>/admin/manageCalendar?emp_num='+emp_num;
 	    	  }
 	      	}
 	  	});
@@ -329,7 +329,7 @@ function registBtn()
     		  
     		alert("일정 추가에 성공하였습니다.");  
     		$("#myModal").modal('hide');
-    		location.href='<%=context%>/manageCalendar?emp_num='+emp_num;
+    		location.href='<%=context%>/admin/manageCalendar?emp_num='+emp_num;
     	  }
       	}
   	});

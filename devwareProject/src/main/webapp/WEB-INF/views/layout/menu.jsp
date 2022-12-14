@@ -98,11 +98,11 @@ ul .nav-item {padding-left:7px;}
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">전자메일:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/mailWriteForm">메일 보내기</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/MailList?listType=1">받은 메일함 (<span id="menu_email_count">0</span>)</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/MailList?listType=0">보낸 메일함</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/MailList?listType=2">주요 메일함</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/mail/MailList?listType=3">휴지통</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/mail/mailWriteForm">메일 보내기</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/mail/MailList?listType=1">받은 메일함 (<span id="menu_email_count">0</span>)</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/mail/MailList?listType=0">보낸 메일함</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/mail/MailList?listType=2">주요 메일함</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/mail/MailList?listType=3">휴지통</a>
                    
           </div>
         </div>
@@ -112,7 +112,7 @@ ul .nav-item {padding-left:7px;}
 
        <!-- 일정관리 -->
         <li class="nav-item">
-        <a class="nav-link" href="/showCalendar">
+        <a class="nav-link" href="/user/showCalendar">
           <i class="fas fa-calendar-alt"></i>
           <span style="font-size: 15px;">내 일정 관리</span></a>
       	</li>
@@ -175,10 +175,10 @@ ul .nav-item {padding-left:7px;}
           <div class="bg-white py-2 collapse-inner rounded">
             <c:choose>
             	<c:when test="${emp.auth_num eq 0}">
-            		 <a class="collapse-item" href="/adminMyPageForm">내 정보</a>
+            		 <a class="collapse-item" href="/admin/adminMyPageForm">내 정보</a>
             	</c:when>
             	<c:otherwise>
-            		 <a class="collapse-item" href="/userMyPageForm">내 정보</a>
+            		 <a class="collapse-item" href="/user/userMyPageForm">내 정보</a>
             	</c:otherwise>
             </c:choose>
             
@@ -204,12 +204,12 @@ ul .nav-item {padding-left:7px;}
 		          
 		            <div class="collapse-divider"></div>
 		            <h6 class="collapse-header">회원  & 인사 관리:</h6>
-		            <a class="collapse-item" href="/userlist">사원 조회 및 관리</a>
-		            <a class="collapse-item" href="/createUserListForm">사원 리스트 추가</a>
+		            <a class="collapse-item" href="/admin/userlist">사원 조회 및 관리</a>
+		            <a class="collapse-item" href="/admin/createUserListForm">사원 리스트 추가</a>
 		            
 		           	<div class="collapse-divider"></div>
 		            <h6 class="collapse-header">캘린더 관리:</h6>
-		            <a class="collapse-item" href="/manageCalendarMain">사원 캘린더 조회 및 관리</a>		           		     
+		            <a class="collapse-item" href="/admin/manageCalendarMain">사원 캘린더 조회 및 관리</a>		           		     
 	          	</div>
         	</div>
       </li>

@@ -19,6 +19,9 @@
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
 $(function(){
+	if('${msg}' != ""){
+		alert('${msg}');
+	}
 	console.log("empno는?" + '${empForSearch.emp_num}');
 	email();
 	setInterval('email()', 30000);
@@ -687,7 +690,7 @@ function  wsEvt() {
                 
                 
                 
-                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/mail/MailList?listType=1">받은 메일함으로 가기</a>
+                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/user/mail/MailList?listType=1">받은 메일함으로 가기</a>
               </div>
             </li>
 
@@ -746,7 +749,7 @@ function  wsEvt() {
 		        <div class="modal-body">로그아웃을 누르시면 현재 세션을 벗어나 로그인 창으로 이동합니다.</div>
 		        <div class="modal-footer">
 		          <button class="btn btn-outline-primary" type="button" data-dismiss="modal">돌아가기</button>
-		          <a class="btn btn-outline-primary" href="/logoutForm">로그아웃</a>
+		          <a class="btn btn-outline-primary" href="/logout">로그아웃</a>
 		        </div>
 		      </div>
 		    </div>

@@ -34,7 +34,7 @@ public class CalendarController
 	private final EmpService empService;
 	
 	//캘린더 출력 함수
-	@RequestMapping("/showCalendar")
+	@RequestMapping("/user/showCalendar")
 	public String showCalendar(Model model, HttpSession session)
 	{
 		System.out.println("CalendarController showCalendar Start");
@@ -42,11 +42,11 @@ public class CalendarController
 		
 		System.out.println("유저 번호 : "+emp.getEmp_num());
 		
-		model.addAttribute("emp",emp);
+		
 		return "/calendar/user/calendar";
 	}
 	
-	@RequestMapping("/manageCalendar")
+	@RequestMapping("/admin/manageCalendar")
 	public String manageCalendar(Model model, HttpSession session, @RequestParam int emp_num)
 	{
 		System.out.println("CalendarController manageCalendar Start");
@@ -61,13 +61,13 @@ public class CalendarController
 		Emp name = new Emp();
 		name = empService.getInfo(emp_num);
 		
-		model.addAttribute("emp",emp);
+		
 		model.addAttribute("emp_num",emp_num);
 		model.addAttribute("name",name.getEmp_name());
 		return "/calendar/admin/adminCalendar";
 	}
 	
-	@RequestMapping("/manageCalendarMain")
+	@RequestMapping("/admin/manageCalendarMain")
 	public String manageCalendarMain(Model model, HttpSession session)
 	{
 		System.out.println("CalendarController manageCalendar Start");
@@ -77,7 +77,7 @@ public class CalendarController
 		deptlist = deptService.getDeptInfo();
 		
 		model.addAttribute("deptlist",deptlist);
-		model.addAttribute("emp",emp);
+		
 		model.addAttribute("emp_num",emp.getEmp_num());
 		return "/calendar/admin/adminCalendar";
 	}

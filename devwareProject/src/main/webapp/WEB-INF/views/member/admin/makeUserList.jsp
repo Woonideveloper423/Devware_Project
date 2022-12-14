@@ -61,7 +61,7 @@
 <body>
 		<h2>유저 등록하기</h2>
 		<div class="container-fluid">
-			<form action="/createUserList">
+			<form action="/admin/createUserList">
 				<table class="table table-hover text-center">
 					<tr>
 						<th>사원 이름</th>
