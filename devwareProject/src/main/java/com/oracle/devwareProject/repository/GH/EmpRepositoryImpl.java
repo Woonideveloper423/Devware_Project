@@ -29,10 +29,6 @@ public class EmpRepositoryImpl implements EmpRepository {
 			System.out.println("EmpDaoImpl empSave Start");
 			System.out.println("test getEmp_hireDate: " + emp.getEmp_hireDate());
 			em.persist(emp);
-			MailAccount mailAccount = new MailAccount();
-			mailAccount.setEmp_num(emp.getEmp_num());
-			mailAccount.setPermit_status(0L);
-			em.persist(mailAccount);
 			result++;
 		} catch (Exception e) {
 			System.out.println("EmpDaoImpl empSave Error: " + e.getMessage());

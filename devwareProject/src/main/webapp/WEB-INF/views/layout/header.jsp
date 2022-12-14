@@ -687,7 +687,7 @@ function  wsEvt() {
                 
                 
                 
-                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/mail/MailList?listType=0">받은 메일함으로 가기</a>
+                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/mail/MailList?listType=1">받은 메일함으로 가기</a>
               </div>
             </li>
 

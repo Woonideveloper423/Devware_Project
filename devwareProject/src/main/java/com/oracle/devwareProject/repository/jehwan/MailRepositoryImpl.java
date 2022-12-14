@@ -52,7 +52,7 @@ public class MailRepositoryImpl implements MailRepository {
 	@Override
 	public Long countNotReadMail(String mailAccount) {
 		Long result = 0L;
-		result = (Long) em.createQuery("SELECT COUNT(m) From Mail m where SENDER_MAIL = :SENDER_MAIL and READ_CHK = 0").setParameter("SENDER_MAIL", mailAccount).getSingleResult();
+		result = (Long) em.createQuery("SELECT COUNT(m) From Mail m where RECEIVER_MAIL = :RECEIVER_MAIL and READ_CHK = 0").setParameter("RECEIVER_MAIL", mailAccount).getSingleResult();
 		return result;
 	}
 	
@@ -149,7 +149,8 @@ public class MailRepositoryImpl implements MailRepository {
 
 	@Override
 	public List<Mail> listReceiveMail(String mailAccount,int empno, int start, int end, String search, String keyword) {
-		System.out.println("MailRepositoryImpl listMail start...");
+		System.out.println("MailRepositoryImpl listMail start mailAccount->" + mailAccount);
+		System.out.println("MailRepositoryImpl listMail start empno->" + empno);
 		List<Mail> mailList = new ArrayList<Mail>();
 		if(keyword==null || keyword == "") {
 			mailList = em.createQuery("SELECT m FROM Mail m WHERE RECEIVER_MAIL = :RECEIVER_MAIL and DELETE_CHK = 0", Mail.class).setParameter("RECEIVER_MAIL", mailAccount).setFirstResult(start-1).setMaxResults(10).getResultList();
