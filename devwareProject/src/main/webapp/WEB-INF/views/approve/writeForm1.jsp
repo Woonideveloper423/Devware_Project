@@ -44,7 +44,8 @@ height: 60px;
 
 
 $(document).ready(function(){
-
+	var prg_name1  = $('#authName_ath1').val();
+	
 	$('#summernote').summernote({
 		  lang: 'ko-KR',
 	      height: 200,
@@ -88,35 +89,28 @@ function sendApv(){
 	
 	if($('#authId1').val() == ''){
 		alert('결재라인을 선택해주세요')
-		check = false;
-		return;
+		return false;
 	}
 	if(($('#app_title').val()).trim() == ''){
 		alert('제목을 입력해주세요')
-		check = false;
-		return;
+		return false;
 	}
 	if(($('#summernote').val()).trim() == ''){
 		alert('내용을 입력해주세요')
-		check = false;
-		return;
+		return false;
 	}
-	
-	if(confirm('제출 이후에는 삭제하실 수 없습니다.\n정말 제출 하시겠습니까?')){
+	var chkConfirm = confirm('제출 이후에는 삭제하실 수 없습니다.\n정말 제출 하시겠습니까?');
+	   if (chkConfirm) {
+
+	   }
+	   else {
+		   return false;
+	   }
+
+<%-- 	if(confirm('제출 이후에는 삭제하실 수 없습니다.\n정말 제출 하시겠습니까?')){
 		if(doubleSubmitFlag){
 			
-		
-			
-			/* alert("첫번째"+$('#authId1').val());
-			alert($('#authId2').val());
-			alert($('#authId3').val());
-			
-			alert("두번쨰"+$('#authName_ath1').val());
-			alert($('#authName_ath2').val());
-			alert($('#authName_ath3').val());
-			
-			$("#sendApv").attr("action", "${pageContext.request.contextPath}/writeApprove"); // attribute setting
-			$('#sendApv').submit(); */
+
 			doubleSubmitFlag = false;
 
 			$.ajax({
@@ -153,14 +147,83 @@ function sendApv(){
 		}else{
 			return;
 		}
-	}else{
+	}else{ 
 		return;
-	}
+	} --%>
 }// sendApv end  
 
 function selectMem(){
 	window.open('${pageContext.request.contextPath}/pikAuthMem','결제자선택','width=1100 , height=500 ,resizable = no, scrollbars = no');
 } // selectMem end 
+
+
+function reWritrApv(){
+
+	if($('#authId1').val(${ reWrite.prg_num1 } ) == ''){
+		alert('결재라인을 선택해주세요')
+		return false;
+	}
+	if(($('#app_title').val()).trim() == ''){
+		alert('제목을 입력해주세요')
+		return false;
+	}
+	if(($('#summernote').val()).trim() == ''){
+		alert('내용을 입력해주세요')
+		return false;
+	}
+	
+	var chkConfirm = confirm('정말 저장 하시겠습니까?');
+	   if (chkConfirm) {
+
+	   }
+	   else {
+		   return false;
+	   }
+
+	<%-- if(confirm('제출 이후에는 삭제하실 수 없습니다.\n정말 제출 하시겠습니까?')){
+		 if(doubleSubmitFlag){
+			
+			doubleSubmitFlag = false;
+
+			$.ajax({
+				url : "<%=context%>/reWriteApprove",
+				type : 'post',
+				data : { 	
+							"prg_name1"  : $('#authName_ath1').val(),
+							"prg_name2"	 : $('#authName_ath2').val(),
+							"prg_name3"	 : $('#authName_ath3').val(),
+							
+							"prg_num1" 	 : $('#authId1').val(),
+							"prg_num2" 	 : $('#authId2').val(),
+							"prg_num3" 	 : $('#authId3').val(),
+							
+							app_title 	 : $('#app_title').val(),
+							app_content  : $('#summernote').val(),
+							docs_app 	 : $('#docs_app').val(),
+
+							emp_num 	 : ${ sessionScope.empForSearch.emp_num }
+						},
+				success:function(data){
+					alert('성공한듯?')
+		 			location.replace("<%=context%>/myApvList");
+		 			
+				} ,
+				error: function (err) {
+					//400과 404를 제외한 에러가 발생했을시
+						if(err.status !== 400 && err.status !== 404){
+							alert(`네트워크 오류로 서버와의 통신이 실패하였습니다.${err.status}`);
+						}
+				} 
+				
+			});
+		}else{
+			return;
+		} 
+	}else{
+		return;
+	} --%>
+} // reWritrApv end   
+
 
 </script>
 
@@ -177,8 +240,7 @@ function selectMem(){
                   <h4><strong>[일반결재 작성]</strong></h4> 
      <table class="table table text-center">
        <tr><td><strong>기안담당</strong>
-	${ empForSearch.emp_name }
-	
+
 	<!-- 관리부서 -->
 	<c:choose>
 	
@@ -191,7 +253,7 @@ function selectMem(){
 	<c:choose>
 	
 	<c:when test="${ sessionScope.empForSearch.dept_name == null }">관리자</c:when>
-	<c:otherwise>${ empForSearch.emp_name }</c:otherwise>
+	<c:otherwise>${ empForSearch.dept_name }</c:otherwise>
 	
 	</c:choose></td>
 	
@@ -210,9 +272,7 @@ function selectMem(){
                 <div class="card-body text-center">
                  
                  <!-- 결제칸 -->
-    <input type="hidden" id="authDept1" name="authDept1" value="${ empForSearch.dept_name }">
-	<input type="hidden" id="authDept2" name="authDept2" value="${ empForSearch.dept_name }">
-	<input type="hidden" id="authDept3" name="authDept3" value="${ empForSearch.dept_name }">
+
 	
     <table>
 	<tr><td width="50%">
@@ -220,8 +280,15 @@ function selectMem(){
 		<button class="btn btn-outline-primary" onclick="selectMem()">결재라인 추가</button>
 	</div>
 	</td>
-	
-	    <form id="sendApv" method="POST" enctype="multipart/form-data"> <!-- ============================================================================================================================================================= -->
+	<c:choose>
+		<c:when test="${reWrite.app_num != null }">
+			<form id="sendApv" method="POST" enctype="multipart/form-data" onsubmit="return reWritrApv()" action="<%=context%>/reWriteApprove">
+		</c:when>
+		<c:otherwise>
+			<form id="sendApv" method="POST" enctype="multipart/form-data" onsubmit="return sendApv()" action="<%=context%>/writeApprove">
+		</c:otherwise>
+	</c:choose>
+	     
   
 	<td width="50%">
 	<div class="float-right">
@@ -230,23 +297,23 @@ function selectMem(){
 	<tr>
 		<td class="tt" rowspan='3'>결재</td>
 		<td class="aa">작성자</td>
-		<td id="authRank1" class="aa"></td>
-		<td id="authRank2" class="aa"></td>
-		<td id="authRank3" class="aa"></td>
+		<td id="authRank1" class="aa">${ reWrite.position_name1 }</td>
+		<td id="authRank2" class="aa">${ reWrite.position_name2 }</td>
+		<td id="authRank3" class="aa">${ reWrite.position_name3 }</td>
 	</tr>
 	
 	<tr>
 		<td>${ sessionScope.empForSearch.emp_name }</td>
-		<td id="authName1"></td>
-		<td id="authName2"></td>
-		<td id="authName3"></td>
+		<td id="authName1">${ reWrite.prg_name1 }</td>
+		<td id="authName2">${ reWrite.prg_name2 }</td>
+		<td id="authName3">${ reWrite.prg_name3 }</td>
 	</tr>
 	
 	<tr>
 		<td>${ sessionScope.empForSearch.emp_num }</td>
-		<td id="apv_mem1"></td>
-		<td id="apv_mem2"></td>
-		<td id="apv_mem3"></td>
+		<td id="apv_mem1">${ reWrite.prg_num1 }</td>
+		<td id="apv_mem2">${ reWrite.prg_num2 }</td>
+		<td id="apv_mem3">${ reWrite.prg_num3 }</td>
 	</tr>
 	
 	</table>
@@ -268,19 +335,24 @@ function selectMem(){
 		<hr>
            		<!-- 결재기록 --> 
 
-	<input type="hidden" id="authId1" name="approval_mem1" >
-	<input type="hidden" id="authId2" name="approval_mem2" >
-	<input type="hidden" id="authId3" name="approval_mem3" > 
+	<!-- 사번  -->
+	<input type="hidden" id="apv_mem_ath1" name="prg_num1" value="${ reWrite.prg_num1 }">
+	<input type="hidden" id="apv_mem_ath2" name="prg_num2" value="${ reWrite.prg_num2 }">
+	<input type="hidden" id="apv_mem_ath3" name="prg_num3" value="${ reWrite.prg_num3 }">
+	<!-- 이름  -->
+	<input type="hidden" id="authName_ath1" name="prg_name1" value="${ reWrite.prg_name1 }">
+	<input type="hidden" id="authName_ath2" name="prg_name2" value="${ reWrite.prg_name2 }">
+	<input type="hidden" id="authName_ath3" name="prg_name3" value="${ reWrite.prg_name3 }"> 
 	
-	<input type="hidden" id="authName_ath1" name="authName_ath1" >
-	<input type="hidden" id="authName_ath2" name="authName_ath2" >
-	<input type="hidden" id="authName_ath3" name="authName_ath3" > 
+
+	<input type="hidden" id="emp_num" name="emp_num" value="${sessionScope.empForSearch.emp_num }">
+	<input type="hidden" id="app_num" name="app_num" value="${reWrite.app_num }">						
 	
-	&nbsp;제목 : <input class="form-control" id="app_title" type="text" name="app_title" ">
+	&nbsp;제목 : <input class="form-control" id="app_title" type="text" name="app_title" value="${ reWrite.app_title }">
 	<br>
 	
 	<div>
-		<textarea class="form-control" id="summernote" name="app_content" ></textarea> <br>
+		<textarea class="form-control" id="summernote" name="app_content" >${ reWrite.app_content }</textarea> <br>
 	</div>
 	
 	
@@ -288,7 +360,15 @@ function selectMem(){
 	  <hr>
          <div class="container" align="center">
 		<input class="btn btn-outline-primary" type="button" value="뒤로가기" onclick="history.back(-1);">
-		<button class="btn btn-outline-primary" onclick="sendApv()">제출하기</button>
+		<c:choose>
+			<c:when test="${reWrite.app_num != null }">
+				<input class="btn btn-outline-primary" type="submit" value="저장하기">
+			</c:when>
+			<c:otherwise>
+				<input class="btn btn-outline-primary" type="submit" value="제출하기">
+			</c:otherwise>
+		</c:choose>
+		
 		<!-- <input class="btn btn-outline-primary" type="submit" value="제출하기" > -->
 			<div><br></div>
 	</div>        
@@ -320,6 +400,7 @@ function selectMem(){
 		window.open('${pageContext.request.contextPath}/pikAuthMem','결제자선택','width=1100, height=500 ,resizable = no, scrollbars = no');
 	}
 
+	
 	</script>
 
 </body>

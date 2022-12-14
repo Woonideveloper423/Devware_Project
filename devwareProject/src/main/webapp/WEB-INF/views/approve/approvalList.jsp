@@ -352,9 +352,11 @@
 			$(opener.document).find('#authName'+i).text($('#name_'+i).text());
 			$(opener.document).find('#authName_ath'+i).val($('#name_'+i).text());
 			$(opener.document).find('#authRank'+i).text($('#rank_'+i).text());
+			$(opener.document).find('#authRank_ath'+i).val($('#rank_'+i).text());
 			$(opener.document).find('#authDept'+i).val($('#dept_'+i).text());
 			$(opener.document).find('#authId'+i).val($('#memId_'+i).text());
 			$(opener.document).find('#apv_mem'+i).text($('#memId_'+i).text());
+			$(opener.document).find('#apv_mem_ath'+i).val($('#memId_'+i).text());
 			
 		 }
 		 

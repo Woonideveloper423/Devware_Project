@@ -112,4 +112,22 @@ public class approveServiceImpl implements approveService {
 		return listNotApv;
 	}
 
+	@Override
+	public int reWriteApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar, String app_num) {
+		int result = 0;
+		System.out.println("approveServiceImpl writeApv start...");
+		result = ad.reWriteApv(approve, approve_Progress, calendar, app_num);
+		
+		return result;
+	}
+
+	@Override
+	public Approve_Progress returnApprove(Approve_Progress approve_Progress, int app_num, String apv_return) {
+		System.out.println("approveServiceImpl returnApprove start...");
+		approve_Progress = null;
+		approve_Progress = ad.returnApprove(approve_Progress, app_num, apv_return);
+		return approve_Progress;
+	}
+
+
 }
