@@ -38,6 +38,7 @@ import javax.mail.internet.MimeUtility;
 import javax.mail.util.ByteArrayDataSource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.IOUtils;
 import org.hibernate.pretty.MessageHelper;
@@ -46,7 +47,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.oracle.devwareProject.domain.Emp;
+import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.domain.jehwan.Mail;
+import com.oracle.devwareProject.domain.jehwan.MailAccount;
 import com.oracle.devwareProject.domain.jehwan.MailAttach;
 import com.oracle.devwareProject.repository.jehwan.MailRepository;
 
@@ -62,7 +66,11 @@ public class MailServiceImpl implements MailService {
 	private final MailRepository mailRepository;
 
 	@Override
-	public int sendEmail(HttpServletRequest request, Mail mail) {
+	public int sendEmail(HttpSession session, Mail mail) {
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		mail.setSender_mail(emp.getEmp_id() + "@devware.shop");
+		mail.setSender_name(emp.getEmp_name());
+		System.out.println("보내는 메일 주소->" + mail.getSender_mail());
 		Properties props = new Properties();
 		props.put("mail.smtp.starttls.enable", "true");
 		props.setProperty("mail.transport.protocol", "smtp");
@@ -83,20 +91,20 @@ public class MailServiceImpl implements MailService {
 		String mail_content = mail.getMail_content();
 		String mail_receiver_address = mail.getReceiver_mail();
 		String mail_receiver_name = mail.getReceiver_name();
-	    Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+	    Session mail_session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("jehwan@devware.shop", "wpghks12");
+                return new PasswordAuthentication(mail.getSender_mail(), emp.getEmp_passwd());
             }
         });
 	    		
 	    log.info("sendermail->" + mail.getReceiver_mail());
-	    MimeMessage msg = new MimeMessage(session);
+	    MimeMessage msg = new MimeMessage(mail_session);
 	    MimeBodyPart mimeBodyPart = new MimeBodyPart();
 	    Multipart multipart = new MimeMultipart();
 	    int result = 0;
 	    Transport t = null;
 		try {
-			msg.setFrom(new InternetAddress("jehwan@devware.shop", "제환"));
+			msg.setFrom(new InternetAddress(mail.getSender_mail(), mail.getSender_name()));
 			msg.setRecipient(Message.RecipientType.TO, new InternetAddress(mail_receiver_address, mail_receiver_name));
 			msg.setSubject(MimeUtility.encodeText(mail_title, "UTF-8", "B"));
 			//msg.setContent(mail_content, "text/html; charset=UTF-8");
@@ -129,11 +137,11 @@ public class MailServiceImpl implements MailService {
 			}
 
 			msg.setContent(multipart);
-			 log.info("sendermail->" + "jehwan@devware.shop");
+			 log.info("sendermail->" + mail.getSender_mail());
 			Transport.send(msg);
 //			t.connect();
 //			t.sendMessage(msg, msg.getAllRecipients());
-			String uploadFolder = request.getSession().getServletContext().getRealPath("/upload/");
+			String uploadFolder = session.getServletContext().getRealPath("/upload/");
 			mail.setRead_chk(0L);
 			mail.setDelete_chk(0L);
 			mail.setMail_date(new Date());
@@ -169,96 +177,110 @@ public class MailServiceImpl implements MailService {
 	}
 
 	@Override
-	public int receiveMail(HttpServletRequest request) throws MessagingException, IOException {
-		log.info("MailController2 receiveMail start..");
-		Properties props = new Properties();
-		props.put("mail.store.protocol", "pop3");
-		props.put("mail.pop3.host", "devware.shop");
-		props.put("mail.pop3.port", "110");
-//		props.put("mail.pop3.starttls.enable", "true");
-//		props.put("mail.pop3s.ssl.protocols", "TLSv1.2");
-//		props.put("mail.pop3s.ssl.trust", "devware.shop");
-
-		Session session = Session.getDefaultInstance(props);
-		
-		Store store = session.getStore("pop3");
-		store.connect("devware.shop","jehwan@devware.shop","wpghks12");
-		log.info("MailController2 receiveMail connect start..");
-		
-		Folder mailFolder = store.getFolder("INBOX");
-		mailFolder.open(Folder.READ_WRITE);
-		
-		log.info("MailController2 receiveMail folderOpen start..");
-		
-		Message[] messages = mailFolder.getMessages();
-		ArrayList<Mail> mailList = new ArrayList<Mail>();
-		for(int i = 0 ; i < messages.length ; i ++) {
-			Mail mail = new Mail();
-			Message message = messages[i];
-			message.setFlag(Flags.Flag.DELETED, true);
-			log.info("mail title" + message.getSubject());
-
+	public Long receiveMail(HttpSession session) throws MessagingException, IOException {
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		Long result = 0L;
+		if(emp.getPermit_status() == 0L) {
+			log.info("메일 아직 없음");
+			Long permit_check = mailRepository.permitCheck(emp.getEmp_num());
+			if(permit_check == 1L) {
+				log.info("메일 생성 됐음");
+				emp.setPermit_status(permit_check);
+			}
+		}
+		if(emp.getPermit_status() == 1L) {
+			String dev_mail_id =emp.getEmp_id()+"@devware.shop";
+			String dev_mail_pw =emp.getEmp_passwd();
+			log.info("MailController2 receiveMail start..");
+			Properties props = new Properties();
+			props.put("mail.store.protocol", "pop3");
+			props.put("mail.pop3.host", "devware.shop");
+			props.put("mail.pop3.port", "110");
+	//		props.put("mail.pop3.starttls.enable", "true");
+	//		props.put("mail.pop3s.ssl.protocols", "TLSv1.2");
+	//		props.put("mail.pop3s.ssl.trust", "devware.shop");
+	
+			Session mail_session = Session.getDefaultInstance(props);
 			
-			readMailHeader(message, mail);
-			mail.setRead_chk(0L);
-			mail.setDelete_chk(0L);
-			mail.setMail_date(new Date(message.getSentDate().getTime()));
-			mailRepository.sendEmail(mail);
+			Store store = mail_session.getStore("pop3");
+			store.connect("devware.shop",dev_mail_id,dev_mail_pw);
+			log.info("MailController2 receiveMail connect start..");
 			
-			String uploadFolder = request.getSession().getServletContext().getRealPath("/upload/");
+			Folder mailFolder = store.getFolder("INBOX");
+			mailFolder.open(Folder.READ_WRITE);
 			
+			log.info("MailController2 receiveMail folderOpen start..");
 			
-			
-			if(message.getContent() instanceof MimeMultipart) {
-				MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
-				System.out.println(mimeMultipart.getCount());
-				for(int j = 0 ; j < mimeMultipart.getCount() ; j ++) {
-					log.info("contentType->" + mimeMultipart.getBodyPart(j).getContentType());
-					log.info("disposition->" + mimeMultipart.getBodyPart(j).getDisposition());
-					
-					if(mimeMultipart.getBodyPart(j).getDisposition()!=null && mimeMultipart.getBodyPart(j).getDisposition().equals("attachment")==true) {
-						log.info("multipart has attachment FileName->" + mimeMultipart.getBodyPart(j).getFileName());
-						InputStream inputStream = mimeMultipart.getBodyPart(j).getInputStream();
-						MailAttach mailAttach= new MailAttach();
-						mailAttach.setMail_attach_num((long)j);
-						mailAttach.setMail(mail);
-						mailAttach.setMail_attach_real_name(mimeMultipart.getBodyPart(j).getFileName());
-						mailAttach.setMail_attach_save_name(uploadFile(mimeMultipart.getBodyPart(j).getFileName(),IOUtils.toByteArray(inputStream), uploadFolder));
-						mailAttach.setMail_attach_save_path(uploadFolder);
-						//uploadFile(mimeMultipart.getBodyPart(j).getFileName(),inputStream.readAllBytes(), uploadFolder);
-						mailRepository.saveAttach(mailAttach);
-						if(inputStream != null) {
-							inputStream.close();
-						}
-					}else if(mimeMultipart.getBodyPart(j).getDisposition()!=null && mimeMultipart.getBodyPart(j).getDisposition().equals("inline")==true) {
-						log.info("content is multipart");
-					}	
-					else {
-							System.out.println("message is multipart but not have attach");
-						if(mimeMultipart.getBodyPart(j).getContent() instanceof Multipart) {
-							System.out.println("bodypart instance of multipart");
-						}else{
-							mail.setMail_content((String) mimeMultipart.getBodyPart(j).getContent());
-							System.out.println("content->" + (String) mimeMultipart.getBodyPart(j).getContent());
+			Message[] messages = mailFolder.getMessages();
+			ArrayList<Mail> mailList = new ArrayList<Mail>();
+			for(int i = 0 ; i < messages.length ; i ++) {
+				Mail mail = new Mail();
+				Message message = messages[i];
+				message.setFlag(Flags.Flag.DELETED, true);
+				log.info("mail title" + message.getSubject());
+	
+				
+				readMailHeader(message, mail);
+				mail.setRead_chk(0L);
+				mail.setDelete_chk(0L);
+				mail.setMail_date(new Date(message.getSentDate().getTime()));
+				mailRepository.sendEmail(mail);
+				
+				String uploadFolder = session.getServletContext().getRealPath("/upload/");
+				
+				
+				if(message.getContent() instanceof MimeMultipart) {
+					MimeMultipart mimeMultipart = (MimeMultipart) message.getContent();
+					System.out.println(mimeMultipart.getCount());
+					for(int j = 0 ; j < mimeMultipart.getCount() ; j ++) {
+						log.info("contentType->" + mimeMultipart.getBodyPart(j).getContentType());
+						log.info("disposition->" + mimeMultipart.getBodyPart(j).getDisposition());
+						
+						if(mimeMultipart.getBodyPart(j).getDisposition()!=null && mimeMultipart.getBodyPart(j).getDisposition().equals("attachment")==true) {
+							log.info("multipart has attachment FileName->" + mimeMultipart.getBodyPart(j).getFileName());
+							InputStream inputStream = mimeMultipart.getBodyPart(j).getInputStream();
+							MailAttach mailAttach= new MailAttach();
+							mailAttach.setMail_attach_num((long)j);
+							mailAttach.setMail(mail);
+							mailAttach.setMail_attach_real_name(mimeMultipart.getBodyPart(j).getFileName());
+							mailAttach.setMail_attach_save_name(uploadFile(mimeMultipart.getBodyPart(j).getFileName(),IOUtils.toByteArray(inputStream), uploadFolder));
+							mailAttach.setMail_attach_save_path(uploadFolder);
+							//uploadFile(mimeMultipart.getBodyPart(j).getFileName(),inputStream.readAllBytes(), uploadFolder);
+							mailRepository.saveAttach(mailAttach);
+							if(inputStream != null) {
+								inputStream.close();
+							}
+						}else if(mimeMultipart.getBodyPart(j).getDisposition()!=null && mimeMultipart.getBodyPart(j).getDisposition().equals("inline")==true) {
+							log.info("content is multipart");
+						}	
+						else {
+								System.out.println("message is multipart but not have attach");
+							if(mimeMultipart.getBodyPart(j).getContent() instanceof Multipart) {
+								System.out.println("bodypart instance of multipart");
+							}else{
+								mail.setMail_content((String) mimeMultipart.getBodyPart(j).getContent());
+								System.out.println("content->" + (String) mimeMultipart.getBodyPart(j).getContent());
+							}
 						}
 					}
+				}else {
+					System.out.println("message is not multipart");
+	//				if(message.getContent() instanceof Multipart) {
+	//					System.out.println("bodypart instance of multipart");
+	//				}else{
+					mail.setMail_content((String) message.getContent());
+					System.out.println("content->" + (String) message.getContent());
+					//}
+					
 				}
-			}else {
-				System.out.println("message is not multipart");
-//				if(message.getContent() instanceof Multipart) {
-//					System.out.println("bodypart instance of multipart");
-//				}else{
-				mail.setMail_content((String) message.getContent());
-				System.out.println("content->" + (String) message.getContent());
-				//}
+				
 				
 			}
-			
-			
+			mailFolder.close(true);
+			store.close();
+			result=  mailRepository.countNotReadMail(emp.getEmp_id()+"@devware.shop");
 		}
-		mailFolder.close(true);
-		store.close();
-		return 0;
+		return result;
 	}
 	
 	
@@ -448,6 +470,20 @@ public class MailServiceImpl implements MailService {
 		log.info("restoreDetailMail after...");
 	}
 
+	
+	@Override
+	public int mailCreateDone(int emp_num) {
+		int result = mailRepository.mailCreateDone(emp_num);
+		return result;
+	}
+	
+	@Override
+	public Long permitCheck(int emp_num) {
+		log.info("permitCheck start..");
+		Long permit_check = mailRepository.permitCheck(emp_num);
+		return permit_check;
+	}
+	
 	@Override
 	public void saveAttach(HttpServletRequest request, HttpServletResponse response, String saveName, String realName,
 			String uploadFolder) {
@@ -553,6 +589,12 @@ public class MailServiceImpl implements MailService {
 			System.out.println("파일이 존재하지 않습니다");
 		}
 	}
+
+	
+
+	
+
+
 }
 
 

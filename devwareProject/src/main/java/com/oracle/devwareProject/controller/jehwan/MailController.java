@@ -8,6 +8,7 @@ import java.util.List;
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.domain.jehwan.Mail;
+import com.oracle.devwareProject.domain.jehwan.MailAccount;
 import com.oracle.devwareProject.domain.jehwan.MailAttach;
 import com.oracle.devwareProject.domain.jehwan.MailAttachVO;
 import com.oracle.devwareProject.domain.jehwan.MailListVO;
@@ -41,56 +44,78 @@ public class MailController {
 			
 			model.addAttribute("replyMail", replyMail);
 			model.addAttribute("replyName", replyName);
-			return "/mail/mailWriteForm";
+			return "/mail/user/mailWriteForm";
 		}
 		
-		
 		@PostMapping(value = "/mail/writeMail")
-		public String mailTest(HttpServletRequest request, Mail mail, Model model) throws UnsupportedEncodingException, MessagingException {
+		public String mailTest(HttpSession session, Mail mail, Model model) throws UnsupportedEncodingException, MessagingException {
 			
 			
 			log.info("mailTest mailSend Start...");
-			int mailSendResult = mailservice.sendEmail(request, mail);
+			int mailSendResult = mailservice.sendEmail(session, mail);
 			log.info("mailSendResult -> " + mailSendResult);
 			model.addAttribute("mailType",0);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
-		@GetMapping(value="/mail/receiveMessage")
-		public String receiveMessage(HttpServletRequest request, Model model) throws MessagingException, IOException {
+		@ResponseBody
+		@RequestMapping(value = "/mail/mailCreateDone")
+		public String mailCreateDone(HttpSession session, int emp_num) {
+			log.info("MailController mailCreateDone start.. emp_num->" + emp_num);
+			int Createresult = mailservice.mailCreateDone(emp_num);
+			if(Createresult != 0) {
+				return "success";
+			}else {
+				return "fail";
+			}
+		}
+		
+		@ResponseBody
+		@RequestMapping(value = "/mail/countMail")
+		public Long countMail(HttpSession session) throws MessagingException, IOException {
 			log.info("MailController2 receiveMessage start..");
-			int mailReceiveResult = mailservice.receiveMail(request);
-			model.addAttribute("mailType",1);
-			return "/mail/MailList";
-		}
-
-		@GetMapping(value = "/mail/sendMailList")
-		public String sendMailList(Model model) {
-			log.info("sendMailList Start...");
-			model.addAttribute("mailType",0);
-			return "/mail/MailList";
+			Long result =  mailservice.receiveMail(session);
+			
+			return result;
 		}
 		
-		@GetMapping(value = "/mail/receiveMailList")
-		public String receiveMailList(Model model) {
-			log.info("receiveMailList Start...");
-			model.addAttribute("mailType",1);
-			return "/mail/MailList";
-		}
+		
+//		@GetMapping(value="/mail/receiveMessage")
+//		public String receiveMessage(HttpServletRequest request, Model model) throws MessagingException, IOException {
+//			log.info("MailController2 receiveMessage start..");
+//			Long mailReceiveResult = mailservice.receiveMail(request, null);
+//			model.addAttribute("mailType",1);
+//			return "/mail/user/MailList";
+//		}
 
-		@GetMapping(value = "/mail/importantMailList")
-		public String importantMailList(Model model) {
-			log.info("importantMailList Start...");
-			model.addAttribute("mailType",2);
-			return "/mail/MailList";
+		@GetMapping(value = "/mail/MailList")
+		public String sendMailList(int listType, Model model) {
+			log.info("sendMailList Start listType->"+ listType);
+			
+			model.addAttribute("mailType",listType);
+			return "/mail/user/MailList";
 		}
 		
-		@GetMapping(value = "/mail/deletedMailList")
-		public String deletedMailList(Model model) {
-			log.info("deletedMailList Start...");
-			model.addAttribute("mailType",3);
-			return "/mail/MailList";
-		}
+//		@GetMapping(value = "/mail/receiveMailList")
+//		public String receiveMailList(Model model) {
+//			log.info("receiveMailList Start...");
+//			model.addAttribute("mailType",1);
+//			return "/mail/user/MailList";
+//		}
+//
+//		@GetMapping(value = "/mail/importantMailList")
+//		public String importantMailList(Model model) {
+//			log.info("importantMailList Start...");
+//			model.addAttribute("mailType",2);
+//			return "/mail/user/MailList";
+//		}
+//		
+//		@GetMapping(value = "/mail/deletedMailList")
+//		public String deletedMailList(Model model) {
+//			log.info("deletedMailList Start...");
+//			model.addAttribute("mailType",3);
+//			return "/mail/user/MailList";
+//		}
 		
 		@ResponseBody
 		@RequestMapping("/mail/viewMailList")
@@ -182,7 +207,7 @@ public class MailController {
 //			
 //			model.addAttribute("mailDetail", mailDetail);
 //			
-			return "/mail/mailDetail";
+			return "/mail/user/mailDetail";
 		}
 		
 		@RequestMapping(value = "/mail/deleteNotRead")
@@ -268,7 +293,7 @@ public class MailController {
 			mailservice.deleteDetailMail(uploadFolder, mailNum, mailType);
 			
 			model.addAttribute("mailType", mailType);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 		@RequestMapping(value = "/mail/restoreDetailMail")
@@ -278,7 +303,7 @@ public class MailController {
 			mailservice.restoreDetailMail(mailNum);
 			
 			model.addAttribute("mailType", 3);
-			return "/mail/MailList";
+			return "/mail/user/MailList";
 		}
 		
 

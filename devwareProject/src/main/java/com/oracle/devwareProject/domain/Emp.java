@@ -12,6 +12,7 @@ import javax.persistence.Transient;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.oracle.devwareProject.domain.jehwan.MailAccount;
 
 import lombok.Data;
 
@@ -52,7 +53,7 @@ public class Emp
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "position_num") 
 	private Position position;
-	
+
 	//조회용
 	@Transient
 	private String msg; //결과 메시지
@@ -63,4 +64,6 @@ public class Emp
 	@Transient
 	private int auth_num; //권한 
 	
+	@Transient
+	private MailAccount mailAccount; //메일 있는지 체크 
 }

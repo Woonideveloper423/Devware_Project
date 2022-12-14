@@ -26,13 +26,13 @@ public class MailAccount {
 	@Id
 	private int emp_num;
 	
-	@OneToOne(fetch = FetchType.EAGER)
-	@MapsId //@MapsId 는 @id로 지정한 컬럼에 @OneToOne 이나 @ManyToOne 관계를 매핑시키는 역할
-	@JoinColumn(name = "emp_num")
-	private Emp emp;
+//	@OneToOne(fetch = FetchType.EAGER)
+//	@MapsId //@MapsId 는 @id로 지정한 컬럼에 @OneToOne 이나 @ManyToOne 관계를 매핑시키는 역할
+//	@JoinColumn(name = "emp_num")
+//	private Emp emp;
+
 	
-	private String mail_id;
-	private String mail_pw;
 	
+	private Long permit_status;
 
 }

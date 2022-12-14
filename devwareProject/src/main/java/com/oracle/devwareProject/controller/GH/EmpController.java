@@ -371,7 +371,11 @@ public class EmpController
 			empForSearch.setEmp_email(emp.getEmp_email());
 			empForSearch.setEmp_gender(emp.getEmp_gender());
 			empForSearch.setEmp_hireDate(emp.getEmp_hireDate());
-			
+			if(emp.getMailAccount()!=null) {
+				empForSearch.setPermit_status(emp.getMailAccount().getPermit_status());
+			}else {
+				System.out.println("생성된 메일 없음");
+			}
 			List <Dept> deptlist = new ArrayList<Dept>();
 			deptlist = deptService.getDeptInfo();
 			
@@ -655,12 +659,14 @@ public class EmpController
 	public String upDateUser(Emp new_emp, Model model, HttpSession session)
 	{
 		Emp emp = (Emp) session.getAttribute("emp");
+		EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch");
 		System.out.println("EmpService editInfo Start");
 		int result = 0;
 		
 		try {
 			//이름 변경
 			emp.setEmp_name(new_emp.getEmp_name());
+			empForSearch.setEmp_name(new_emp.getEmp_name());
 			System.out.println("이름: "+new_emp.getEmp_name());
 			
 			//비밀번호 수정한 경우 암호화 한 후 다시 변경 
@@ -674,17 +680,17 @@ public class EmpController
 				temp = encoder.encode(temp);
 				emp.setEmp_passwd(temp);
 			}
-			
+			empForSearch.setEmp_passwd(emp.getEmp_passwd());
 			System.out.println("비밀번호: "+emp.getEmp_passwd());
 			
 			//이메일 변경
 			emp.setEmp_email(new_emp.getEmp_email());
-			
+			empForSearch.setEmp_email(new_emp.getEmp_email());
 			System.out.println("이메일: "+new_emp.getEmp_email());
 			
 			//주소 변경
 			emp.setEmp_address(new_emp.getEmp_address());
-			
+			empForSearch.setEmp_address(new_emp.getEmp_address());
 			System.out.println("주소: " + new_emp.getEmp_address());
 			
 			//변경 사항을 반영한 update문 

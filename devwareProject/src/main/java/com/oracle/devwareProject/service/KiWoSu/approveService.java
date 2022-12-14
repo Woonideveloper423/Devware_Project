@@ -12,9 +12,13 @@ import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 
 public interface approveService {
 
-	int totalApv();
+	int totalApv(EmpForSearch empForSearch);
+	
+	int notAuthApv(EmpForSearch empForSearch);
 
 	List<Approve> listApv(Approve approve);
+	
+	List<Approve> listNotApv(Approve approve);
 
 	int writeApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar);
 
@@ -28,6 +32,6 @@ public interface approveService {
 
 	Vacation getVacation(int emp_num);
 
-	int authApprove(int chkBtn);
+	int authApprove(String chkBtn, String sendData, String app_num);
 
 }

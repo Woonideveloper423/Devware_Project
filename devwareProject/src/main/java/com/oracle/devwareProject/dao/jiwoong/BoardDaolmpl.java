@@ -37,23 +37,31 @@ public class BoardDaolmpl implements BoardDao {
 	public int checkListTotalCnt(BoardEmpDept bEmp) {
 		log.info("checkListTotalCnt start");
 		int checkListTotalCnt=0;
-		try {
-			checkListTotalCnt=session.selectOne("jwcheckListTotal",bEmp);
+		try {// 전체목록 Total
+			if(bEmp.getKeyword()=="" || bEmp.getSearchType()=="") {
+				checkListTotalCnt=session.selectOne("jwcheckListTotal",bEmp);
+			}else { // 조건검색 Total 
+				checkListTotalCnt=session.selectOne("jwSearchListTotal",bEmp);
+			}
 			log.info("checkListTotalCnt:" +checkListTotalCnt);
 		} catch (Exception e) {
-			log.info(" Exception=>"+e.getMessage());
+			log.info("Exception=>"+e.getMessage());
 		}
 		return checkListTotalCnt;
 	}
 	
 	@Override
 	public List<BoardEmpDept> boardCheckList(BoardEmpDept bEmp) {
-		System.out.println("BoardDaolmpl boardCheckList start");
+		log.info("boardCheckList start");
 		List<BoardEmpDept> brdCheckList = null;
 		try {
-			brdCheckList = session.selectList("jwBrdCheckList",bEmp);
-			System.out.println(brdCheckList.size());
-		} catch (Exception e) {
+			if(bEmp.getKeyword()=="" || bEmp.getSearchType()=="") {
+				brdCheckList = session.selectList("jwBrdCheckList",bEmp);
+			}else {
+				brdCheckList= session.selectList("jwSearchList",bEmp);
+			}
+				log.info("brdCheckList.size:" +brdCheckList.size());
+		}catch (Exception e) {
 			System.out.println("BoardDaolmpl boardCheckList Exception=>" +e.getMessage());
 		}
 		return brdCheckList;

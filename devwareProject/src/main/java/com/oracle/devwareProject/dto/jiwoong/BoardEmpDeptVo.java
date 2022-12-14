@@ -5,11 +5,11 @@ import java.util.List;
 import com.oracle.devwareProject.service.jiwoong.Paging;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
+@Data
 public class BoardEmpDeptVo {
 	
 
@@ -19,6 +19,6 @@ public class BoardEmpDeptVo {
 	private String searchType;		private String keyword;	
 	private String pageNum;			private int end;
 	private int    start;			
-	
+
 	
 }
