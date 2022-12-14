@@ -37,7 +37,7 @@ public class BoardController {
 	public String boardWriteForm(int brd_type,Model model) throws Exception {
 		log.info("/board/WriteForm Start...");
 		model.addAttribute("enterBrdType",brd_type);
-		return "/board/writeForm";
+		return "/board/user/writeForm";
 	}
 
 	// 게시판 게시글 작성
@@ -60,7 +60,7 @@ public class BoardController {
 		log.info("brd_num:"+bEmpDept.getBrd_num());
 		log.info("dept_num:"+bEmpDept.getDept_num());
 		model.addAttribute("board",bEmpDept);
-		return "/member/user/updateForm";
+		return "/board/user/updateForm";
 		}
 	
 	// 게시판 게시글 수정
@@ -97,9 +97,9 @@ public class BoardController {
 	  log.info("/board/checkList start"); 
 	  model.addAttribute("brd_type",brd_type);
 	  if(brd_type==5) {
-		  return "/member/user/myBoardList"; 
+		  return "/board/user/myBoardList"; 
 	  }else {
-		  return "/member/user/boardList"; 
+		  return "/board/user/boardList"; 
 		  }
 	  
 	}
@@ -154,7 +154,7 @@ public class BoardController {
 		  bEmpDept.setDept_num(emp.getDept().getDept_num());
 		  BoardEmpDept detailInfo=bs.detailBoard(bEmpDept);
 		  model.addAttribute("board",detailInfo);
-		  return "/member/user/detailBoard"; 
+		  return "/board/user/detailBoard"; 
 	  }
 }
 	 
