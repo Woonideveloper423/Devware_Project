@@ -63,6 +63,10 @@ function loginCheck()
 
 
 $(function(){
+	if('${msg}' != ""){
+		alert('${msg}');
+	}
+	
 	//	페이지 로딩 완료 후 focus 이동 - 처음에 label zoom 효과 안되는 오류 수정(임시방편)
 	$(document).ready(function(){
 		$("input[type='text']:first, input[type='password']:first").focus();
@@ -121,18 +125,18 @@ $(function(){
 							<!-- 아이디 -->
 							<div class="form-group textbox">
 								<label for="emp_id">아이디를 입력하세요</label>
-								<input type="text" class="form-control" id="emp_id" name="emp_id" value="gunhee1234" maxlength="15" required="required">
+								<input type="text" class="form-control" id="emp_id" name="username" value="gunhee1234" maxlength="15" required="required">
 							</div>
 								
 							<!-- 비밀번호 -->
 							<div class="form-group textbox">
 								<label for="emp_passwd">비밀번호를 입력하세요</label>
-								<input type="password" class="form-control" id="emp_passwd" name="emp_passwd" value="12341234" maxlength="16" style="ime-mode: disabled;" required="required" >
+								<input type="password" class="form-control" id="emp_passwd" name="password" value="12341234" maxlength="16" style="ime-mode: disabled;" required="required" >
 							</div>
 							
 							<!-- 로그인 버튼 -->
 							<div class="form-group textbox">
-								<input type="button" class="btn btn-primary btn-user btn-block" id="btn_login" onclick="loginCheck()" value="로그인">
+								<input type="submit" class="btn btn-primary btn-user btn-block" id="btn_login" value="로그인">
 							</div>
 							
 						</form>

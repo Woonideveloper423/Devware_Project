@@ -6,6 +6,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.oracle.devwareProject.configuration.auth.PrincipalDetails;
 import com.oracle.devwareProject.domain.Authority;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.Emp;
@@ -79,7 +81,7 @@ public class EmpController
 	}
 
 	//회원 가입을 위한 유저 리스트 만들기 [관리자 기능]
-	@RequestMapping("/createUserListForm")
+	@RequestMapping("/admin/createUserListForm")
 	public String createUserListForm(Model model)
 	{	
 		List <Dept> deptlist = new ArrayList<Dept>();
@@ -104,7 +106,7 @@ public class EmpController
 	
 	
 	//일반 유저 메인 페이지 정보를 보여주는 메소드 
-	@RequestMapping("/userMyPageForm")
+	@RequestMapping("/user/userMyPageForm")
 	public String myPageForm(HttpSession session,Model model)
 	{
 		Emp emp = (Emp) session.getAttribute("emp");
@@ -128,7 +130,7 @@ public class EmpController
 	
 	//관리자 유저 메인 페이지 정보를 보여주는 메소드 
 	@SuppressWarnings("unchecked")
-	@RequestMapping("/adminMyPageForm")
+	@RequestMapping("/admin/adminMyPageForm")
 	public String AdminMyPageForm(HttpSession session,Model model)
 	{
 		System.out.println("EmpService adminMyPageForm Start");
@@ -190,7 +192,7 @@ public class EmpController
 		return "/member/findIdPwForm";
 	}
 	
-	@GetMapping("/createUserList")
+	@GetMapping("/admin/createUserList")
 	public String createUserList(Model model, EmpList emplist, @RequestParam String emp_hire_date) 
 	{
 		System.out.println("EmpController createUserList Start");
@@ -325,30 +327,32 @@ public class EmpController
 		return emp;
 	}
 	
-	//로그인 메소드 [AJAX]
-	@ResponseBody
-	@RequestMapping("/login")
-	public Emp login(@RequestParam String emp_id, @RequestParam String emp_passwd, HttpServletRequest request) {
+	//로그인 메소드 [수정]
+//	@ResponseBody
+	@RequestMapping("/loginSuccess")
+	public String login(@AuthenticationPrincipal PrincipalDetails principal, HttpSession session) {
 		System.out.println("EmpService login Start");
-		
+
 		Emp emp = new Emp();
 		
 		//현재 로그인을 요청한 Emp Id를 가져오기
 		try {
-			emp = empService.login(emp_id);
+			emp = empService.login(principal.getUsername());
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		System.out.println(emp_id +"and" + emp_passwd);
-		// 위 단계에서 조회한 암호화된 데이터베이스에 존재하는 Emp의 비밀번호와 현재 로그인을 요청한 비밀번호와 비교 
-		if(encoder.matches(emp_passwd,emp.getEmp_passwd()))
-		{
-			HttpSession session =request.getSession();	//세션에 저장하기 위한 객체를 생성
-			System.out.println("로그인 성공");
+//		System.out.println(emp_id +"and" + emp_passwd);
+//		// 위 단계에서 조회한 암호화된 데이터베이스에 존재하는 Emp의 비밀번호와 현재 로그인을 요청한 비밀번호와 비교 
+//		if(encoder.matches(emp_passwd,emp.getEmp_passwd()))
+//		{
+//			HttpSession session =request.getSession();	//세션에 저장하기 위한 객체를 생성
+//			System.out.println("로그인 성공");
+
 			emp.setMsg(emp.getEmp_name()+"님 환영합니다.");
 			emp.setAuth_num(emp.getAuth().getAuth_num());
 			emp.setResult(1);
 			
+			System.out.println("emp 제대로 받았나?->" + emp);
 			//조회용 empForSearch에 값을 넣기
 			EmpForSearch empForSearch = new EmpForSearch();
 			empForSearch.setAuth_name(emp.getAuth().getAuth_name());
@@ -372,6 +376,7 @@ public class EmpController
 			empForSearch.setEmp_gender(emp.getEmp_gender());
 			empForSearch.setEmp_hireDate(emp.getEmp_hireDate());
 			if(emp.getMailAccount()!=null) {
+				System.out.println("메일 있음");
 				empForSearch.setPermit_status(emp.getMailAccount().getPermit_status());
 			}else {
 				System.out.println("생성된 메일 없음");
@@ -395,15 +400,30 @@ public class EmpController
 			session.setAttribute("authlist",authlist);
 			session.setAttribute("poslist",poslist);
 			session.setAttribute("statuslist",statuslist);
-		}
-		else
-		{
-			System.out.println("로그인 실패");
-			emp.setMsg("로그인에 실패하셨습니다.");
-			emp.setResult(0);
-		}
+//		}
+//		else
+//		{
+//			System.out.println("로그인 실패");
+//			emp.setMsg("로그인에 실패하셨습니다.");
+//			emp.setResult(0);
+//		}
 		
-		return emp;
+			//관리자 일 경우 
+			if(empForSearch.getAuth_num() == 0)
+			{
+//				model.addAttribute("emp",emp);
+//				model.addAttribute("empForSearch",empForSearch);
+				System.out.println("관리자 메인으로 이동");
+				return "/member/admin/adminMain";
+			}
+			//일반 유저 일 경우 
+			else
+			{	
+//				model.addAttribute("emp",emp);
+//				model.addAttribute("empForSearch",empForSearch);
+				System.out.println("유저 메인으로 이동");
+				return "/member/user/userMain";
+			}
 	}
 	
 	//해당 사번을 가진 계정이 존재하는 지 확인하기 위한 메소드 [AJAX]
@@ -558,7 +578,7 @@ public class EmpController
 		return result;
 	}
 		
-	@RequestMapping("/userlist")
+	@RequestMapping("/admin/userlist")
 	public String userlist(Model model, HttpSession session, String currentPage)
 	{
 		Emp emp = (Emp) session.getAttribute("emp");
@@ -605,7 +625,7 @@ public class EmpController
 		return "/member/admin/userlist";
 	}
 	
-	@RequestMapping("/userlistDeptSearch")
+	@RequestMapping("/admin/userlistDeptSearch")
 	public String userlistDeptSearch(@RequestParam int deptnum, Model model, HttpSession session, String currentPage)
 	{
 		System.out.println("Current Page: "+currentPage);
@@ -655,7 +675,7 @@ public class EmpController
 	}
 	
 	
-	@PostMapping("/editInfo")
+	@PostMapping("/user/editInfo")
 	public String upDateUser(Emp new_emp, Model model, HttpSession session)
 	{
 		Emp emp = (Emp) session.getAttribute("emp");
@@ -714,7 +734,7 @@ public class EmpController
 		
 		return "/member/user/userMyPageForm";
 	}
-	@RequestMapping("/adminGetUserInfo")
+	@RequestMapping("/admin/adminGetUserInfo")
 	public String adminEditUser(@RequestParam int emp_num, Model model,HttpSession session)
 	{
 		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
@@ -760,7 +780,7 @@ public class EmpController
 	}
 	
 	
-	@PostMapping("/adminEditInfo")
+	@PostMapping("/admin/adminEditInfo")
 	public String upDateAdminData(EmpForSearch new_emp, Model model, HttpSession session)
 	{
 		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
@@ -848,7 +868,7 @@ public class EmpController
 		return "/member/admin/adminMyPageForm";
 	}
 	
-	@PostMapping("/adminEditUserInfo")
+	@PostMapping("/admin/adminEditUserInfo")
 	public String adminUpDateUserData(EmpForSearch new_emp, Model model, HttpSession session)
 	{
 		EmpForSearch admin_emp = (EmpForSearch) session.getAttribute("empForSearch");
@@ -944,5 +964,23 @@ public class EmpController
 		model.addAttribute("result",result);
 		
 		return "/member/admin/adminEditUserForm";
+	}
+	
+	
+	@RequestMapping("/loginFail")
+	public String loginFail(Model model) {
+		model.addAttribute("msg","로그인에 실패하셨습니다.");
+		return "/member/loginForm";
+	}
+	
+	@RequestMapping("/denied")
+	public String denied(HttpSession session, Model model) {
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		model.addAttribute("msg","권한이 없습니다.");
+		if(emp != null) {
+			return "/member/user/userMain";
+		}else {
+			return "/member/loginForm";
+		}	
 	}
 }

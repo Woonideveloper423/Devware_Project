@@ -182,7 +182,7 @@
 <body>
 	<div class="container-fluid">
 		<h3>관리자용 마이페이지</h3>
-		<form action="/adminEditInfo" method="post">
+		<form action="/admin/adminEditInfo" method="post">
 			<table class="table table-hover text-center">
 				<tr>
 					<th><label for="emp_num">사번</label></th>

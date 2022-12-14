@@ -37,7 +37,7 @@ public class MailController {
 	
 		private final MailService mailservice;
 		
-		@RequestMapping(value = "/mail/mailWriteForm")
+		@RequestMapping(value = "/user/mail/mailWriteForm")
 		public String mailWriteForm(String replyMail,String replyName, Model model) {
 			log.info("mailWriteForm start..");
 			log.info("replyMail is" + replyMail);
@@ -88,7 +88,7 @@ public class MailController {
 //			return "/mail/user/MailList";
 //		}
 
-		@GetMapping(value = "/mail/MailList")
+		@GetMapping(value = "/user/mail/MailList")
 		public String sendMailList(int listType, Model model) {
 			log.info("sendMailList Start listType->"+ listType);
 			

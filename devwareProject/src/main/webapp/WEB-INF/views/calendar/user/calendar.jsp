@@ -117,7 +117,7 @@ function deleteEvent()
 	    	  {
 	    		alert("일정 삭제에 성공하였습니다."); 
 	    		$("#dayModal").modal('hide');
-	    		location.href='<%=context%>/showCalendar';
+	    		location.href='<%=context%>/user/showCalendar';
 	    	  }
 	      	}
 		});
@@ -202,7 +202,7 @@ function modifyBtn()
 	    	  {
 	    		alert("일정 수정에 성공하였습니다.");  
 	    		$("#modId").modal('hide');
-	    		location.href='<%=context%>/showCalendar';
+	    		location.href='<%=context%>/user/showCalendar';
 	    	  }
 	      	}
 	  	});
@@ -286,7 +286,7 @@ function registBtn()
     	  {
     		alert("일정 추가에 성공하였습니다.");  
     		$("#myModal").modal('hide');
-    		location.href='<%=context%>/showCalendar';
+    		location.href='<%=context%>/user/showCalendar';
     	  }
       	}
   	});
