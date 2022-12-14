@@ -118,7 +118,7 @@ public class BoardController {
 		  log.info("emp_num:" +bEmp.getEmp_num());
 		  log.info("searchType:"+bEmp.getSearchType());
 		  log.info("keyword:"+bEmp.getKeyword());
-		  log.info("orderType:"+bEmp.getOrderType());
+		  log.info("arrayType:"+bEmp.getArrayType());
 		  log.info("currentPage:"+currentPage);
 		  
 		  int brdTotalCnt = bs.checkListTotalCnt(bEmp);

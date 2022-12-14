@@ -21,17 +21,17 @@
  <!-- include libraries(jQuery, bootstrap) -->
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
 <script type="text/javascript">
- $(function(){  // 게시글 목록 불러오기
+$(function(){  // 게시글 목록 불러오기
 	getBoardList();
-}) 
+})
 
-function searchBtnChk(){
+function searchBtnChk(){ // 검색 버튼 클릭 이벤트
 	 getBoardList();
  }
- 
 function getBoardList(currentPage){ // 게시글 목록 출력
 	 var searchType=$('#searchType').val(); 
 	 var keyword=$('#keyword').val();
+	 
 	 $.ajax({
         url:'/board/ajaxCheckList',
         type:'GET',
@@ -147,13 +147,13 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 		   
 		   <ul style="margin-top: 10px; margin-left: 36.3%; text-align: center;" class="nav">
 			  <li  class="nav-item">
-			    <a class="nav-link active" aria-current="page" href="#"><span style="font-size: 20px;">최신순</span></a>
+			    <a id='recent' class="nav-link active" href="javascript:void(0);" ><span style="font-size: 20px;">최신순</span></a>
 			  </li>
 			  <li class="nav-item">
-			    <a class="nav-link" href="#"><span style="font-size: 20px;">조회순</span></a>
+			    <a id='view' class="nav-link" href="javascript:void(0);" ><span style="font-size: 20px;">조회순</span></a>
 			  </li>
 			  <li class="nav-item">
-			    <a class="nav-link" href="#"><span style="font-size: 20px;">댓글많은순</span></a>
+			    <a id='replyNum' class="nav-link" href="javascript:void(0);" ><span style="font-size: 20px;">댓글많은순</span></a>
 			  </li>
 			</ul>
 		   

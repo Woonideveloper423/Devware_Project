@@ -128,13 +128,13 @@ ul .nav-item {padding-left:7px;}
      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree">
         <i class="fa-solid fa-clipboard"></i>
-        <span style="font-size:15px;">전자게시판</span>
+        <span style="font-size:15px;">전사게시판</span>
         </a>
         <div id="collapseThree" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">사내게시판:</h6>
             <a class="collapse-item" href="/board/checkList?brd_type=1">사내 게시판</a>
-            <a class="collapse-item" href="/board/checkList?brd_type=2"> 게시판</a>
+            <a class="collapse-item" href="/board/checkList?brd_type=2">${emp.dept.dept_name} 게시판</a>
             <a class="collapse-item" href="/board/checkList?brd_type=5">My 게시글 목록</a>
              <h6 class="collapse-header">커뮤니티:</h6>
             <a class="collapse-item" href="/board/checkList?brd_type=3">Q&A게시판</a>

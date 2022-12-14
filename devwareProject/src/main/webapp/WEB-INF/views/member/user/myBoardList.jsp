@@ -19,13 +19,12 @@
 <script type="text/javascript">
  $(function(){  // 게시글 목록 불러오기
 	getBoardList();
-
 })
 
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
 	 getBoardList();
  }
-function getBoardList(currentPage){ // 게시글 목록 출력
+function getBoardList(arrayType,currentPage){ // 게시글 목록 출력
 	 var searchType=$('#searchType').val(); 
 	 var keyword=$('#keyword').val();
 	 
@@ -135,18 +134,18 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 		      </form>
 		    </div>
 			
-			<!-- 게시글 필터항목 -->
-		  <c:set var="num" value="${page.total-page.start+1 }"></c:set>
-		   
 		   <ul style="margin-top: 10px; margin-left: 36.3%; text-align: center;" class="nav">
 			  <li  class="nav-item">
-			    <a class="nav-link active" aria-current="page" href="#"><span style="font-size: 20px;">최신순</span></a>
+			    <a class="nav-link active" aria-current="page" href="javascript:void(0);" onclick="recentArray()" ><span style="font-size: 20px;">최신순</span></a>
+			  	<input type="hidden" id='recent' value="recent">
 			  </li>
 			  <li class="nav-item">
 			    <a class="nav-link" href="#"><span style="font-size: 20px;">조회순</span></a>
+			    <input type="hidden" id='view' value="view">
 			  </li>
 			  <li class="nav-item">
 			    <a class="nav-link" href="#"><span style="font-size: 20px;">댓글많은순</span></a>
+			    <input type="hidden" id='replyNum' value="replyNum">
 			  </li>
 			</ul>
 		   
@@ -164,28 +163,21 @@ function getBoardList(currentPage){ // 게시글 목록 출력
 		   		</tr>
 		   		</thead>
 		   		<tbody id='tbody' align="center">
-		   		
 		   		</tbody>
 		   </table>
 		   <hr/>
 		  <!--  페이징 -->
-		   <nav aria-label="Page navigation example">
-				  <ul class="pagination pagination-lg justify-content-center">
-					  <c:if test="${page.startPage > page.pageBlock }">
-					  	<li class="page-item"><a class="page-link" href="/board/checkList?currentPage=${page.startPage-page.pageBlock}&brd_type=5">이전</a></li>
-					  	
-					  </c:if>
-					  <c:forEach var="i" begin="${page.startPage}" end="${page.endPage}">
-				    	<li class="page-item"><a class="page-link" href="/board/checkList?currentPage=${i }&brd_type=5">${i }</a></li>
-				    	
-				      </c:forEach>
-				  	  <c:if test="${page.endPage<page.totalPage }">
-				   		 <li class="page-item"><a class="page-link" href="/board/checkList?currentPage=${page.startPage+page.pageBlock } &brd_type=5">다음</a></li>
-				   		
-				    </c:if>
-				  </ul>
-		  </nav>
-		   
+		      <div class="paging-menu">
+				  <!--  페이징 -->
+				   <nav  aria-label="Page navigation example">
+						  <ul id='pagingNation' class="pagination pagination-lg justify-content-center">
+						  </ul> 
+				  </nav>
+				  <div align="right">
+				<button class='btn btn-primary btn-lg' onclick="location.href='/board/WriteForm?brd_type=${brd_type}'">
+				<i class="fa-solid fa-pen">글쓰기</i></button>
+			 </div> 
+		 	</div>
 	</div>
 	
 </body>
