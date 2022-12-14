@@ -75,7 +75,7 @@ public class MailController {
 		public Long countMail(HttpSession session) throws MessagingException, IOException {
 			log.info("MailController2 receiveMessage start..");
 			Long result =  mailservice.receiveMail(session);
-			
+			log.info("총 안읽은 메일 수는?->" + result);
 			return result;
 		}
 		
@@ -119,9 +119,12 @@ public class MailController {
 		
 		@ResponseBody
 		@RequestMapping("/mail/viewMailList")
-		public MailListVO viewMailList(String currentPage, String search, String keyword, int mailType) {
+		public MailListVO viewMailList(HttpSession session, String currentPage, String search, String keyword, int mailType) {
+			
+			EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+			
 			MailListVO mailListVO = new MailListVO();
-			Long totMail = mailservice.countMail("jehwan@devware.shop", mailType, search, keyword);
+			Long totMail = mailservice.countMail(emp.getEmp_id()+"@devware.shop", mailType, search, keyword);
 			
 			log.info("totMail->" + totMail);
 			Paging page = new Paging(totMail, currentPage);
@@ -129,8 +132,8 @@ public class MailController {
 			log.info("page.getStart()" + page.getEnd());
 			int start = page.getStart();
 			int end = page.getEnd();
-			int empno = 1;
-			List<Mail> mailList = mailservice.listMail("jehwan@devware.shop",empno , page.getStart(), page.getEnd(), mailType, search, keyword);
+			int empno = emp.getEmp_num();
+			List<Mail> mailList = mailservice.listMail(emp.getEmp_id()+"@devware.shop",empno , page.getStart(), page.getEnd(), mailType, search, keyword);
 			
 			log.info("mailList.size()->" + mailList.size());
 			
@@ -211,9 +214,10 @@ public class MailController {
 		}
 		
 		@RequestMapping(value = "/mail/deleteNotRead")
-		public String deleteNotRead(String currentPage, String search, String keyword, int mailType, Model model) {
+		public String deleteNotRead(HttpSession session, String currentPage, String search, String keyword, int mailType, Model model) {
+			EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
 			log.info("mailType->" + mailType);
-			String mailAccount = "jehwan@devware.shop";
+			String mailAccount = emp.getEmp_id()+"@devware.shop";
 			mailservice.deleteNotRead(mailAccount);
 			
 			
@@ -258,9 +262,11 @@ public class MailController {
 		}
 		
 		@RequestMapping(value = "/mail/mailImportant")
-		public String mailImportant(String currentPage, String search, String keyword, String mailNum, String isImportant, int mailType, Model model) {
+		public String mailImportant(HttpSession session, String currentPage, String search, String keyword, String mailNum, String isImportant, int mailType, Model model) {
+			EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+			
 			log.info("mailImportant mailType->" + mailType);
-			int empno = 1;
+			int empno = emp.getEmp_num();
 			log.info("mailImportant mailNum->" + mailNum);
 			Long mailNumLong = (long) Integer.parseInt(mailNum);
 			mailservice.mailImportant(empno, mailNumLong, isImportant);
@@ -298,8 +304,6 @@ public class MailController {
 		
 		@RequestMapping(value = "/mail/restoreDetailMail")
 		public String restoreDetailMail(Long mailNum, Model model) {
-			
-			String mailAccount = "jehwan@devware.shop";
 			mailservice.restoreDetailMail(mailNum);
 			
 			model.addAttribute("mailType", 3);

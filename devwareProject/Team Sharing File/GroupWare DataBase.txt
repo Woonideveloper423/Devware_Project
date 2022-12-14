@@ -56,10 +56,43 @@ CREATE SEQUENCE  CALENDARCOUNT;
 
 
 /* 제환 */
-/* 테이블 데이터 삽입은 없습니다 */
+/* 테이블 수정 */
+read_cnt -> 테이블 삭제
+
+chat_room
+- room_title크기 50으로 변경
+- mem_cnt삭제
+
+chat_member
+- last_read_log (size number 5)추가
+
+chat_log
+- not_read_cnt (size number 5)추가
+- attach_name size 100으로 변경
+
+mail_account
+-아이디 비번 열 삭제
+-permit_status number10 추가
+
+/* 메일 계정 입력 */
+INSERT INTO MAIL_ACCOUNT  VALUES ('1805001', 0);
+INSERT INTO MAIL_ACCOUNT  VALUES ('1401001', 0);
+INSERT INTO MAIL_ACCOUNT  VALUES ('2003001', 0);
+INSERT INTO MAIL_ACCOUNT  VALUES ('1702001', 0);
+INSERT INTO MAIL_ACCOUNT  VALUES ('2104001', 0);
+
 /* 시퀀스 생성 */
 CREATE SEQUENCE  CHAT_LOG_SEQ;
 CREATE SEQUENCE  CHAT_ROOM_SEQ;
+
+/* 트리거 생성 */
+create or replace TRIGGER input_mail_after_insert
+AFTER INSERT ON EMP
+FOR EACH ROW
+BEGIN
+   INSERT INTO mail_account values(:new.emp_num, 0);
+END;
+
 
 /* 프로시저 생성 */
 
@@ -126,16 +159,4 @@ v_last_read_num chat_log.log_num%TYPE;
 END Chat_Message_Proc;
 
 
-/* 테이블 수정 */
-read_cnt -> 테이블 삭제
 
-chat_room
-- room_title크기 50으로 변경
-- mem_cnt삭제
-
-chat_member
-- last_read_log (size number 5)추가
-
-chat_log
-- not_read_cnt (size number 5)추가
-- attach_name size 100으로 변경
