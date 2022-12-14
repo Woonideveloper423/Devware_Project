@@ -360,4 +360,18 @@ public class ApproveController {
 			return "redirect:myApvList";
 		}
 		
+		@RequestMapping("/delApv")
+		public String deleteApprove(Approve_Progress approve_Progress ,int app_num, String apv_return, Model model) {
+			
+			System.out.println("CommuteController getVacation start....");
+			
+			approve_Progress.setApp_num(app_num);
+			approve_Progress.setPrg_return(apv_return);
+			System.out.println("test getApp_num->" + approve_Progress.getApp_num());
+			System.out.println("test getPrg_return->" + approve_Progress.getPrg_return());
+			approve_Progress = as.returnApprove(approve_Progress, app_num, apv_return);
+			
+			return "redirect:myApvList";
+		}
+		
 }
