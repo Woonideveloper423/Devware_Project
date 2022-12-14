@@ -4,6 +4,8 @@ package com.oracle.devwareProject.service.jiwoong;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.dto.jiwoong.Board;
 import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
@@ -11,7 +13,9 @@ import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
 
 public interface BoardService {
 
-	int brdInsert(BoardEmpDept bEmp); 
+	int brdInsert(BoardEmpDept bEmp);
+	
+	/* int brdInsert(BoardEmpDept bEmp,MultipartFile[] files); */
 	
 	int checkListTotalCnt(BoardEmpDept bEmp);
 	

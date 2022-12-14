@@ -5,11 +5,14 @@ import java.util.List;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.devwareProject.dao.jiwoong.BoardDao;
 
 
 import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
+import com.oracle.devwareProject.mapper.jiwoong.FileMapper;
+import com.oracle.devwareProject.util.jiwoong.FileUtils;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +23,8 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardServiceImpl implements BoardService {
 	
 	private final BoardDao bd;
+	private final FileMapper FileMapper;
+	private final FileUtils FileUtils;
 	
 	@Override
 	public int brdInsert(BoardEmpDept bEmp) {
@@ -28,6 +33,12 @@ public class BoardServiceImpl implements BoardService {
 		log.info("brdInsertCnt=>" +brdInsertCnt);
 		return brdInsertCnt;
 	}
+	
+	/*
+	 * @Override public int brdInsert(BoardEmpDept bEmp, MultipartFile[] files) {
+	 * log.info("brdInsert(file) start"); int brdFileInsert; if(brdInsert(bEmp)!=1)
+	 * { brdFileInsert=0; } return brdFileInsert; }
+	 */
 	
 	@Override
 	public int checkListTotalCnt(BoardEmpDept bEmp) {
@@ -75,6 +86,8 @@ public class BoardServiceImpl implements BoardService {
 		log.info("brdUpdateCnt:" +brdUpdateCnt);
 		return brdUpdateCnt;
 	}
+
+	
 
 	
 

@@ -16,57 +16,21 @@
   <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>  
 
   <!-- include summernote css/js -->
-  <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.css" rel="stylesheet">
-  <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.11/summernote.js"></script>
+  <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
 	
 <script type="text/javascript">
-$(document).ready(function(){
+$(function(){
 	$('#brd_content').summernote({
-		  lang: 'ko-KR',
-	      height: 400,
-	      popover: {
-	    	  image:[],
-	    	  link:[],
-	    	  air:[]
-	      } ,
-	      toolbar: [
-	    	    // [groupName, [list of button]]
-	    	    ['style', ['bold', 'italic', 'underline', 'clear']],
-	    	    ['font', ['strikethrough', 'superscript', 'subscript']],
-	    	    ['fontsize', ['fontsize']],
-	    	    ['color', ['color']],
-	    	    ['para', ['ul', 'ol', 'paragraph']],
-	    	    ['table', ['table']],
-	    	    ['insert', ['link', 'picture', 'hr']],
-	    	    ['height', ['height']]
-	    	  ],
-	    	  focus: true,
-				callbacks: {
-					onImageUpload: function(files, editor, welEditable) {
-			            for (var i = files.length - 1; i >= 0; i--) {
-			            	sendFile(files[i], this);
-			            }
-			        }
-				}
-	  });
-	}) // SummerNote ready end
+        placeholder: '내용을 작성하세요',
+        height: 400,
+        maxHeight: 800
+    });
 
-	function chkInputValue(id, msg) {
-		if ($.trim($(id).val()) == "") {
-			alert(msg + " 입력해주세요.");
-			$(id).focus();
-			return false;
-		}
-		return true;
-	}
-	function fn_formSubmit() {
-		if (!chkInputValue("#brd_title", "글 제목을"))
-			return;
-		if (!chkInputValue("#brd_content", "글 내용을"))
-			return;
+	
+});
 
-		/* $("#writeForm").submit(); */
-	}
+	
 </script>
 </head>
 <body>
