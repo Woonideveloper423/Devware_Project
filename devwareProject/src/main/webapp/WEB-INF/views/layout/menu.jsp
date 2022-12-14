@@ -112,9 +112,9 @@ ul .nav-item {padding-left:7px;}
 
        <!-- 일정관리 -->
         <li class="nav-item">
-        <a class="nav-link" href="${pageContext.request.contextPath}/calendar">
-           <i class="fas fa-calendar-alt"></i>
-          <span style="font-size: 15px;">일정관리</span></a>
+        <a class="nav-link" href="/showCalendar">
+          <i class="fas fa-calendar-alt"></i>
+          <span style="font-size: 15px;">내 일정 관리</span></a>
       	</li>
       
       <!-- 근태관리 -->
@@ -207,6 +207,9 @@ ul .nav-item {padding-left:7px;}
 		            <a class="collapse-item" href="/userlist">사원 조회 및 관리</a>
 		            <a class="collapse-item" href="/createUserListForm">사원 리스트 추가</a>
 		            
+		           	<div class="collapse-divider"></div>
+		            <h6 class="collapse-header">캘린더 관리:</h6>
+		            <a class="collapse-item" href="/manageCalendarMain">사원 캘린더 조회 및 관리</a>		           		     
 	          	</div>
         	</div>
       </li>

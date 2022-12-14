@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.oracle.devwareProject.domain.Calendar;
 import com.oracle.devwareProject.domain.Dept;
+import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.service.GH.CalendarService;
 import com.oracle.devwareProject.service.GH.DeptService;
+import com.oracle.devwareProject.service.GH.EmpService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +31,7 @@ public class CalendarController
 {	
 	private final CalendarService calendarService;
 	private final DeptService deptService;
+	private final EmpService empService;
 	
 	//캘린더 출력 함수
 	@RequestMapping("/showCalendar")
@@ -52,11 +55,15 @@ public class CalendarController
 		List <Dept> deptlist = new ArrayList<Dept>();
 		deptlist = deptService.getDeptInfo();
 		
-		System.out.println("유저 번호 : "+emp_num);
 		model.addAttribute("deptlist",deptlist);
+		
+		System.out.println("캘린더 조회 하려는 유저번호: " + emp_num);
+		Emp name = new Emp();
+		name = empService.getInfo(emp_num);
 		
 		model.addAttribute("emp",emp);
 		model.addAttribute("emp_num",emp_num);
+		model.addAttribute("name",name.getEmp_name());
 		return "/calendar/admin/adminCalendar";
 	}
 	

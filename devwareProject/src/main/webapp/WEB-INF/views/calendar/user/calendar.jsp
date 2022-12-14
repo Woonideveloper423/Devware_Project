@@ -319,7 +319,8 @@ $(document).ready(function()
 	        editable: true, //수정 가능
 	        resizeable: false,
 	        events: data,
-	
+			
+	     
 		   	select: function (start,end) //캘린더에서 드래그로 이벤트 발생시
 		   	{
 		   		$("#myModal").modal(); //모달 창 생성
@@ -412,25 +413,13 @@ $(document).ready(function()
 				</div>
 		
 				<div class="modal-body" >
-					<div class="form-group row">
-						<label class=" control-label " style="padding-left: 40px;">구분</label>
-						<div class="col-5">				
-							<div id="selfCate" style="display: none;">
-								<input type="text" id="selfInput" style="display: inline; width: 100px;">
-								<input type="color" id="colorFix" onclick="console.log(this.value)" style="display: inline;">
-							</div>				
-						</div>
-												
-						<div style="padding-left: 40px;">
-							<input type="checkbox" name="aDay" id="allDay" onchange="adChBx()">하루종일
-						</div>
-					</div>
 					
 					<div class="form-group row">
 						<label class=" control-label " style="padding-left: 40px;">시작날짜</label>
 							<div class="col-8">
 								<input type="date" name="sstart_date" id="start_date"> 
 								<input type="time" name="sstart_time" id="start_time" class="st">
+								<input type="checkbox" name="aDay" id="allDay" onchange="adChBx()">종일
 							</div>
 					</div>
 					<div class="form-group row">
@@ -440,16 +429,18 @@ $(document).ready(function()
 								<input type="time" name="send_time" id="end_time" class="st">
 							</div>
 					</div>
+					
 					<div class="form-group row">
 						<label class=" control-label " style="padding-left: 40px;">제목</label>
 							<div class="col-8">
 								<input type="text" name="sname" id="sname" style="width: 300px;">
 							</div>
 					</div>
-					<div class="form-group" id="text">
+					
+					<div class="form-group row" id="text">
 							<textarea id="summernote" name="summernote"></textarea>
 					</div>
-					</div>
+				</div>
 			</form>
 				
 			<div class="modal-footer">
@@ -500,7 +491,7 @@ $(document).ready(function()
 									<input type="text" name="sname" id="modsname" style="width: 300px;">
 								</div>
 							</div>
-							<div class="form-group" id="modtext">
+							<div class="form-group " id="modtext">
 								<textarea id="modsummernote" name="modsummernote"></textarea>
 							</div>
 						</div>
