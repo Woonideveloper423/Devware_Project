@@ -6,6 +6,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.apache.ibatis.session.SqlSession;
+import org.apache.kafka.common.protocol.types.Field.Str;
 import org.springframework.stereotype.Repository;
 
 import com.oracle.devwareProject.domain.Calendar;
@@ -197,6 +198,7 @@ public class approveDaoImpl implements approveDao {
 			int numCnt = 0;
 			int authCnt = 0;
 			int authResult = 0;
+			int authResult2 = 0;
 			
 			if (sendData.equals("1")) {
 				System.out.println("approveDaoImpl 1 Start..." );
@@ -209,6 +211,7 @@ public class approveDaoImpl implements approveDao {
 				result = session.update("wsAuthApv3", app_num);
 			}
 			
+			//결재자들이 전부 결재 승인을 했는지에 대한 확인
 			numCnt = session.selectOne("wsAuthNumCnt", app_num);
 			System.out.println("approveDaoImpl numCnt ->"+ numCnt);
 			
@@ -217,6 +220,7 @@ public class approveDaoImpl implements approveDao {
 			
 			if(numCnt == authCnt) {
 				authResult = session.update("wsAuthResult", app_num);
+				authResult2 = session.update("wsAuthResult2", app_num);
 			}
 			
 		} catch (Exception e) {
@@ -225,5 +229,57 @@ public class approveDaoImpl implements approveDao {
 		
 		return result;
 	}
+
+	@Override
+	public int reWriteApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar, String app_num) {
+		int result = 0;
+		System.out.println("approveDaoImpl writeApv Start..." );
+		System.out.println("appgetApp_content ->" +approve.getApp_content());
+		System.out.println("appgetApp_title ->" +approve.getApp_title());
+		System.out.println("writeApv getPrg_name1->" + approve_Progress.getPrg_name1());
+		System.out.println("writeApv getPrg_num1->" + approve_Progress.getPrg_num1());
+		System.out.println("writeApv getApp_num1->" + approve.getApp_num());
+		try {
+			int app_num1 = Integer.parseInt(app_num);
+			approve_Progress.setApp_num(app_num1);
+			System.out.println("writeApv getApp_num1->" + approve.getApp_num());
+			
+			result = session.update("wsReWriteApv", approve);
+			
+			System.out.println("writeApv getApp_num2->" + approve_Progress.getApp_num());
+			System.out.println("writeApproveForm setPrg_num1 -> " + approve_Progress.getPrg_num1());
+			System.out.println("writeApproveForm setPrg_num2 -> " + approve_Progress.getPrg_num2());
+			System.out.println("writeApproveForm setPrg_num3 -> " + approve_Progress.getPrg_num3());
+			System.out.println("writeApproveForm getPrg_name1 -> " + approve_Progress.getPrg_name1());
+			System.out.println("writeApproveForm getPrg_name2 -> " + approve_Progress.getPrg_name2());
+			System.out.println("writeApproveForm getPrg_name3 -> " + approve_Progress.getPrg_name3());
+			
+			session.update("wsReWriteApvPrg", approve_Progress);
+		} catch (Exception e) {
+			System.out.println("approveDaoImpl writeApv Exception->"+e.getMessage());
+		}
+		return result;
+	}
+
+	@Override
+	public Approve_Progress returnApprove(Approve_Progress approve_Progress, int app_num, String apv_return) {
+		System.out.println("approveDaoImpl returnApprove Start..." );
+		approve_Progress = new Approve_Progress();
+		
+		approve_Progress.setApp_num(app_num);
+		approve_Progress.setPrg_return(apv_return);
+		try {
+			System.out.println("approveDaoImpl approve_Progress ->" + approve_Progress.getApp_num());
+			System.out.println("approveDaoImpl approve_Progress ->" + approve_Progress.getPrg_return());
+			session.update("wsRtnApv", approve_Progress);
+			session.update("wsRtnApv2", approve_Progress);
+		} catch (Exception e) {
+			System.out.println("approveDaoImpl returnApprove Exception->"+e.getMessage());
+		}
+		
+		return approve_Progress;
+	}
+
+
 
 }

@@ -34,4 +34,8 @@ public interface approveDao {
 
 	List<Approve> listNotApv(Approve approve);
 
+	int reWriteApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar, String app_num);
+	
+	Approve_Progress returnApprove(Approve_Progress approve_Progress, int app_num, String apv_return);
+
 }

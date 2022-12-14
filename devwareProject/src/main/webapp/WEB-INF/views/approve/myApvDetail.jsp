@@ -137,14 +137,19 @@ function authChkBtn(prg_auth){
 						<c:choose>
 							<c:when test="${ allApv.prg_num1==sessionScope.empForSearch.emp_num }">
 								<c:if test="${ allApv.prg_num2 !=null }">
-									<c:if test="${allApv.prg_auth1 == '0' }">
-										<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(1)" value="1">결재</button>
+									<c:choose>
+										<c:when test="${allApv.prg_auth1 == '0' }">
+											<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(1)" value="1">결재</button>
 										<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
-									</c:if>
+										</c:when>
+										<c:when test="${allApv.prg_auth1 == '1' }">
+											결재완료
+										</c:when>
+									</c:choose>
 								</c:if>
 							</c:when>
 							<c:when test="${allApv.prg_auth1 == '1' }">
-									결재완료
+								결재완료
 							</c:when>
 							<c:when  test="${allApv.prg_auth1 == '0' and allApv.prg_num1 != null}">
 								미결재
@@ -158,10 +163,15 @@ function authChkBtn(prg_auth){
 						<c:choose>
 							<c:when test="${ allApv.prg_num2==sessionScope.empForSearch.emp_num }">
 								<c:if test="${ allApv.prg_num2 !=null }">
-									<c:if test="${allApv.prg_auth2 == '0' }">
-										<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(2)" value="1">결재</button>
-										<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
-									</c:if>
+									<c:choose>
+										<c:when test="${allApv.prg_auth2 == '0' }">
+											<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(2)" value="1">결재</button>
+											<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
+										</c:when>
+										<c:when test="${allApv.prg_auth2 == '1' }">
+												결재완료
+										</c:when>
+									</c:choose>
 								</c:if>
 							</c:when>
 							<c:when test="${allApv.prg_auth2 == '1' }">
@@ -179,10 +189,15 @@ function authChkBtn(prg_auth){
 						<c:choose>
 							<c:when test="${ allApv.prg_num3==sessionScope.empForSearch.emp_num }">
 								<c:if test="${ allApv.prg_num3 !=null }">
-									<c:if test="${allApv.prg_auth3 == '0' }">
-										<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(3)" value="1">결재</button>
-										<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
-									</c:if>
+									<c:choose>
+										<c:when test="${allApv.prg_auth3 == '0' }">
+											<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(3)" value="1">결재</button>
+											<input id="chkInput" class="aa" style="display:none; border:none; text-align:right;" value="결재완료">
+										</c:when>
+										<c:when test="${allApv.prg_auth3 == '1' }">
+												결재완료
+										</c:when>
+									</c:choose>
 								</c:if>
 							</c:when>
 							<c:when test="${allApv.prg_auth3 == '1' }">
@@ -258,16 +273,6 @@ function authChkBtn(prg_auth){
 				<td>${ allApv.prg_return }</td>
 			</c:if>
 
-			<%-- <c:choose>
-				<c:when test="${ fn:contains(allApv.approval_cc, 'wantToDel') }">
-					<p style="color: red;">작성자의 삭제요청에 따른 삭제 대기 결재입니다.</p>
-					<p id="delReason"></p>
-				</c:when>
-				<c:when test="${ not empty allApv.approval_cc }">
-					<th>임시저장 태그</th>
-					<td>${ allApv.approval_cc }</td>
-				</c:when>
-			</c:choose> --%>
 		</table>
 		
 			<div>
@@ -286,12 +291,30 @@ function authChkBtn(prg_auth){
 
 	</div>
 
-
-	<c:if
-		test="${ allApv.emp_num == sessionScope.empForSearch.emp_num}">
-		
-			<button class="btn btn-outline-primary"  onclick="reWrite()">재수정</button>
-		
+	<c:if test="${ allApv.emp_num == sessionScope.empForSearch.emp_num}">
+		<c:choose>
+			<c:when test="${ allApv.prg_return == null}">
+				<button class="btn btn-outline-primary"  onclick="location.href='reWrite?app_num=${allApv.app_num}'">재수정</button>
+			</c:when>
+			<c:when test="${ allApv.prg_return != null}">
+				<button class="btn btn-outline-primary" onclick="delBtn()">삭제</button>
+			</c:when>
+		</c:choose>
+	</c:if>
+	<c:if test="${ allApv.prg_num1 == sessionScope.empForSearch.emp_num}">
+		<c:if test="${ allApv.prg_return == null}">
+			<button class="btn btn-outline-primary"  type="button" id="modal_opne_btn">반려</button>
+		</c:if>
+	</c:if>
+	<c:if test="${ allApv.prg_num2 == sessionScope.empForSearch.emp_num}">
+		<c:if test="${ allApv.prg_return == null}">
+			<button class="btn btn-outline-primary"  type="button" id="modal_opne_btn">반려</button>
+		</c:if>
+	</c:if>
+	<c:if test="${ allApv.prg_num3 == sessionScope.empForSearch.emp_num}">
+		<c:if test="${ allApv.prg_return == null}">
+			<button class="btn btn-outline-primary"  type="button" id="modal_opne_btn">반려</button>
+		</c:if>
 	</c:if>
 	
 	<!-- 반려 사유 -->
@@ -301,7 +324,7 @@ function authChkBtn(prg_auth){
 				<div class="modal-header">
 					<h4 class="modal-title">반려</h4>
 					<button class="btn btn-outline-primary"  type="button" class="close float-right"
-						data-dismiss="modal">&times;</button>
+						data-dismiss="modal" id="modal_close_btn">&times;</button>
 				</div>
 
 				<div class="form-group">
@@ -309,76 +332,26 @@ function authChkBtn(prg_auth){
 						<h5>
 							<label>반려 사유를 입력해주세요.</label>
 						</h5>
-						<input class="form-control" name="approval_return" type="text"
-							id="approval_return" />
+						<form onsubmit="return returnChkBtn()"  method="POST" action="<%=context%>/returnApprove">
+							<input type="hidden" id="app_num" name="app_num" value="${allApv.app_num }">		
+							<input class="form-control" name="apv_return" type="text" id="apv_return" />
+							
+						
 					</div>
 					<div class="modal-footer">
-						<button class="btn btn-outline-primary"  type="submit" onclick="returning()">제출</button>
+						<button class="btn btn-outline-primary"  type="submit">제출</button>
 					</div>
-				
+						</form>
 				</div>
                 </div>
               </div>
 			
             </div>
-
-	<c:if test="${ not empty auth }">
-		<div class="float-right" id="authDiv"></div>
-	</c:if>
-				
-		
-				
-				
-				
-
-
-
-
-
-            </div>
-
-	
-	
+          </div>
 				</div>
 			</div>
-
-
-	<!-- 삭제요청 코멘트 -->
-	<div class="modal" id="wantToDel">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">삭제요청</h4>
-					<button type="button" class="close float-right"
-						data-dismiss="modal">&times;</button>
-				</div>
-
-				<div class="form-group">
-					<div class="modal-body">
-						<h5>
-							<label>삭제요청 사유를 입력해주세요.</label>
-						</h5>
-						<input class="form-control" name="delReason" type="text"
-							id="delReason" />
-					</div>
-					<div class="modal-footer float-right">
-						<button class="btn btn-dark float-right" type="submit"
-							onclick="funcWantToDel()">요청</button>
-					</div>
-					<div class="float-left" style="padding: 0px 0px 0px 20px;">
-						<label>관리자의 승인 후 삭제됩니다</label><br> <label>최종 삭제의 경우
-							시간이 걸릴 수 있습니다.</label>
-					</div>
-				</div>
-			</div>
-		</div>
 	</div>
-
-
-
-		</div>
-			
-		</div>
+</div>
                   
                   
                   
@@ -386,4 +359,39 @@ function authChkBtn(prg_auth){
  </div>   
 
 </body>
+
+<script type="text/javascript">
+function returnChkBtn(){
+	if(($('#apv_return').val()).trim() == ''){
+		alert('내용을 입력해주세요')
+		return false;
+	}
+	var chkConfirm = confirm('반려 이후 결재 작성자 이외에 확인 할수 없습니다.\n반려 하시겠습니까?');
+	   if (chkConfirm) {
+		   
+	   }
+	   else {
+		   return false;
+	   }
+}
+
+function delBtn(){
+	var chkConfirm = confirm('반려된 문서를 삭제 하시겠습니까?');
+	   if (chkConfirm) {
+		   location.href="<%=context%>/delApv?app_num=${allApv.app_num}";
+	   }
+	   else {
+		   return false;
+	   }
+}
+
+	document.getElementById("modal_opne_btn").onclick = function() {
+	    document.getElementById("returning").style.display="block";
+	}
+	
+	document.getElementById("modal_close_btn").onclick = function() {
+	    document.getElementById("returning").style.display="none";
+	}   
+
+</script>
 </html>
