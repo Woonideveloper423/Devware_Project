@@ -347,6 +347,7 @@ $(document).ready(function()
 		}
     });
 	
+	
 	 request.done(function (data) 
 	 {
 		//캘린더 생성
@@ -411,6 +412,7 @@ $(document).ready(function()
 	<input id="emp_num" type="hidden" value="${emp_num}"> 
 </div>
 
+<h3 style=" text-align: center;">${name} 캘린더</h3> 
 
 <div id="calendar">
 
@@ -560,7 +562,7 @@ $(document).ready(function()
 									<input type="text" name="sname" id="modsname" style="width: 300px;">
 								</div>
 							</div>
-							<div class="form-group" id="modtext">
+							<div class="form-group " id="modtext">
 								<textarea id="modsummernote" name="modsummernote"></textarea>
 							</div>
 						</div>

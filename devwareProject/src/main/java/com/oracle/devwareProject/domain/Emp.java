@@ -52,7 +52,7 @@ public class Emp
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "position_num") 
 	private Position position;
-
+	
 	//조회용
 	@Transient
 	private String msg; //결과 메시지
@@ -62,4 +62,5 @@ public class Emp
 	
 	@Transient
 	private int auth_num; //권한 
+	
 }

@@ -319,7 +319,8 @@ $(document).ready(function()
 	        editable: true, //수정 가능
 	        resizeable: false,
 	        events: data,
-	
+			
+	     
 		   	select: function (start,end) //캘린더에서 드래그로 이벤트 발생시
 		   	{
 		   		$("#myModal").modal(); //모달 창 생성
@@ -490,7 +491,7 @@ $(document).ready(function()
 									<input type="text" name="sname" id="modsname" style="width: 300px;">
 								</div>
 							</div>
-							<div class="form-group" id="modtext">
+							<div class="form-group " id="modtext">
 								<textarea id="modsummernote" name="modsummernote"></textarea>
 							</div>
 						</div>
