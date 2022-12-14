@@ -93,7 +93,7 @@ public class MailServiceImpl implements MailService {
 		String mail_receiver_name = mail.getReceiver_name();
 	    Session mail_session = Session.getInstance(props, new javax.mail.Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(mail.getSender_mail(), emp.getEmp_passwd());
+                return new PasswordAuthentication(mail.getSender_mail(), "dev2255!");
             }
         });
 	    		
@@ -203,7 +203,7 @@ public class MailServiceImpl implements MailService {
 			Session mail_session = Session.getDefaultInstance(props);
 			
 			Store store = mail_session.getStore("pop3");
-			store.connect("devware.shop",dev_mail_id,dev_mail_pw);
+			store.connect("devware.shop",dev_mail_id,"dev2255!");
 			log.info("MailController2 receiveMail connect start..");
 			
 			Folder mailFolder = store.getFolder("INBOX");
