@@ -31,7 +31,7 @@ public class FileUtils {
 	}
 	
 	/* 서버에 첨부 파일 생성하고 업로드 파일 목록 반환 */
-	public List<File> uploadFileFiles(MultipartFile[] files,File attachFile){
+	public List<File> uploadFiles(MultipartFile[] files,int emp_num,int brd_type,int brd_num){
 		
 		/* 파일이 비어있으면 비어있는 리스트 반환 */
 		if(files[0].getSize()<1) {
@@ -51,7 +51,7 @@ public class FileUtils {
 		for(MultipartFile file : files) {
 			try {
 				/* 파일 확장자 */
-				final String extension = FilenameUtils.getExtension(attachFile.getFile_original_name());
+				final String extension = FilenameUtils.getExtension(file.getOriginalFilename());
 				/* 서버에 저장할 파일명(랜덤 문자열+확장자) */
 				final String saveName=getRandomString()+"."+extension;
 				/* 업로드 경로에 saveName과 동일한 이름을 가진 파일 생성 */
@@ -60,9 +60,9 @@ public class FileUtils {
 				
 				/*파일 정보 저장*/
 				File attach=new File();
-				attach.setBrd_num(attachFile.getBrd_num());
-				attach.setBrd_type(attachFile.getBrd_type());
-				attach.setEmp_num(attachFile.getEmp_num());
+				attach.setBrd_num(brd_num);
+				attach.setBrd_type(brd_type);
+				attach.setEmp_num(emp_num);
 				attach.setFile_original_name(file.getOriginalFilename());
 				attach.setFile_save_name(saveName);
 				attach.setFile_size(file.getSize());

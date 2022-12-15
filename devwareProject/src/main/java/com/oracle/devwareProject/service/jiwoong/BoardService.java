@@ -15,7 +15,7 @@ public interface BoardService {
 
 	int brdInsert(BoardEmpDept bEmp);
 	
-	/* int brdInsert(BoardEmpDept bEmp,MultipartFile[] files); */
+	int brdInsert(BoardEmpDept bEmp,MultipartFile[] files); 
 	
 	int checkListTotalCnt(BoardEmpDept bEmp);
 	

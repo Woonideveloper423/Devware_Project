@@ -5,12 +5,14 @@ import java.util.List;
 
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.devwareProject.dao.jiwoong.BoardDao;
 
 
 import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
+import com.oracle.devwareProject.dto.jiwoong.File;
 import com.oracle.devwareProject.mapper.jiwoong.FileMapper;
 import com.oracle.devwareProject.util.jiwoong.FileUtils;
 
@@ -23,8 +25,8 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardServiceImpl implements BoardService {
 	
 	private final BoardDao bd;
-	private final FileMapper FileMapper;
-	private final FileUtils FileUtils;
+	private final FileMapper fileMapper;
+	private final FileUtils fileUtils;
 	
 	@Override
 	public int brdInsert(BoardEmpDept bEmp) {
@@ -34,11 +36,28 @@ public class BoardServiceImpl implements BoardService {
 		return brdInsertCnt;
 	}
 	
-	/*
-	 * @Override public int brdInsert(BoardEmpDept bEmp, MultipartFile[] files) {
-	 * log.info("brdInsert(file) start"); int brdFileInsert; if(brdInsert(bEmp)!=1)
-	 * { brdFileInsert=0; } return brdFileInsert; }
-	 */
+	 @Override 
+	  public int brdInsert(BoardEmpDept bEmp, MultipartFile[] files) {
+		  log.info("brdInsert(file) start");
+		  int brdFileInsert = 0;
+//		  if(brdInsert(bEmp)!=1){ 
+//			  log.info("작성글을 찾을 수 없음");
+//			  brdFileInsert=0;
+//			  return brdFileInsert; 
+//		  }
+		  List<File> fileList = fileUtils.uploadFiles(files,bEmp.getEmp_num(),bEmp.getBrd_type(),bEmp.getBrd_num());
+		  log.info("emp_num:" +bEmp.getEmp_num());
+		  log.info("brd_type:"+bEmp.getBrd_type());
+		  log.info("brd_num:" +bEmp.getBrd_num());
+		  
+		  brdInsert(bEmp);
+		  
+		  if(CollectionUtils.isEmpty(fileList)==false) {
+			  brdFileInsert=fileMapper.insertFile(fileList);
+		  }
+		  return brdFileInsert; 
+	  }
+	 
 	
 	@Override
 	public int checkListTotalCnt(BoardEmpDept bEmp) {

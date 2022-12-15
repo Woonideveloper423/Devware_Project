@@ -24,9 +24,9 @@
 			#{item.file_num}
 		   ,#{item.brd_type}
 		   ,#{item.brd_num}
-		   ,#{file_original_name}
-		   ,#{file_save_name}
-		   ,#{file_size}
+		   ,#{item.file_original_name}
+		   ,#{item.file_save_name}
+		   ,#{item.file_size}
 		   ,'N'
 		   ,NOW()
 		   ,NULL

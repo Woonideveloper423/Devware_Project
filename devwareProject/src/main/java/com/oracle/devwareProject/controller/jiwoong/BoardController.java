@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
@@ -42,12 +43,12 @@ public class BoardController {
 
 	// 게시판 게시글 작성
 	@PostMapping(value ="/board/write")
-	public ModelAndView boardInsert(BoardEmpDept bEmp,Model model) {
+	public ModelAndView boardInsert(BoardEmpDept bEmp,MultipartFile[] files,Model model) {
 		log.info("/board/write start");
 		ModelAndView mView = new ModelAndView("redirect:/board/checkList?brd_type="+bEmp.getBrd_type()+"");
 		log.info("bEmp:"+bEmp);
 		int insertCnt = 0;
-		insertCnt=bs.brdInsert(bEmp); 
+		insertCnt=bs.brdInsert(bEmp,files); 
 		log.info("bs.brdInsert insertCnt=>" + insertCnt);
 		return mView;
 		}
