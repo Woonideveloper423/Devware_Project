@@ -292,14 +292,12 @@ function sendApv(){
 	
 	
 	if(confirm('제출 이후에는 삭제하실 수 없습니다.\n정말 제출 하시겠습니까?')){
-		if(doubleSubmitFlag){
-			
-
 			console.log($('#length').text())
 			$('#countVacat').val($('#length').text());
 			
 			console.log("approval_cc "+$('#whatV').val())
-			
+			var startdate;
+			var enddate
 			if($('#whatV').val() == '1_wholeVacat'){ // 연차휴가
 					alert('연차');
 					$('#approval_cc').val($('#whatV').val());
@@ -318,15 +316,15 @@ function sendApv(){
 					$('#approval_enddate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#PM_end').val()));
 				}
 			}
-			doubleSubmitFlag = false;
+
 			
-			alert($('#approval_startdate').val());
-			alert($('#approval_enddate').val());
 			
 			$.ajax({
-				url : "<%=context%>/writeApprove",
-				type : 'post',
-				data : { 	
+				url 	: "<%=context%>/writeApprove2",
+				type 	: 'post',
+				async   : false,
+				dataType: "text",
+				data 	: { 	
 							"prg_name1"  : $('#authName_ath1').val(),
 							"prg_name2"	 : $('#authName_ath2').val(),
 							"prg_name3"	 : $('#authName_ath3').val(),
@@ -341,10 +339,9 @@ function sendApv(){
 							start_date	 : $('#approval_startdate').val(),
 							end_date	 : $('#approval_enddate').val(), 
 							emp_num 	 : ${ sessionScope.empForSearch.emp_num },
-						},
+						},	
 				success:function(data){
-					alert('성공한듯?')
-		 			location.replace("<%=context%>/myApvList");
+					location.replace("<%=context%>/myApvList");
 		 			
 				} ,
 				error: function (err) {
@@ -352,19 +349,12 @@ function sendApv(){
 						if(err.status !== 400 && err.status !== 404){
 							alert(`네트워크 오류로 서버와의 통신이 실패하였습니다.${err.status}`);
 						}
-				} 
-				
-			});
-			
+				},
 
-		
-		}else{
-			return;
-		}
-	}else{
-		return;
+			}); 
 	}
 }// sendApv end
+
 
 function timeChk(){
 	console.log($('#timeChk').val());
@@ -430,11 +420,11 @@ function timeChk(){
     <table width="100%">
 	<tr><td>
 	<div class="float-center">
-		<button class="btn btn-outline-primary"" onclick="selectMem()">결재라인 추가</button>
+		<button class="btn btn-outline-primary" onclick="selectMem()">결재라인 추가</button>
 	</div>
 	
 	</td>
-<form id="sendApv" method="POST" enctype="multipart/form-data"> <!-- ============================================================================================================================================================= -->
+<form id="sendApv3" method="POST" enctype="multipart/form-data"> 
   	
 		
 	<td rowspan="3"> 
@@ -537,8 +527,6 @@ function timeChk(){
 	
 	<input type="hidden" id="approval_startdate" name="approval_startdate">
 	<input type="hidden" id="approval_enddate" name="approval_enddate" >
-	
-	
 
 	&nbsp;제목 : <input class="form-control" id="app_title" type="text" name="app_title" ">
 	<br>
@@ -547,11 +535,10 @@ function timeChk(){
 		<textarea class="form-control" id="summernote" name="app_content" ></textarea> <br>
 	</div>
 	
-	<label for="file">첨부:</label><input type="file" name="file" "/>
 	  <hr>
          <div class="container" align="center">
 		<input class="btn btn-outline-primary" type="button" value="뒤로가기" onclick="history.back(-1);">
-		<button class="btn btn-outline-primary" onclick="sendApv()">제출하기</button>
+		<button class="btn btn-outline-primary" onclick="sendApv(); return false; ">제출하기</button>
 		<!-- <input class="btn btn-outline-primary" type="submit" value="제출하기" > -->
 			<div><br></div>
 	</div>    

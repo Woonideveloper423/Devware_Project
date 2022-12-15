@@ -295,9 +295,12 @@ function authChkBtn(prg_auth){
 		<c:choose>
 			<c:when test="${ allApv.prg_return == null}">
 				<button class="btn btn-outline-primary"  onclick="location.href='reWrite?app_num=${allApv.app_num}'">재수정</button>
+				<c:if test="${ allApv.comu_app != ''}">
+					<button class="btn btn-outline-primary" onclick="delBtn()">근태취소</button>
+				</c:if>
 			</c:when>
 			<c:when test="${ allApv.prg_return != null}">
-				<button class="btn btn-outline-primary" onclick="delBtn()">삭제</button>
+				<button class="btn btn-outline-primary" onclick="delRtnBtn()">삭제</button>
 			</c:when>
 		</c:choose>
 	</c:if>
@@ -376,6 +379,16 @@ function returnChkBtn(){
 }
 
 function delBtn(){
+	var chkConfirm = confirm('반려된 문서를 삭제 하시겠습니까?');
+	   if (chkConfirm) {
+		   location.href="<%=context%>/delApv?app_num=${allApv.app_num}";
+	   }
+	   else {
+		   return false;
+	   }
+}
+
+function delRtnBtn(){
 	var chkConfirm = confirm('반려된 문서를 삭제 하시겠습니까?');
 	   if (chkConfirm) {
 		   location.href="<%=context%>/delApv?app_num=${allApv.app_num}";

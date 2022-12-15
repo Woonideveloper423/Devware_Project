@@ -8,12 +8,14 @@ import javax.transaction.Transactional;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.kafka.common.protocol.types.Field.Str;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.devwareProject.domain.Calendar;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
 import com.oracle.devwareProject.dto.KiWoSu.Approve;
+import com.oracle.devwareProject.dto.KiWoSu.ApproveAttach;
 import com.oracle.devwareProject.dto.KiWoSu.Approve_Progress;
 import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 
@@ -83,24 +85,27 @@ public class approveDaoImpl implements approveDao {
 
 	@Override
 	public int writeApv(Approve approve, Approve_Progress approve_Progress, Calendar calendar) {
-		int result = 0;
+		int result = 1;
 		System.out.println("approveDaoImpl writeApv Start..." );
 		System.out.println("appgetApp_content ->" +approve.getApp_content());
 		System.out.println("appgetApp_title ->" +approve.getApp_title());
 		System.out.println("writeApv getPrg_name1->" + approve_Progress.getPrg_name1());
 		System.out.println("writeApv getPrg_num1->" + approve_Progress.getPrg_num1());
 		try {
-			result = session.insert("wsWriteApv", approve);
+			session.insert("wsWriteApv", approve);
 			System.out.println("writeApv getApp_num1->" + approve.getApp_num());
 			approve_Progress.setApp_num(approve.getApp_num());
 			System.out.println("writeApv getApp_num2->" + approve_Progress.getApp_num());
-			session.insert("wsWriteApvPrg", approve_Progress);
+			result = session.insert("wsWriteApvPrg", approve_Progress);
+			
+			session.insert("wsApvAttach", approve);
 			if (approve.getComu_app() != null) {
 				System.out.println("writeApv date->" + calendar.getCalendar_start());
 				System.out.println("writeApv date->" + calendar.getCalendar_end());
 				calendar.setcalendar_emp_num(approve.getEmp_num());
 				System.out.println("writeApv date->" + calendar.getcalendar_emp_num());
 				session.update("wsUpdate", calendar);
+				System.out.println("approveDaoImpl wsUpdate finish..." );
 			}
 		} catch (Exception e) {
 			System.out.println("approveDaoImpl writeApv Exception->"+e.getMessage());
@@ -278,6 +283,22 @@ public class approveDaoImpl implements approveDao {
 		}
 		
 		return approve_Progress;
+	}
+
+	@Override
+	public String deleteApprove(Approve_Progress approve_Progress, Approve approve) {
+		String result = "";
+		System.out.println("approveDaoImpl approve_Progress ->" + approve_Progress.getApp_num());
+		System.out.println("approveDaoImpl approve ->" + approve.getApp_num());
+		try {
+			session.delete("wsApvPrgDel", approve_Progress);
+			
+			session.delete("wsApvFileDel", approve);
+			session.delete("wsApvDel", approve);
+		} catch (Exception e) {
+			System.out.println("approveDaoImpl deleteApprove Exception->"+e.getMessage());
+		}
+		return result;
 	}
 
 

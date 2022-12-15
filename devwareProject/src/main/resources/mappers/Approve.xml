@@ -252,4 +252,40 @@
     	set     app_prg = '반려'
 		where 	app_num = #{ app_num }
     </update>
+    
+    
+    <insert id="wsApvAttach" parameterType="Approve">
+    insert all
+    
+    <foreach collection="approveAttachs" item="item" separator=" ">
+	    into approve_file
+	    values(
+	    #{ app_num },
+	     apvfile_seq.nextval,
+	    #{ item.file_name },
+	    sysdate,
+	    #{ item.file_oriname }
+	    )
+    </foreach>
+    select * from DUAL
+    
+    </insert>
+    
+    <delete id="wsApvPrgDel">
+    	delete 
+    	from approve_progress
+    	 WHERE app_num = #{ app_num }
+    </delete>
+    
+    <delete id="wsApvDel">
+    	delete 
+    	from approve
+    	 WHERE app_num = #{ app_num }
+    </delete>
+    
+    <delete id="wsApvFileDel">
+    	delete 
+    	from approve_file
+    	 WHERE app_num = #{ app_num }
+    </delete>
 </mapper>
