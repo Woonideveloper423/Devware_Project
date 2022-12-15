@@ -145,7 +145,7 @@ ul .nav-item {padding-left:7px;}
 
       
       <!-- 자원 요청 -->
-     <!--  <li class="nav-item">
+     <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsemem1" aria-expanded="true" aria-controls="collapsemem1">
           <i class="fas fa-fw fa-wrench"></i>
           <i class="fa-solid fa-bookmark"></i>
@@ -153,12 +153,12 @@ ul .nav-item {padding-left:7px;}
         </a>
         <div id="collapsemem1" class="collapse" aria-labelledby="headingmem" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-             <a class="collapse-item" href="#">회의실 예약</a>
+             <a class="collapse-item" href="/user/showRoomList">회의실 예약</a>
             <a class="collapse-item" href="#"></a>
             <a class="collapse-item" href="#"></a>            
              </div>
         </div>
-      </li> -->
+      </li>
 
      <!-- 나눔선 -->
       <hr class="sidebar-divider">
