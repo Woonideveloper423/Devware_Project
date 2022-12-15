@@ -42,8 +42,6 @@ dependencies {
     implementation 'org.apache.tiles:tiles-core:3.0.8'
     implementation 'org.apache.tiles:tiles-servlet:3.0.8'
 	
-	implementation 'commons-io:commons-io:2.11.0'
-	implementation group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4' 
 }
 	
 	tasks.named('test') {

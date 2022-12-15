@@ -1,20 +1,23 @@
 package com.oracle.devwareProject.service.jiwoong;
 
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.devwareProject.dao.jiwoong.BoardDao;
-
-
+import com.oracle.devwareProject.dto.jiwoong.BoardAttach;
 import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
-import com.oracle.devwareProject.dto.jiwoong.File;
-import com.oracle.devwareProject.mapper.jiwoong.FileMapper;
-import com.oracle.devwareProject.util.jiwoong.FileUtils;
+
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,8 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardServiceImpl implements BoardService {
 	
 	private final BoardDao bd;
-	private final FileMapper fileMapper;
-	private final FileUtils fileUtils;
+
 	
 	@Override
 	public int brdInsert(BoardEmpDept bEmp) {
@@ -37,26 +39,70 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	 @Override 
-	  public int brdInsert(BoardEmpDept bEmp, MultipartFile[] files) {
+	  public int brdInsert(HttpSession session, BoardEmpDept bEmp, MultipartFile[] files) {
 		  log.info("brdInsert(file) start");
 		  int brdFileInsert = 0;
-//		  if(brdInsert(bEmp)!=1){ 
-//			  log.info("작성글을 찾을 수 없음");
-//			  brdFileInsert=0;
-//			  return brdFileInsert; 
-//		  }
-		  List<File> fileList = fileUtils.uploadFiles(files,bEmp.getEmp_num(),bEmp.getBrd_type(),bEmp.getBrd_num());
+		  String uploadFolder = session.getServletContext().getRealPath("/upload/board");
 		  log.info("emp_num:" +bEmp.getEmp_num());
 		  log.info("brd_type:"+bEmp.getBrd_type());
 		  log.info("brd_num:" +bEmp.getBrd_num());
-		  
-		  brdInsert(bEmp);
-		  
-		  if(CollectionUtils.isEmpty(fileList)==false) {
-			  brdFileInsert=fileMapper.insertFile(fileList);
+		  try {
+			  if(files != null) {
+				  List<BoardAttach> boardAttachs = new ArrayList<>();
+				  int file_num = 0;
+				  for(MultipartFile multipartFile : files) {
+					  if(multipartFile.getOriginalFilename().length()!=0) {
+						  file_num++;
+						  System.out.println(file_num);
+						  BoardAttach boardAttach = new BoardAttach();
+						  String original_name = multipartFile.getOriginalFilename();
+						  System.out.println(original_name);
+						  boardAttach.setBrd_num(bEmp.getBrd_type());
+						  boardAttach.setFile_num(file_num);
+						  boardAttach.setFile_original_name(original_name);
+						  boardAttach.setFile_size(multipartFile.getSize());
+						  boardAttach.setFile_save_name(uploadFile(original_name, multipartFile.getBytes(), uploadFolder));
+						  System.out.println(boardAttach.getFile_num());
+						  
+						  boardAttachs.add(boardAttach);
+					  }else {
+						  System.out.println("공갈 파일 넘어옴");
+					  }
+				  }
+				  bEmp.setBoardAttachs(boardAttachs);
+			  }
+			  brdFileInsert = bd.boardInsert(bEmp);
+		  } catch (Exception e) {
+			// TODO: handle exception
 		  }
+		  
+		  
 		  return brdFileInsert; 
 	  }
+	 
+	 private String uploadFile(String originalName, byte[] fileData , String uploadPath) 
+			  throws Exception {
+		  // universally unique identifier (UUID).
+	     UUID uid = UUID.randomUUID();
+	   // requestPath = requestPath + "/resources/image";
+	    System.out.println("uploadPath->"+uploadPath);
+	    // Directory 생성 
+		File fileDirectory = new File(uploadPath);
+		if (!fileDirectory.exists()) {
+			// 신규 폴더(Directory) 생성 
+			fileDirectory.mkdirs();
+			System.out.println("업로드용 폴더 생성 : " + uploadPath);
+		}
+
+	    String savedName = uid.toString() + "_" + originalName;
+	    log.info("savedName: " + savedName);
+	    File target = new File(uploadPath, savedName);
+//	    File target = new File(requestPath, savedName);
+	    // File UpLoad   --->  uploadPath / UUID+_+originalName
+	    FileCopyUtils.copy(fileData, target);   // org.springframework.util.FileCopyUtils
+	    
+	    return savedName;
+	  }	
 	 
 	
 	@Override

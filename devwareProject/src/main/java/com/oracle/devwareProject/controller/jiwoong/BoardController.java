@@ -3,7 +3,7 @@ package com.oracle.devwareProject.controller.jiwoong;
 
 import java.util.List;
 
-
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
@@ -43,12 +43,13 @@ public class BoardController {
 
 	// 게시판 게시글 작성
 	@PostMapping(value ="/board/write")
-	public ModelAndView boardInsert(BoardEmpDept bEmp,MultipartFile[] files,Model model) {
+	public ModelAndView boardInsert(HttpSession session, BoardEmpDept bEmp,MultipartFile[] files,Model model) {
 		log.info("/board/write start");
 		ModelAndView mView = new ModelAndView("redirect:/board/checkList?brd_type="+bEmp.getBrd_type()+"");
+		
 		log.info("bEmp:"+bEmp);
 		int insertCnt = 0;
-		insertCnt=bs.brdInsert(bEmp,files); 
+		insertCnt=bs.brdInsert(session,bEmp,files); 
 		log.info("bs.brdInsert insertCnt=>" + insertCnt);
 		return mView;
 		}

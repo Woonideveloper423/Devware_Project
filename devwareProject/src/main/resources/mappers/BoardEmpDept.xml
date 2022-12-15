@@ -5,7 +5,9 @@
 
 	<!-- 유형별 게시판 게시글 insert -->
 	<insert id="jwBoardInsert" parameterType="BoardEmpDept">
-		INSERT INTO Board values(#{emp_num},     
+
+		INSERT ALL
+		INTO Board values(#{emp_num},     
 		                         #{brd_type},
 		                        <choose>
 		                        	<when test="brd_type==1">brd1_num_seq.nextval,</when>
@@ -35,7 +37,32 @@
 		                        0, <!-- 답변글 순서 -->
 		                        0, <!-- 들여쓰기 -->
 								0, <!-- 해결상태 -->
-								0) <!-- 댓글수 -->	                       
+								0) <!-- 댓글수 -->	
+			<foreach collection="boardAttachs" item="item" separator=" ">
+				into BRD_FILE values(
+				 #{item.file_num},
+				 #{brd_type},
+				 <choose>
+		               <when test="brd_type==1">brd1_num_seq.currval,</when>
+		               <when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.currval,</when>
+		               <when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.currval,</when>
+		               <when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.currval,</when>
+		               <when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.currval,</when>
+		               <when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.currval,</when>
+		               <when test="brd_type==3">brd3_num_seq.currval,</when>
+		               <when test="brd_type==4">brd4_num_seq.currval,</when>
+		        </choose>
+		        #{emp_num},
+				#{item.file_original_name},
+				#{item.file_save_name}, 
+				#{item.file_size},
+				'N',
+				sysdate,
+				null) 
+			</foreach>
+			select * from DUAL     
+			
+			                  
 	</insert>                       	
 	
 	<!-- 유형별 게시판 게시글 수정 -->
