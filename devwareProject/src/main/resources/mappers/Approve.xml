@@ -220,6 +220,36 @@
 		  where app_num = #{ app_num }
 	</update>
 	
+		<update id="wsAuthResult2" parameterType="String">
+		UPDATE approve
+		  SET app_prg = '결재승인'
+		  where app_num = #{ app_num }
+	</update>
+	
+ 	<update id="wsReWriteApv" parameterType="Approve"  >
+    	update approve
+    	set app_title = #{app_title}, APP_CONTENT = #{app_content}, docs_app = #{docs_app , jdbcType=VARCHAR}, comu_app = VACATIONCUS(#{comu_app , jdbcType=VARCHAR})
+		where app_num = #{ app_num }
+    </update>
+    
+    <update id="wsReWriteApvPrg" parameterType="Approve_Progress" >
+    update approve_progress
+    	set prg_num1 = #{prg_num1}, prg_name1 = #{prg_name1}, prg_auth1 = 0,
+    	    prg_num2 = #{prg_num2}, prg_name2 = #{prg_name2}, prg_auth2 = 0,
+    	    prg_num3 = #{prg_num3}, prg_name3 = #{prg_name3}, prg_auth3 = 0       
+		where app_num = #{ app_num }
 
-
+    </update>
+    
+	<update id="wsRtnApv" parameterType="Approve_Progress" >
+    update approve_progress
+    	set     PRG_RETURN = #{prg_return} , PRG_STATUS = '반려'
+		where 	app_num = #{ app_num }
+    </update>
+    
+    <update id="wsRtnApv2" parameterType="Approve_Progress" >
+    update approve
+    	set     app_prg = '반려'
+		where 	app_num = #{ app_num }
+    </update>
 </mapper>
