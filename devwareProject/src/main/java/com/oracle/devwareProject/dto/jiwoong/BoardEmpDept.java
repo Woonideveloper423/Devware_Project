@@ -2,6 +2,8 @@ package com.oracle.devwareProject.dto.jiwoong;
 
 
 
+import java.util.List;
+
 import lombok.Data;
 
 //	사원번호에 해당하는 사원 id를 작성자로 가져오기 join 목적
@@ -33,7 +35,7 @@ public class BoardEmpDept {
 		private String arrayType; // 게시물 정렬
 		private int brd_re_step_max;
 		
-		
+		private List<BoardAttach> boardAttachs;
 		
 	
 	
