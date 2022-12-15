@@ -1,6 +1,9 @@
 package com.oracle.devwareProject.dto.KiWoSu;
 
 import java.util.Date;
+import java.util.List;
+
+import com.oracle.devwareProject.dto.jiwoong.BoardAttach;
 
 import lombok.Data;
 
@@ -46,4 +49,6 @@ public class AllForApprove {
 	private String position_name3;
 	
 	private String position_name;
+	
+	
 }

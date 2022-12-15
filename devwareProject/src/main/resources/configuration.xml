@@ -20,6 +20,7 @@
 		<typeAlias alias="Approve"  		type="com.oracle.devwareProject.dto.KiWoSu.Approve" />
 		<typeAlias alias="Approve_Progress" type="com.oracle.devwareProject.dto.KiWoSu.Approve_Progress" />
 		<typeAlias alias="AllForApprove" 	type="com.oracle.devwareProject.dto.KiWoSu.AllForApprove" />
+		<typeAlias alias="ApproveAttach" 	type="com.oracle.devwareProject.dto.KiWoSu.ApproveAttach" />
 		<typeAlias alias="Vacation" 		type="com.oracle.devwareProject.dto.KiWoSu.Vacation" />
 		
 		<typeAlias alias="ChatMessageDto"     	type="com.oracle.devwareProject.dto.jehwan.ChatMessageDto" />

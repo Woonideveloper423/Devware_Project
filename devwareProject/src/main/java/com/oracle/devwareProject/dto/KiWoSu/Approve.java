@@ -1,6 +1,7 @@
 package com.oracle.devwareProject.dto.KiWoSu;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -29,4 +30,7 @@ public class Approve {
 	//리스트 추가 목록
 	private String emp_name;
 	private String ca_content;
+	
+	//파일 첨부
+	private List<ApproveAttach> approveAttachs;
 }

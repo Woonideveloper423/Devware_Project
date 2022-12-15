@@ -10,11 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.AllForApprove;
 import com.oracle.devwareProject.dto.KiWoSu.Approve;
+import com.oracle.devwareProject.dto.KiWoSu.ApproveAttach;
 import com.oracle.devwareProject.dto.KiWoSu.Approve_Progress;
 import com.oracle.devwareProject.dto.KiWoSu.Vacation;
 import com.oracle.devwareProject.service.GH.EmpService;
@@ -141,8 +143,10 @@ public class ApproveController {
 			return "/approve/myApvList";
 		}
 		
+
 		@RequestMapping("writeApprove")
-		public String writeApproveForm(Approve approve, 
+		public String writeApproveForm( HttpSession session,
+										Approve approve, 
 										Approve_Progress approve_Progress, 
 										com.oracle.devwareProject.domain.Calendar calendar,
 										int emp_num,
@@ -158,9 +162,10 @@ public class ApproveController {
 										String comu_app,
 										String start_date,
 										String end_date,
+										MultipartFile[] files,
 										Model model) {
 
-			System.out.println("CommuteController listCommute start....");
+			System.out.println("CommuteController writeApproveForm start....");
 			
 			approve_Progress.setPrg_num1(prg_num1);
 			approve_Progress.setPrg_num2(prg_num2);
@@ -198,11 +203,81 @@ public class ApproveController {
 			System.out.println("test comu_app->" + calendar.getCalendar_end());
 			
 			try {
-				int writeResult = as.writeApv(approve, approve_Progress, calendar); 
+				int writeResult = as.writeApv(session, approve, approve_Progress, calendar,  files); 
 			} catch (Exception e) {
 				System.out.println("CommuteController writeApproveForm error ->" + e.getMessage());
 			}
 			return "redirect:myApvList";
+			
+		}
+		
+		@ResponseBody
+		@RequestMapping("writeApprove2")
+		public String writeApproveForm2(HttpSession session,
+										Approve approve, 
+										Approve_Progress approve_Progress, 
+										com.oracle.devwareProject.domain.Calendar calendar,
+										int emp_num,
+										String prg_name1,
+										String prg_name2,
+										String prg_name3,
+										String prg_num1,
+										String prg_num2,
+										String prg_num3,
+										String app_title,
+										String app_content,
+										String docs_app,
+										String comu_app,
+										String start_date,
+										String end_date,
+										MultipartFile[] files,
+										Model model) {
+
+			System.out.println("CommuteController listCommute2 start....");
+			
+			approve_Progress.setPrg_num1(prg_num1);
+			approve_Progress.setPrg_num2(prg_num2);
+			approve_Progress.setPrg_num3(prg_num3);
+			approve_Progress.setPrg_name1(prg_name1);
+			approve_Progress.setPrg_name2(prg_name2);
+			approve_Progress.setPrg_name3(prg_name3);
+			System.out.println("writeApproveForm setPrg_num1 -> " + approve_Progress.getPrg_num1());
+			System.out.println("writeApproveForm setPrg_num2 -> " + approve_Progress.getPrg_num2());
+			System.out.println("writeApproveForm setPrg_num3 -> " + approve_Progress.getPrg_num3());
+			System.out.println("writeApproveForm getPrg_name1 -> " + approve_Progress.getPrg_name1());
+			System.out.println("writeApproveForm getPrg_name2 -> " + approve_Progress.getPrg_name2());
+			System.out.println("writeApproveForm getPrg_name3 -> " + approve_Progress.getPrg_name3());
+			
+			approve.setEmp_num(emp_num);
+			approve.setApp_title(app_title);
+			approve.setApp_content(app_content);
+			approve.setDocs_app(docs_app);
+			approve.setComu_app(comu_app);
+			System.out.println("emp_num->"+emp_num);
+			
+			model.addAttribute("docs_app", approve.getDocs_app());
+			System.out.println("test docs_app->" + approve.getDocs_app());
+			
+			model.addAttribute("comu_app", approve.getComu_app());
+			System.out.println("test comu_app->" + approve.getComu_app());
+			
+			System.out.println("test comu_app->" + start_date);
+			System.out.println("test comu_app->" + end_date);
+
+			calendar.setCalendar_start(start_date);
+			calendar.setCalendar_end(end_date);
+			
+			System.out.println("test comu_app->" + calendar.getCalendar_start());
+			System.out.println("test comu_app->" + calendar.getCalendar_end());
+			int writeResult = 0;
+			try {
+				 writeResult = as.writeApv(session, approve, approve_Progress, calendar, files); 
+			} catch (Exception e) {
+				System.out.println("CommuteController writeApproveForm error ->" + e.getMessage());
+			}
+			String resultString = String.valueOf(writeResult);
+			System.out.println("CommuteController resultString ->" + resultString);
+			return resultString;
 			
 		}
 		
@@ -361,15 +436,14 @@ public class ApproveController {
 		}
 		
 		@RequestMapping("/delApv")
-		public String deleteApprove(Approve_Progress approve_Progress ,int app_num, String apv_return, Model model) {
+		public String deleteApprove(Approve approve, Approve_Progress approve_Progress ,int app_num, Model model) {
 			
-			System.out.println("CommuteController getVacation start....");
-			
+			System.out.println("CommuteController deleteApprove start....");
+			String result = "";
 			approve_Progress.setApp_num(app_num);
-			approve_Progress.setPrg_return(apv_return);
+			approve.setApp_num(app_num);
 			System.out.println("test getApp_num->" + approve_Progress.getApp_num());
-			System.out.println("test getPrg_return->" + approve_Progress.getPrg_return());
-			approve_Progress = as.returnApprove(approve_Progress, app_num, apv_return);
+			result = as.deleteApprove(approve_Progress, approve);
 			
 			return "redirect:myApvList";
 		}

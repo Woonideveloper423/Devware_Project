@@ -346,7 +346,10 @@ function reWritrApv(){
 	
 
 	<input type="hidden" id="emp_num" name="emp_num" value="${sessionScope.empForSearch.emp_num }">
-	<input type="hidden" id="app_num" name="app_num" value="${reWrite.app_num }">						
+	<c:if test="${not empty reWrite.app_num }">
+		<input type="hidden" id="app_num" name="app_num" value="${reWrite.app_num }">
+	</c:if>
+							
 	
 	&nbsp;제목 : <input class="form-control" id="app_title" type="text" name="app_title" value="${ reWrite.app_title }">
 	<br>
@@ -356,7 +359,7 @@ function reWritrApv(){
 	</div>
 	
 	
-	<label for="file">첨부:</label><input type="file" name="file" "/>
+	<label for="file">첨부:</label><input type="file" name="files" multiple="multiple"/>
 	  <hr>
          <div class="container" align="center">
 		<input class="btn btn-outline-primary" type="button" value="뒤로가기" onclick="history.back(-1);">
