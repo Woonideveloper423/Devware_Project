@@ -60,7 +60,7 @@ public class ApproveListController {
 		model.addAttribute("deptlist",deptlist);
 		
 		
-		return "approve/approvalList";
+		return "approve/user/approvalList";
 	}
 	
 	

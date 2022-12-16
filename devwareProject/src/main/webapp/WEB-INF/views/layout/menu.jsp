@@ -30,7 +30,7 @@ function fn_formSubmit(){
 
 $.ajax({
 	type:'POST',
-	url: '${ pageContext.request.contextPath }/approval/notAuthApvCount',
+	url: '${ pageContext.request.contextPath }/approval/user/notAuthApvCount',
 	success: function(data){
 		//console.log(data);
 		$('#apvCount').text(data);
@@ -75,15 +75,12 @@ ul .nav-item {padding-left:7px;}
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">결재:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/approval">일반결재</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/apv_Vacat">근태/휴가결재</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/apv_payment">지출결재</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/approval/tempApvList?page=1">임시저장함</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/writeForm1">일반결재</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/writeForm2">근태/휴가결재</a>
             <div class="collapse-divider"></div>
             <h6 class="collapse-header">결재함:</h6>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/approval/myApvList?page=1">내문서함</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/approval/notAuthApvList?page=1">미결재문서 (<span id="apvCount"></span>)</a>
-            <a class="collapse-item" href="${pageContext.request.contextPath}/approval/yesAuthApvList?page=1">결재완료문서</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/myApvList?currentPage=1">내문서함</a>
+            <a class="collapse-item" href="${pageContext.request.contextPath}/user/notAuthApvList?currentPage=1">미결재문서 (<span id="apvCount"></span>)</a>
            
           </div>
         </div>
@@ -119,7 +116,7 @@ ul .nav-item {padding-left:7px;}
       
       <!-- 근태관리 -->
         <li class="nav-item">
-        <a class="nav-link" href="${pageContext.request.contextPath}/commuting/commuting">
+        <a class="nav-link" href="${pageContext.request.contextPath}/user/commute">
           <i class="fas fa-building"></i>
           <span style="font-size: 15px;">근태관리</span></a>
       </li>

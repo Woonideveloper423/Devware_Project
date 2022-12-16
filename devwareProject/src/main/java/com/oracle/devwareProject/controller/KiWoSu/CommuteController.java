@@ -60,7 +60,7 @@ public class CommuteController {
 		List<Commute> listCommute = cs.ListCommute(commute);
 		System.out.println("CommuteController listCommute start....");
 		model.addAttribute("listCommute", listCommute);
-		return "/commute/commute";
+		return "/commute/user/commute";
 		
 	}
 	
@@ -81,7 +81,7 @@ public class CommuteController {
 		cs.saveTime(commute); 
 		
 		
-		return "/commute/redirect:commute";
+		return "/commute/user/redirect:commute";
 	}
 	
 //	@ResponseBody

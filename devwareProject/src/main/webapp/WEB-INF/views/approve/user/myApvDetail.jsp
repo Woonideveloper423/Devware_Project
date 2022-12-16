@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+<!--   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script> -->
 
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   
@@ -59,7 +59,6 @@ function authChkBtn(prg_auth){
 							"app_num" 	: ${allApv.app_num},
 						},
 			    success:function(data){
-			    	alert('성공한듯?')
 			    	if(ChkCtn.style.display !== 'none') {
 			    		ChkCtn.style.display = 'none';
 			    		if(ChkInput.style.display == 'none'){
@@ -136,7 +135,7 @@ function authChkBtn(prg_auth){
 					<td id="authCheck1">
 						<c:choose>
 							<c:when test="${ allApv.prg_num1==sessionScope.empForSearch.emp_num }">
-								<c:if test="${ allApv.prg_num2 !=null }">
+								<c:if test="${ allApv.prg_num1 !=null }">
 									<c:choose>
 										<c:when test="${allApv.prg_auth1 == '0' }">
 											<button id="chkBtn" class="btn btn-outline-primary" type="button" onclick="authChkBtn(1)" value="1">결재</button>
@@ -224,46 +223,106 @@ function authChkBtn(prg_auth){
                   <hr>
                   <div style="height:450px; overflow:auto;">
                   
-                  <table class="table table-hover" border="1">
-
-				<tr>
-					<th width="20%">문서상태</th>
-					<td>${ allApv.app_prg }</td>
-
-					<th>문서번호</th>
-					<td>${ allApv.emp_num }_${ allApv.app_num }</td>
-				</tr>
-
-				<tr>
-					<th>기안일자</th>
-					<td colspan="3"><fmt:formatDate	value="${ allApv.app_date }" pattern="yyyy-MM-dd HH:mm:ss" /></td>
-				</tr>
-
-				<tr>
-					<th>결재구분</th>
-					<td colspan="3">${ allApv.prg_status }</td>
-				</tr>
-
-				<tr>
-					<th>기안부서</th>
-					<td colspan="3">${ allApv.dept_name }</td>
-				</tr>
-
-				<tr>
-					<th>기안담당</th>
-					<td colspan="3">${ allApv.emp_name }&nbsp;&nbsp;${ allApv.position_name }</td>
-				</tr>
-
-				<tr>
-					<th>제목</th>
-					<td colspan="3">${ allApv.app_title }</td>
-				</tr>
-
-				<tr>
-					<td colspan="4" height=100px>${ allApv.app_content }</td>
-				</tr>
-
-			</table>
+                  <c:choose>
+					<c:when test="${ allApv.comu_app != ''}">
+						근태
+						<table class="table table-hover" border="1">
+							<tr>
+								<th width="20%">문서상태</th>
+								<td>${ allApv.app_prg }</td>
+			
+								<th>문서번호</th>
+								<td>${ allApv.emp_num }_${ allApv.app_num }</td>
+							</tr>
+			
+							<tr>
+								<th>제출일자</th>
+								<td colspan="3"><fmt:formatDate	value="${ allApv.app_date }" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+							</tr>
+			
+							<tr>
+								<th>결재구분</th>
+								<td colspan="3">${ allApv.prg_status }</td>
+							</tr>
+			
+							<tr>
+								<th>요청기간</th>
+								<c:choose>
+								
+									<c:when test="${ fn:contains(apvDto.approval_cc, '1_wholeVacat') }">
+									<td colspan="3">[연차]&nbsp;<fmt:formatDate value="${ apvDto.approval_startdate }"  pattern="yyyy-MM-dd"/>&nbsp;~&nbsp;<fmt:formatDate value="${dateValue}" pattern="yyyy-MM-dd"/></td>
+									</c:when>
+									<c:when test="${ fn:contains(apvDto.approval_cc, '2_halfVacat_AM') }">
+									<td colspan="3">[반차 AM] &nbsp;<fmt:formatDate value="${ apvDto.approval_startdate }"  pattern="yyyy-MM-dd"/> 09:00&nbsp;~&nbsp;<fmt:formatDate value="${ apvDto.approval_enddate }"  pattern="yyyy-MM-dd"/> 13:00</td>
+									</c:when>
+									<c:when test="${ fn:contains(apvDto.approval_cc, '2_halfVacat_PM') }">
+									<td colspan="3">[반차 PM]&nbsp;<fmt:formatDate value="${ apvDto.approval_startdate }"  pattern="yyyy-MM-dd"/> 14:00&nbsp;~&nbsp;<fmt:formatDate value="${ apvDto.approval_enddate }"  pattern="yyyy-MM-dd"/> 18:00</td>
+									</c:when>
+								
+								</c:choose>
+							</tr>
+			
+							<tr>
+								<th>제출자</th>
+								<td colspan="3">${ allApv.emp_name }&nbsp;&nbsp;${ allApv.position_name }</td>
+							</tr>
+			
+							<tr>
+								<th>제목</th>
+								<td colspan="3">${ allApv.app_title }</td>
+							</tr>
+			
+							<tr>
+								<td colspan="4" height=100px>${ allApv.app_content }</td>
+							</tr>
+						</table>
+					</c:when>
+					
+					<c:when test="${ allApv.docs_app != ''}">
+						문서
+						<table class="table table-hover" border="1">
+							<tr>
+								<th width="20%">문서상태</th>
+								<td>${ allApv.app_prg }</td>
+			
+								<th>문서번호</th>
+								<td>${ allApv.emp_num }_${ allApv.app_num }</td>
+							</tr>
+			
+							<tr>
+								<th>기안일자</th>
+								<td colspan="3"><fmt:formatDate	value="${ allApv.app_date }" pattern="yyyy-MM-dd HH:mm:ss" /></td>
+							</tr>
+			
+							<tr>
+								<th>결재구분</th>
+								<td colspan="3">${ allApv.prg_status }</td>
+							</tr>
+			
+							<tr>
+								<th>기안부서</th>
+								<td colspan="3">${ allApv.dept_name }</td>
+							</tr>
+			
+							<tr>
+								<th>기안담당</th>
+								<td colspan="3">${ allApv.emp_name }&nbsp;&nbsp;${ allApv.position_name }</td>
+							</tr>
+			
+							<tr>
+								<th>제목</th>
+								<td colspan="3">${ allApv.app_title }</td>
+							</tr>
+			
+							<tr>
+								<td colspan="4" height=100px>${ allApv.app_content }</td>
+							</tr>
+						</table>
+					</c:when>
+                  
+                  
+             
+				</c:choose>
 			<hr>
 			<!-- 결재기록 --> 
 			<table class="table table" border="1">
@@ -294,7 +353,10 @@ function authChkBtn(prg_auth){
 	<c:if test="${ allApv.emp_num == sessionScope.empForSearch.emp_num}">
 		<c:choose>
 			<c:when test="${ allApv.prg_return == null}">
-				<button class="btn btn-outline-primary"  onclick="location.href='reWrite?app_num=${allApv.app_num}'">재수정</button>
+				<c:if test="${ allApv.docs_app != ''}">
+						<button class="btn btn-outline-primary"  onclick="location.href='/reWrite?app_num=${allApv.app_num}'">재수정</button>
+				</c:if>
+				
 				<c:if test="${ allApv.comu_app != ''}">
 					<button class="btn btn-outline-primary" onclick="delBtn()">근태취소</button>
 				</c:if>
@@ -379,7 +441,7 @@ function returnChkBtn(){
 }
 
 function delBtn(){
-	var chkConfirm = confirm('반려된 문서를 삭제 하시겠습니까?');
+	var chkConfirm = confirm('근태 문서를 삭제 하시겠습니까?');
 	   if (chkConfirm) {
 		   location.href="<%=context%>/delApv?app_num=${allApv.app_num}";
 	   }

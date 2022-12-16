@@ -18,6 +18,16 @@
 <script src="https://kit.fontawesome.com/f7fe0761ae.js" crossorigin="anonymous"></script>
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script type="text/javascript">
+$.ajax({
+	type:'POST',
+	url: '${ pageContext.request.contextPath }/approval/user/notAuthApvCount',
+	success: function(data){
+		//console.log(data);
+		$('#apvCount2').text(data);
+		$('#apvCount3').text(data);
+	}
+})
+
 $(function(){
 	if('${msg}' != ""){
 		alert('${msg}');
@@ -658,7 +668,7 @@ function  wsEvt() {
                   </div>
                 </a>
                 
-                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/approval/notAuthApvList?page=1">문서함으로 가기</a>
+                <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/user/notAuthApvList?currentPage=1">문서함으로 가기</a>
               </div>
             </li>
 
@@ -710,13 +720,13 @@ function  wsEvt() {
 	           		<!-- 마이 페이지 [분기] 관리자 & 일반 유저 -->
 	           		<c:choose>
 	           			<c:when test="${emp.auth_num eq 0}">
-	           				<a class="dropdown-item" href="/adminMyPageForm">
+	           				<a class="dropdown-item" href="/admin/adminMyPageForm">
 			                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>내 정보
 			                </a>
 			            </c:when>
 			            
 	           			<c:otherwise>
-		           			<a class="dropdown-item" href="/userMyPageForm">
+		           			<a class="dropdown-item" href="/user/userMyPageForm">
 			                  <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>내 정보
 			                </a>
 	           			</c:otherwise>

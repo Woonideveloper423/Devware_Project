@@ -297,25 +297,34 @@ function sendApv(){
 			
 			console.log("approval_cc "+$('#whatV').val())
 			var startdate;
-			var enddate
+			var enddate;
+			var calendar_all_day;
 			if($('#whatV').val() == '1_wholeVacat'){ // 연차휴가
 					alert('연차');
 					$('#approval_cc').val($('#whatV').val());
 					$('#approval_startdate').val(moment($('#from').val()).format('YYYY-MM-DD')+" ");
 					$('#approval_enddate').val(moment($('#to').val()).format('YYYY-MM-DD')+" ");
+					calendar_all_day = 1;
+					
 			}else{ // 반차
 				if($(':radio[name="AMPM"]:checked').val() == 'AM'){
 					alert('반차 오전');
 					$('#approval_cc').val($('#whatV').val()+'_AM');
 					$('#approval_startdate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#AM_start').val()));
 					$('#approval_enddate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#AM_end').val()));
+					calendar_all_day = 2;
+					
 				}else if($(':radio[name="AMPM"]:checked').val() == 'PM'){
 					alert('반차 오후');
 					$('#approval_cc').val($('#whatV').val()+'_PM');
 					$('#approval_startdate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#PM_start').val()));
 					$('#approval_enddate').val(new Date(moment($('#halfPick').val()).format('YYYY-MM-DD')+" "+$('#PM_end').val()));
+					calendar_all_day = 3;
 				}
 			}
+			
+			alert(calendar_all_day);
+			
 
 			
 			
@@ -339,9 +348,10 @@ function sendApv(){
 							start_date	 : $('#approval_startdate').val(),
 							end_date	 : $('#approval_enddate').val(), 
 							emp_num 	 : ${ sessionScope.empForSearch.emp_num },
+							calendar_all_day,
 						},	
 				success:function(data){
-					location.replace("<%=context%>/myApvList");
+					location.replace("<%=context%>/user/myApvList");
 		 			
 				} ,
 				error: function (err) {
@@ -378,7 +388,6 @@ function timeChk(){
                   <h4><strong>[휴가결재 작성]</strong></h4> 
      <table class="table table text-center">
        <tr><td><strong>기안담당</strong>
-	${ empForSearch.emp_name }
 	
 		<!-- 관리부서 -->
 	<c:choose>
