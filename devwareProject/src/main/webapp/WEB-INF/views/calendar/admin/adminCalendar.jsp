@@ -352,11 +352,11 @@ $(document).ready(function()
 	 {
 		//캘린더 생성
 	    var $calendar = $("#calendar").fullCalendar({ 
-	        header: {
+/* 	        header: {
 	          left: 'prevYear,nextYear',
 	          center: 'title',
 	          right: 'today,month,prev,next'
-	        },
+	        }, */
 	        selectable: true, //날짜 일자 드래그 설정 가능
 	        eventLimit: true, 
 	        navLinks: true,	//날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크

@@ -45,7 +45,7 @@ public class approveDaoImpl implements approveDao {
 	public int totalNotApv(EmpForSearch empForSearch) {
 		int totNotApvCount = 0;
 		System.out.println("approveDaoImpl totalNotApv start...");
-		
+		System.out.println("empForSearch -> " + empForSearch.getEmp_num());
 		try {
 			totNotApvCount = session.selectOne("NotApvTotal", empForSearch);
 			System.out.println("approveDaoImpl totalNotApv totApvCount->" +totNotApvCount);
@@ -97,14 +97,29 @@ public class approveDaoImpl implements approveDao {
 			approve_Progress.setApp_num(approve.getApp_num());
 			System.out.println("writeApv getApp_num2->" + approve_Progress.getApp_num());
 			result = session.insert("wsWriteApvPrg", approve_Progress);
+			if (approve.getDocs_app() != null) {
+				session.insert("wsApvAttach", approve);
+			}
 			
-			session.insert("wsApvAttach", approve);
 			if (approve.getComu_app() != null) {
-				System.out.println("writeApv date->" + calendar.getCalendar_start());
-				System.out.println("writeApv date->" + calendar.getCalendar_end());
+				System.out.println("writeApv date1->" + calendar.getCalendar_start());
+				System.out.println("writeApv date2->" + calendar.getCalendar_end());
+				
 				calendar.setcalendar_emp_num(approve.getEmp_num());
-				System.out.println("writeApv date->" + calendar.getcalendar_emp_num());
-				session.update("wsUpdate", calendar);
+				System.out.println("writeApv date3->" + calendar.getcalendar_emp_num());
+				
+				calendar.setCalendar_id(approve.getApp_num());
+				System.out.println("writeApv date4->" + calendar.getCalendar_id());
+				
+				System.out.println("writeApv date4->" + calendar.getCalendar_allDay());
+				if (calendar.getCalendar_allDay() == 1) {
+					System.out.println("approveDaoImpl writeApv Start 1..." );
+					session.update("wsUpdate", calendar);
+				} else if (calendar.getCalendar_allDay() == 2 || calendar.getCalendar_allDay() == 3 ) {
+					System.out.println("approveDaoImpl writeApv Start 2 or 3..." );
+					session.update("wsUpdate", calendar);
+				}
+				session.insert("wsCalInsert", calendar);
 				System.out.println("approveDaoImpl wsUpdate finish..." );
 			}
 		} catch (Exception e) {
@@ -181,7 +196,8 @@ public class approveDaoImpl implements approveDao {
 		Vacation vacation = new Vacation();
 		try {
 			System.out.println("approveDaoImpl getVacation emp_num ->"+emp_num );
-			vacation = session.selectOne("wsGetVacation", emp_num);
+			vacation.setEmp_num(emp_num);
+			vacation = session.selectOne("wsGetVacation", vacation);
 			System.out.println("approveDaoImpl getVacation ->"+ vacation.getVa_stock());
 		} catch (Exception e) {
 			System.out.println("approveDaoImpl getVacation Exception->"+e.getMessage());
@@ -288,13 +304,22 @@ public class approveDaoImpl implements approveDao {
 	@Override
 	public String deleteApprove(Approve_Progress approve_Progress, Approve approve) {
 		String result = "";
+		Calendar calendar = new Calendar();
 		System.out.println("approveDaoImpl approve_Progress ->" + approve_Progress.getApp_num());
 		System.out.println("approveDaoImpl approve ->" + approve.getApp_num());
+		System.out.println("approveDaoImpl approve ->" + approve.getEmp_num());
 		try {
 			session.delete("wsApvPrgDel", approve_Progress);
 			
 			session.delete("wsApvFileDel", approve);
 			session.delete("wsApvDel", approve);
+			calendar.setCalendar_id(approve.getApp_num());
+			System.out.println("deleteApprove getCalendar_id -> "+ calendar.getCalendar_id());
+			calendar = session.selectOne("wsFindComu", calendar);
+			System.out.println("deleteApprove getCalendar_start -> "+ calendar.getCalendar_start());
+			System.out.println("deleteApprove getCalendar_end -> "+ calendar.getCalendar_end());
+			session.update("wsUpdateVa", calendar);
+			session.delete("wsCalDel", calendar);
 		} catch (Exception e) {
 			System.out.println("approveDaoImpl deleteApprove Exception->"+e.getMessage());
 		}

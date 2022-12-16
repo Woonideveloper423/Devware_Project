@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class Vacation {
 	private int emp_num;
-	private int va_stock;
+	private float va_stock;
 }

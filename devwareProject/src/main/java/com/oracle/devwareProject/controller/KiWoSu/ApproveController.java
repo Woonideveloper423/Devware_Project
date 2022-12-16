@@ -36,16 +36,16 @@ public class ApproveController {
 	
 	
 	//리스트 맵핑
-		@RequestMapping("/approvalList")
+		@RequestMapping("/user/approvalList")
 		public String approvalList() {
 
 			System.out.println("CommuteController listCommute start....");
 
-			return "/approve/approvalList";
+			return "/approve/user/approvalList";
 			
 		}
 		
-		@RequestMapping("/myApvDetail")
+		@RequestMapping("/user/myApvDetail")
 		public String myApvDetail(String app_num, HttpSession session, Model model) {
 			System.out.println("CommuteController myApvDetail start....");
 			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
@@ -60,7 +60,7 @@ public class ApproveController {
 			System.out.println("allForApprove->"+ allForApprove.getPrg_name1());
 			model.addAttribute("allApv", allForApprove);
 			
-			return "/approve/myApvDetail";
+			return "/approve/user/myApvDetail";
 			
 		}
 		
@@ -69,7 +69,7 @@ public class ApproveController {
 
 			System.out.println("CommuteController listCommute start....");
 
-			return "/approve/ApvDetail2";
+			return "/approve/user/ApvDetail2";
 			
 		}
 		
@@ -91,7 +91,7 @@ public class ApproveController {
 //			
 //		}
 		
-		@RequestMapping("/writeForm1")
+		@RequestMapping("/user/writeForm1")
 		public String writeForm(HttpSession session, Model model) {
 			
 //			Emp emp = (Emp) session.getAttribute("emp"); //"로그인시" 세션을 설정해 놓은 값을 가져온다.
@@ -99,21 +99,21 @@ public class ApproveController {
 			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
 			
 
-			return "/approve/writeForm1";
+			return "/approve/user/writeForm1";
 			
 		}
 		
-		@RequestMapping("/writeForm2")
+		@RequestMapping("/user/writeForm2")
 		public String writeForm2() {
 
 			System.out.println("CommuteController listCommute start....");
 
-			return "/approve/writeForm2";
+			return "/approve/user/writeForm2";
 			
 		}
 		
 		
-		@RequestMapping("/myApvList")
+		@RequestMapping("/user/myApvList")
 		public String myApvList(Approve approve, String currentPage, HttpSession session, Model model) {
 			System.out.println("approveController myApvList Start...");
 			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
@@ -140,7 +140,7 @@ public class ApproveController {
 			System.out.println("approveController myApvList page -> "+ page);
 			System.out.println("approveController myApvList page -> "+ page);
 			
-			return "/approve/myApvList";
+			return "/approve/user/myApvList";
 		}
 		
 
@@ -207,7 +207,7 @@ public class ApproveController {
 			} catch (Exception e) {
 				System.out.println("CommuteController writeApproveForm error ->" + e.getMessage());
 			}
-			return "redirect:myApvList";
+			return "redirect:user/myApvList";
 			
 		}
 		
@@ -230,6 +230,7 @@ public class ApproveController {
 										String comu_app,
 										String start_date,
 										String end_date,
+										int calendar_all_day,
 										MultipartFile[] files,
 										Model model) {
 
@@ -261,14 +262,15 @@ public class ApproveController {
 			model.addAttribute("comu_app", approve.getComu_app());
 			System.out.println("test comu_app->" + approve.getComu_app());
 			
-			System.out.println("test comu_app->" + start_date);
-			System.out.println("test comu_app->" + end_date);
+			System.out.println("test start_date->" + start_date);
+			System.out.println("test end_date->" + end_date);
 
 			calendar.setCalendar_start(start_date);
 			calendar.setCalendar_end(end_date);
-			
-			System.out.println("test comu_app->" + calendar.getCalendar_start());
-			System.out.println("test comu_app->" + calendar.getCalendar_end());
+			calendar.setCalendar_allDay(calendar_all_day);
+			System.out.println("test calendar_all_day->" + calendar.getCalendar_allDay());
+			System.out.println("test getCalendar_start->" + calendar.getCalendar_start());
+			System.out.println("test getCalendar_end->" + calendar.getCalendar_end());
 			int writeResult = 0;
 			try {
 				 writeResult = as.writeApv(session, approve, approve_Progress, calendar, files); 
@@ -303,7 +305,7 @@ public class ApproveController {
 			return result;
 		}
 		
-		@RequestMapping("/notAuthApvList")
+		@RequestMapping("/user/notAuthApvList")
 		public String notAuthApvList(Approve approve, String currentPage, HttpSession session, Model model) {
 			System.out.println("approveController notAuthApvList Start...");
 			
@@ -331,7 +333,7 @@ public class ApproveController {
 			System.out.println("approveController myApvList page -> "+ page);
 			System.out.println("approveController myApvList page -> "+ page);
 			
-			return "/approve/notAuthApvList";
+			return "/approve/user/notAuthApvList";
 		}
 		
 		
@@ -350,7 +352,7 @@ public class ApproveController {
 			System.out.println("allForApprove->"+ allForApprove.getPrg_name1());
 			model.addAttribute("reWrite", allForApprove);
 			
-			return "/approve/writeForm1";
+			return "/approve/user/writeForm1";
 			
 		}
 		
@@ -417,7 +419,7 @@ public class ApproveController {
 			} catch (Exception e) {
 				System.out.println("CommuteController writeApproveForm error ->" + e.getMessage());
 			}
-			return "redirect:myApvList";
+			return "redirect:/user/myApvList";
 			
 		}
 		
@@ -432,7 +434,7 @@ public class ApproveController {
 			System.out.println("test getPrg_return->" + approve_Progress.getPrg_return());
 			approve_Progress = as.returnApprove(approve_Progress, app_num, apv_return);
 			
-			return "redirect:myApvList";
+			return "redirect:/user/myApvList";
 		}
 		
 		@RequestMapping("/delApv")
@@ -445,7 +447,20 @@ public class ApproveController {
 			System.out.println("test getApp_num->" + approve_Progress.getApp_num());
 			result = as.deleteApprove(approve_Progress, approve);
 			
-			return "redirect:myApvList";
+			return "redirect:/user/myApvList";
 		}
 		
+		@ResponseBody
+		@RequestMapping("/approval/user/notAuthApvCount")
+		public int notAuthApvCount(HttpSession session) {
+			System.out.println("approveController notAuthApvList Start...");
+			
+			//허가 값이 0 인 사람만 나오게 표시
+			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
+			
+			int totalApv = as.notAuthApv(empForSearch);
+			System.out.println("approveController totalApv=>" + totalApv);
+			
+			return totalApv;
+		}
 }

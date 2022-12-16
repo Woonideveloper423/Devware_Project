@@ -9,11 +9,11 @@
 	 	select Count(*) FROM approve where emp_num = #{emp_num}
  	</select>
  	
- 	<select id="NotApvTotal" resultType="int">
+ 	<select id="NotApvTotal" parameterType="empForSearch" resultType="int">
 	 	select Count(*) FROM approve_progress 
-		where 	(prg_num1 = #{emp_num} and prg_auth1 = 0) OR 
-		        (prg_num2 = #{emp_num} and prg_auth2 = 0) OR 
-		        (prg_num3 = #{emp_num} and prg_auth3 = 0);
+		where 	(PRG_NUM1 = #{emp_num} and PRG_AUTH1 = 0) OR 
+		        (PRG_NUM2 = #{emp_num} and PRG_AUTH2 = 0) OR 
+		        (PRG_NUM3 = #{emp_num} and PRG_AUTH3 = 0)
         
  	</select>
  	
@@ -158,12 +158,12 @@
  	</select>
 
 
-	<select id="wsGetVacation"  parameterType="int"  resultType="Vacation" >
-		<![CDATA[
+	<select id="wsGetVacation"  parameterType="Vacation"  resultType="Vacation"  >
+
 		select 	*
 		from 	vacation
 		where 	emp_num = #{ emp_num }
-		]]>	
+
  	</select>
 
 	<update id="wsUpdate" parameterType="Calendar">
@@ -175,8 +175,9 @@
         FROM vacation
         where emp_num = #{ calendar_emp_num }
         ) - (
-        SELECT (TO_DATE(#{calendar_end, jdbcType=VARCHAR}, 'YYYY-MM-DD') -  TO_DATE(#{calendar_start, jdbcType=VARCHAR}, 'YYYY-MM-DD'))+1 FROM DUAL
-            )
+
+			0.5
+                    )
         )
 		where emp_num = #{ calendar_emp_num }
 
@@ -256,17 +257,16 @@
     
     <insert id="wsApvAttach" parameterType="Approve">
     insert all
-    
-    <foreach collection="approveAttachs" item="item" separator=" ">
-	    into approve_file
-	    values(
-	    #{ app_num },
-	     apvfile_seq.nextval,
-	    #{ item.file_name },
-	    sysdate,
-	    #{ item.file_oriname }
-	    )
-    </foreach>
+	    <foreach collection="approveAttachs" item="item" separator=" ">
+		    into approve_file
+		    values(
+		    #{ app_num},
+		     apvfile_seq.nextval,
+		    #{ item.file_name, jdbcType=VARCHAR },
+		    sysdate,
+		    #{ item.file_oriname, jdbcType=VARCHAR }
+		    )
+	    </foreach>
     select * from DUAL
     
     </insert>
@@ -287,5 +287,48 @@
     	delete 
     	from approve_file
     	 WHERE app_num = #{ app_num }
+    </delete>
+    
+    
+    <insert id="wsCalInsert" parameterType="Calendar">
+    	insert into calendar(CALENDAR_ID, CALENDAR_ALL_DAY, CALENDAR_EMP_NUM, CALENDAR_START, CALENDAR_END )
+    	values(#{calendar_id}, 0 , #{calendar_emp_num}, #{calendar_start}, #{calendar_end})
+    </insert>
+    
+    
+    
+     <select id="wsFindComu" resultType="Calendar">
+    SELECT CALENDAR_START as CALENDAR_START, CALENDAR_END as CALENDAR_END, CALENDAR_EMP_NUM as CALENDAR_EMP_NUM
+  	FROM calendar 
+  	WHERE calendar_id = #{calendar_id}
+    </select>
+    
+    <update id="wsUpdateVa" parameterType="Calendar">
+		update vacation
+		set 
+		va_stock = (
+        (SELECT
+            va_stock
+        FROM vacation
+        where emp_num = #{ calendar_emp_num }
+        ) + (
+        <choose>
+        	<when test="#{ calendar_allDay } == 1">
+        		SELECT (TO_DATE(#{calendar_end}, 'YYYY-MM-DD') -  TO_DATE(#{calendar_start}, 'YYYY-MM-DD'))+1 FROM DUAL
+        	</when>
+        	<when test="#{ calendar_allDay } == 2 || #{ calendar_allDay } == 3">
+        		0.5
+        	</when>
+        </choose>
+            )
+        )
+		where emp_num = #{ calendar_emp_num }
+
+	</update>
+	
+	   <delete id="wsCalDel">
+    	delete 
+    	from calendar
+    	 WHERE CALENDAR_ID = #{ calendar_id }
     </delete>
 </mapper>
