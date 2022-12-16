@@ -50,7 +50,7 @@ ul .nav-item {padding-left:7px;}
     <!-- Sidebar -->
     <ul class="navbar-nav sidebar sidebar-dark" id="accordionSidebar"">
            <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/member/main">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/main/user/Main">
 		<i class="fa-brands fa-dev"></i>
         <div class="sidebar-brand-text mx-3" style="font-size: 20px;">DEVWARE</div>
       </a>
