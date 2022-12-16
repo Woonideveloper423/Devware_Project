@@ -76,6 +76,8 @@ function modifyEvent()
 	
   	var content = $("#pcontent").html();
   	console.log("수정 내용: " + content);
+  	$("#pcontent").empty();
+  	var str= "<button type='button' class='btn btn-outline-primary' onclick='selectMem(" + sel_room_num +")'>참여자 수정</button>";
   	
   	var endDate = moment($('#pend').text()).format('YYYY-MM-DD');
   	console.log("수정 끝 날짜 : " + endDate);
@@ -92,6 +94,7 @@ function modifyEvent()
   	$('#modstart_time').val(startTime);
   	$('#modsname').val(title);
   	$('#modsummernote').html(content);
+  	$('#EmpModBtn').html(str);
   	
 }
 
@@ -106,7 +109,7 @@ function deleteEvent()
 	{
 		$.ajax({
 			type: 'post',
-			url: "<%=context%>/deleteEvent",
+			url: "<%=context%>/deleteRes",
 			data : { eventId : eventId },
 	     	success: function(data) 
 	     	{
@@ -119,7 +122,8 @@ function deleteEvent()
 	    	  {
 	    		alert("일정 삭제에 성공하였습니다."); 
 	    		$("#dayModal").modal('hide');
-	    		location.href='<%=context%>/user/showCalendar';
+	    		$("#calendar").fullCalendar('destroy');
+	    		makeResCal(sel_room_num);
 	    	  }
 	      	}
 		});
@@ -132,9 +136,6 @@ function modifyBtn()
 {
 	  var stitle = $('#modsname').val(); //글 제목
 	  console.log("글 제목 : " + stitle);
-	  
-	  var scontent = $('#modsummernote').val(); //글 내용
-	  console.log("글 내용 : " +scontent);
 	  
 	  var start = $('#modstart_date').val();	// 시작 날짜
 	  console.log("시작 날짜 : " +start);
@@ -204,7 +205,8 @@ function modifyBtn()
 	    	  {
 	    		alert("일정 수정에 성공하였습니다.");  
 	    		$("#modId").modal('hide');
-	    		location.href='<%=context%>/user/showCalendar';
+	    		$("#calendar").fullCalendar('destroy');
+	    		makeResCal(sel_room_num);
 	    	  }
 	      	}
 	  	});
@@ -266,16 +268,20 @@ function registBtn()
 	    en = end+" "+end_time;
 	    allDayCheck = 0;
     }
+    var res_emp_nums = [];
 	
-    
-    var param = "calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num=${emp.emp_num}";
+	$('.resChecked').each(function(){
+		res_emp_nums.push($(this).attr("id"));
+	});
+    console.log(res_emp_nums.length);
+    var param = "res_start="+st+"&res_end="+en+"&meeting_info="+stitle.trim()+"&res_emp_nums="+res_emp_nums+"&emp_num=${emp.emp_num}"+"&room_num=" + sel_room_num;
     	
     console.log(param);
 
     $.ajax(
     {
     	type: 'POST',
-     	url: "<%=context%>/addEvent",
+     	url: "<%=context%>/makeRes",
      	data: param,
      	success: function(data) 
      	{
@@ -288,69 +294,104 @@ function registBtn()
     	  {
     		alert("일정 추가에 성공하였습니다.");  
     		$("#myModal").modal('hide');
-    		location.href='<%=context%>/user/showCalendar';
+    		$("#calendar").fullCalendar('destroy');
+    		makeResCal(sel_room_num);
     	  }
       	}
   	});
   }
 }
 
+function selectMem(sel_room_num) {
+	 var res_emp_nums = [];
+		
+	$('.resChecked').each(function(){
+		res_emp_nums.push($(this).attr("id"));
+	});
+	console.log(res_emp_nums.length);
+	window.open('${pageContext.request.contextPath}/user/findEmpList?sel_room_num='+ sel_room_num + '&res_emp_nums=' + res_emp_nums,'참여자 선택','width=1100, height=500 ,resizable = no, scrollbars = no');
+}
+
+function makeResCal(room_id){
+	sel_room_num = room_id;
+	alert("확인 시작");
+	var request = $.ajax({
+    url: "<%=context%>/roomResCheck", // 변경하기
+    method: "POST",
+    dataType: "json",
+    data: {
+		"room_num" : sel_room_num
+	}
+    });  
+	
+		
+    		
+		
+	request.done(function (data) {
+		//캘린더 생성
+	    var $calendar = $("#calendar").fullCalendar({ 
+	        header: {
+	          left: 'prevYear,nextYear',
+	          center: 'title',
+	          right: 'today,month,prev,next'
+	        },
+	        selectable: true, //날짜 일자 드래그 설정 가능
+	        eventLimit: true, 
+	        navLinks: true,	//날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
+	        editable: true, //수정 가능
+	        resizeable: false,
+	        events: data,
+			
+	      	select: function (start,end) //캘린더에서 드래그로 이벤트 발생시
+		   	{
+	      		var str= "<button type='button' class='btn btn-outline-primary' onclick='selectMem(" + sel_room_num +")'>참여자 선택</button>";
+	      		
+	      		 
+		   		$("#myModal").modal(); //모달 창 생성
+		   		$("#EmpaddBtn").html(str);
+		   		$('#start_date').val(moment(start).format('YYYY-MM-DD'));
+		        $('#end_date').val(moment(end).subtract(1, 'days').format('YYYY-MM-DD'));
+		   	},
+	        
+	        eventClick: function(event, jsEvent, view) 
+	        {
+	        	$('#modsummernote').empty();
+	        	console.log(event);
+	        	var str = ""
+	        	$(event.memList).each(function(){
+	        		str += "<div id='" + this.emp_num +"' class='resChecked'>";
+					str += this.emp_name + this.position_name;
+					str += "</div>";
+	        	});
+	        	console.log(str);
+	        	$("#pid").val(event.id);
+	        	
+	        	
+	        	if(event.allDay == 1)
+	        	{
+		        	$('#isallDay').val('1');	
+		        	$('#pend').text(moment(event.fin).format('YYYY-MM-DD  HH:mm:ss'));
+	        	} else if(event.allDay == 0)
+	        	{
+		        	$('#isallDay').val('0');
+		        	$('#pend').text(moment(event.fin).format('YYYY-MM-DD  HH:mm:ss'));
+	        	}
+	        	$("#psubject").text(event.title);
+	        	$("#pcontent").html(str);
+	        	$('#pstart').text(moment(event.start).format('YYYY-MM-DD  HH:mm:ss'));
+	        	$("#dayModal").modal();	
+	        }
+	    });
+		
+	  	
+	});
+}
+
 $(function()
 {  	
 	$(document).on("click",".resAction", function(){
-		alert("확인 시작");
-		var request = $.ajax({
-        url: "<%=context%>/roomResCheck", // 변경하기
-        method: "POST",
-        dataType: "json",
-        data: {
-			room_num : $(this).attr("id")
-		}
-        });  
-		
-			
-	    		
-    		
-		request.done(function (data) {
-			//캘린더 생성
-		    var $calendar = $("#calendar").fullCalendar({ 
-		        header: {
-		          left: 'prevYear,nextYear',
-		          center: 'title',
-		          right: 'today,month,prev,next'
-		        },
-		        selectable: true, //날짜 일자 드래그 설정 가능
-		        eventLimit: true, 
-		        navLinks: true,	//날짜를 선택하면 Day 캘린더나 Week 캘린더로 링크
-		        editable: true, //수정 가능
-		        resizeable: false,
-		        events: data,
-				
-		      	select: function (start,end) //캘린더에서 드래그로 이벤트 발생시
-			   	{
-			   		$("#myModal").modal(); //모달 창 생성
-			   		$('#start_date').val(moment(start).format('YYYY-MM-DD'));
-			        $('#end_date').val(moment(end).subtract(1, 'days').format('YYYY-MM-DD'));
-			   	},
-		        
-		        eventClick: function(event, jsEvent, view) 
-		        {
-		        	console.log(event);
-		        	$("#pid").val(event.id);
-		        	
-		        	
-			        $('#isallDay').val('0');
-			        $('#pend').text(moment(event.fin).format('YYYY-MM-DD  HH:mm:ss'));
-
-		        	$("#psubject").text(event.title);
-		        	$("#pcontent").html(event.content);
-		        	$('#pstart').text(moment(event.start).format('YYYY-MM-DD  HH:mm:ss'));
-		        	$("#dayModal").modal();	
-		        }
-		    });
-		});
-	
-		});
+		makeResCal($(this).attr("id"));
+	});
 });
 
 </script>
@@ -363,6 +404,7 @@ $(function()
 <input type="button" id="myResCheck" value="나의 예약 확인"><p>
 <c:forEach var="roomShow" items="${roomInfo }">
 	<c:out value="${roomShow.room_name }(수용인원  : ${roomShow.room_cntmax}명)"></c:out>
+	<input type="hidden" id="maxCnt${roomShow.room_num }" value="${roomShow.room_cntmax}">
 	<input type="button" class="resAction" id="${roomShow.room_num }" value="예약하기"><p>
 </c:forEach>
 	<!-- 일정 확인 모달 -->
@@ -447,7 +489,8 @@ $(function()
 					</div>
 					
 					<div class="form-group row" id="text">
-							<textarea id="summernote" name="summernote"></textarea>
+							<div id="showEmpList"></div>
+							<div id="EmpaddBtn"></div>
 					</div>
 				</div>
 			</form>
@@ -502,6 +545,7 @@ $(function()
 							</div>
 							<div class="form-group " id="modtext">
 								<div id="modsummernote"></div>
+								<div id="EmpModBtn"></div>
 							</div>
 						</div>
 							<input type="hidden" id="modId">

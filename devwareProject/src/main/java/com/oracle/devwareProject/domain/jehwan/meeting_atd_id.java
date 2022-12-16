@@ -13,6 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class meeting_atd_id implements Serializable {
-	private int emp;
+	private int emp_atd;
 	private Long room_res;
 }

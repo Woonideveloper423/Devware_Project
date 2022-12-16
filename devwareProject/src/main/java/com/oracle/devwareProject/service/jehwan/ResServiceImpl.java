@@ -29,5 +29,17 @@ public class ResServiceImpl implements ResService {
 		List<Room_res> room_res = resRepository.roomResCheck(room_num);
 		return room_res;
 	}
+
+	@Override
+	public int makeRes(Room_res room_res) {
+		int result = resRepository.makeRes(room_res);
+		return result;
+	}
+
+	@Override
+	public int deleteRes(Long eventId) {
+		int result = resRepository.deleteRes(eventId);
+		return result;
+	}
 	
 }

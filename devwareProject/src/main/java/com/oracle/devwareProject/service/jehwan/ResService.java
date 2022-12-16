@@ -11,4 +11,8 @@ public interface ResService {
 
 	List<Room_res> roomResCheck(int room_num);
 
+	int makeRes(Room_res room_res);
+
+	int deleteRes(Long eventId);
+
 }

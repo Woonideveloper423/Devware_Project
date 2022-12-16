@@ -1,8 +1,10 @@
 package com.oracle.devwareProject.domain.jehwan;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,10 +13,13 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
+import javax.persistence.Transient;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.Emp;
@@ -38,8 +43,8 @@ public class Room_res {
 	private Long res_num;
 	private String res_name;
 	private String res_date;
-	private Long res_start;
-	private Long res_end;
+	private String res_start;
+	private String res_end;
 	private String res_cancel;
 	private Long res_amount;
 	private String meeting_info;
@@ -53,4 +58,22 @@ public class Room_res {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "room_num") 
 	private Room_info room_info;
+	
+	@OneToMany(mappedBy = "room_res", cascade = CascadeType.ALL, orphanRemoval = true)
+	@JsonBackReference
+	private List<Meeting_atd> Meeting_atd = new ArrayList<Meeting_atd>();
+	
+	
+	@Transient
+	private List<Meeting_atd_vo> Meeting_atd_vos;
+	
+	
+	@Transient
+	private List<String> memNums;
+	
+	@Transient
+	private int emp_num;
+	
+	@Transient
+	private Long room_num;
 }

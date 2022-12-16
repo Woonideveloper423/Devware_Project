@@ -6,8 +6,10 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.oracle.devwareProject.domain.Emp;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -15,14 +17,16 @@ import lombok.NoArgsConstructor;
 @IdClass(meeting_atd_id.class)
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Meeting_atd {
 	@Id
 	@ManyToOne
+	@JsonManagedReference
 	@JoinColumn(name = "res_num")
 	private Room_res room_res;
 	
 	@Id
 	@ManyToOne
 	@JoinColumn(name = "emp_num")
-	private Emp emp;
+	private Emp emp_atd;
 }

@@ -24,6 +24,7 @@ import com.oracle.devwareProject.domain.jehwan.Room_res;
 import com.oracle.devwareProject.service.GH.CalendarService;
 import com.oracle.devwareProject.service.GH.DeptService;
 import com.oracle.devwareProject.service.GH.EmpService;
+import com.oracle.devwareProject.service.KiWoSu.approveService;
 import com.oracle.devwareProject.service.jehwan.ResService;
 
 import lombok.RequiredArgsConstructor;
@@ -34,7 +35,7 @@ public class ResController {
 	private final ResService resService;
 	private final DeptService deptService;
 	private final EmpService empService;
-	
+	private final approveService as;
 	//캘린더 출력 함수
 	@RequestMapping("/user/showRoomList")
 	public String showRoomList(Model model, HttpSession session)
@@ -83,31 +84,64 @@ public class ResController {
 //		return "/calendar/admin/adminCalendar";
 //	}
 	
-//	//캘린더 이벤트 삭제 함수
-//	@ResponseBody
-//	@RequestMapping("/deleteEvent")
-//	public int deleteEventOnCalendar(@RequestParam int eventId)
-//	{
-//		System.out.println("CalendarController deleteEventOnCalendar Start");
-//		System.out.println("삭제 이벤트 EventId: "+ eventId);
-//		
-//		int result = 0; 
-//		//result = calendarService.deleteEvent(eventId);
-//		return result; 
-//	}
+	//캘린더 이벤트 삭제 함수 
+	@ResponseBody
+	@RequestMapping("/deleteRes")
+	public int deleteRes(@RequestParam Long eventId)
+	{
+		System.out.println("CalendarController deleteEventOnCalendar Start");
+		System.out.println("삭제 이벤트 EventId: "+ eventId);
+		
+		int result = 0; 
+		result = resService.deleteRes(eventId);
+		return result; 
+	}
 	
-//	//캘린더 이벤트 출력 함수
-//	@ResponseBody
-//	@RequestMapping("/addEvent")
-//	public int addEventOnCalendar(Calendar calendar)
-//	{
-//		int result = 0;
-//		System.out.println("CalendarController addEventOnCalendar Start");
-//		
-//		//result = calendarService.addEvent(calendar);
-//		return result;
-//	}
+	//캘린더 이벤트 출력 함수
+	@ResponseBody
+	@RequestMapping("/makeRes")
+	public int makeRes(HttpSession session, Room_res room_res, String[] res_emp_nums)
+	{
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		room_res.setEmp_num(emp.getEmp_num());
+		System.out.println("CalendarController addEventOnCalendar Start");
+		System.out.println("room_num" + room_res.getRoom_num());
+		System.out.println("res_emp_nums.length" + res_emp_nums.length);
+		List<String> memNums = new ArrayList<String>();
+		for(String emp_num : res_emp_nums) {
+			memNums.add(emp_num);
+		}
+		room_res.setMemNums(memNums);
+		int result = resService.makeRes(room_res);
+		//result = calendarService.addEvent(calendar);
+		return result;
+	}
 	
+	@RequestMapping(value="/user/findEmpList")
+	public String approval(HttpSession session,Model model, Long sel_room_num) {
+		System.out.println("sel_room_num->" + sel_room_num);
+		List<EmpForSearch> emplist = new ArrayList<EmpForSearch>();
+		List<Dept> deptlist = new ArrayList<Dept>();
+		
+		try {
+			//직원 조회 기능 수행
+			emplist = as.getUserInfo();
+			deptlist = deptService.getDeptInfo();
+
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		model.addAttribute("emplist",emplist);
+		model.addAttribute("deptlist",deptlist);
+		model.addAttribute("sel_room_num",sel_room_num);
+		
+		
+		return "/reserve/resmemList";
+	}
+	
+
 //	//캘린더 이벤트 변경 함수
 //	@ResponseBody
 //	@RequestMapping("/modifyEvent")
@@ -140,9 +174,8 @@ public class ResController {
 			hash.put("title",room_res.get(i).getMeeting_info());
 			hash.put("start",room_res.get(i).getRes_start());
 			hash.put("fin",room_res.get(i).getRes_end());
-            hash.put("content",room_res.get(i).getMeeting_info());
+            hash.put("memList",room_res.get(i).getMeeting_atd_vos());
             hash.put("id",room_res.get(i).getRes_num());
-            hash.put("amount",room_res.get(i).getRes_num());
 			jsonObj = new JSONObject(hash);
             jsonArr.add(jsonObj);
 		}
