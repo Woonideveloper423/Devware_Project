@@ -17,8 +17,7 @@ public interface BoardDao {
 	
 	List<BoardEmpDept> boardCheckList(BoardEmpDept bEmp);
 	
-
-	BoardEmpDept detailBoard(BoardEmpDept bEmpDept);
+	void detailBoard(BoardEmpDept bEmpDept);
 
 	int brdViewUpdate(BoardEmpDept bEmpDept);
 

@@ -8,6 +8,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="colorlib.com">
+
+<!-- Custom fonts for this template-->
+  <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <script src="https://kit.fontawesome.com/5aa66a35d0.js" crossorigin="anonymous"></script>
 <title>사내 게시판</title>
  <!-- 헤드 네비게이션 효과 -->
  
@@ -19,19 +23,23 @@
 <script type="text/javascript">
  $(function(){  // 게시글 목록 불러오기
 	getBoardList();
+	$(document).on('click','.sortType',function(){
+		$(this).attr('id');
+		getBoardList(1,$(this).attr('id'));
+	})
 })
 
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
 	 getBoardList();
  }
-function getBoardList(arrayType,currentPage){ // 게시글 목록 출력
+function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 	 var searchType=$('#searchType').val(); 
 	 var keyword=$('#keyword').val();
 	 
 	 $.ajax({
         url:'/board/ajaxCheckList',
         type:'GET',
-        data: {"brd_type":'${brd_type}',"currentPage":currentPage,"searchType":searchType,"keyword":keyword},
+        data: {"brd_type":'${brd_type}',"currentPage":currentPage,"searchType":searchType,"keyword":keyword,"arrayType":arrayType},
         dataType:'JSON',
         success : function(data){
         	/* alert("목록조회 성공"); */
@@ -109,7 +117,7 @@ function getBoardList(arrayType,currentPage){ // 게시글 목록 출력
 			 
 			<!-- 검색폼 -->
 			<div class="s003">
-		      <form>
+		      <form id='search_form' name='search_form'>
 		        <div class="inner-form">
 		          <div class="input-field first-wrap">
 		            <div class="input-select">
@@ -121,6 +129,7 @@ function getBoardList(arrayType,currentPage){ // 게시글 목록 출력
 		            </div>
 		          </div>
 		          <div class="input-field second-wrap">
+		         	 <input hidden="hidden">
 		            <input id="keyword" type="text" name='keyword' placeholder='검색어를 입력하세요'/>
 		          </div>
 		          <div class="input-field third-wrap">
@@ -134,18 +143,15 @@ function getBoardList(arrayType,currentPage){ // 게시글 목록 출력
 		      </form>
 		    </div>
 			
-		   <ul style="margin-top: 10px; margin-left: 36.3%; text-align: center;" class="nav">
+		    <ul style="margin-top: 10px; margin-left: 36.3%; text-align: center;" class="nav">
 			  <li  class="nav-item">
-			    <a class="nav-link active" aria-current="page" href="javascript:void(0);" onclick="recentArray()" ><span style="font-size: 20px;">최신순</span></a>
-			  	<input type="hidden" id='recent' value="recent">
+			    <a id='recent' class="nav-link active sortType" href="javascript:void(0);" ><span style="font-size: 20px;">최신순</span></a>
 			  </li>
 			  <li class="nav-item">
-			    <a class="nav-link" href="#"><span style="font-size: 20px;">조회순</span></a>
-			    <input type="hidden" id='view' value="view">
+			    <a id='view' class="nav-link sortType" href="javascript:void(0);" ><span style="font-size: 20px;">조회순</span></a>
 			  </li>
 			  <li class="nav-item">
-			    <a class="nav-link" href="#"><span style="font-size: 20px;">댓글많은순</span></a>
-			    <input type="hidden" id='replyNum' value="replyNum">
+			    <a id='replyNum' class="nav-link sortType" href="javascript:void(0);" ><span style="font-size: 20px;">댓글많은순</span></a>
 			  </li>
 			</ul>
 		   
@@ -165,7 +171,7 @@ function getBoardList(arrayType,currentPage){ // 게시글 목록 출력
 		   		<tbody id='tbody' align="center">
 		   		</tbody>
 		   </table>
-		   <hr/>
+		   <hr>
 		  <!--  페이징 -->
 		      <div class="paging-menu">
 				  <!--  페이징 -->

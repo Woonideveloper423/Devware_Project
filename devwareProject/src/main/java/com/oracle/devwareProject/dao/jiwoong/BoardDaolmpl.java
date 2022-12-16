@@ -69,18 +69,17 @@ public class BoardDaolmpl implements BoardDao {
 	
 	// 게시물 상세조회
 	@Override
-	public BoardEmpDept detailBoard(BoardEmpDept bEmpDept) {
+	public void detailBoard(BoardEmpDept bEmpDept) {
 		log.info("detailBoard start");
-		BoardEmpDept boardinfo =null; 
 		try {
-			boardinfo=session.selectOne("jwBoardSelOne",bEmpDept);
-			log.info("boardinfo.getEmp_num()=>"+boardinfo.getEmp_num());
-			log.info("boardinfo.getBrd_type()=>"+boardinfo.getBrd_type());
-			log.info("boardinfo.getBrd_num()=>"+boardinfo.getBrd_num());
+			session.selectOne("jwBoardSelOne",bEmpDept);
+			log.info("boardinfo.getEmp_num()=>"+bEmpDept.getEmp_num());
+			log.info("boardinfo.getBrd_type()=>"+bEmpDept.getBrd_type());
+			log.info("boardinfo.getBrd_num()=>"+bEmpDept.getBrd_num());
+			log.info("boardinfo.getBrd_num()=>"+bEmpDept.getBoardAttachs().size());
 		} catch (Exception e) {
 			log.info("Exception=>" +e.getMessage());
 		}
-		return boardinfo;
 	}
 
 	@Override
