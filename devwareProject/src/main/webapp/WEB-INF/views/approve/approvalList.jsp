@@ -357,7 +357,6 @@
 			$(opener.document).find('#authId'+i).val($('#memId_'+i).text());
 			$(opener.document).find('#apv_mem'+i).text($('#memId_'+i).text());
 			$(opener.document).find('#apv_mem_ath'+i).val($('#memId_'+i).text());
-			
 		 }
 		 
 		
