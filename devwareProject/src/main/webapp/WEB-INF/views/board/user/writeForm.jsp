@@ -20,16 +20,37 @@
   <script src="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.js"></script>
 	
 <script type="text/javascript">
-$(function(){
-	$('#brd_content').summernote({
-        placeholder: '내용을 작성하세요',
-        height: 400,
-        maxHeight: 800
-    });
-	
-	
+$(document).ready(function(){
 
-});
+	$('#brd_content').summernote({
+		  lang: 'ko-KR',
+	      height: 400,
+	      popover: {
+	    	  image:[],
+	    	  link:[],
+	    	  air:[]
+	      } ,
+	      toolbar: [
+	    	    // [groupName, [list of button]]
+	    	    ['style', ['bold', 'italic', 'underline', 'clear']],
+	    	    ['font', ['strikethrough', 'superscript', 'subscript']],
+	    	    ['fontsize', ['fontsize']],
+	    	    ['color', ['color']],
+	    	    ['para', ['ul', 'ol', 'paragraph']],
+	    	    ['table', ['table']],
+	    	    ['insert', ['link', 'picture', 'hr']],
+	    	    ['height', ['height']]
+	    	  ],
+	    	  focus: true,
+				callbacks: {
+					onImageUpload: function(files, editor, welEditable) {
+			            for (var i = files.length - 1; i >= 0; i--) {
+			            	sendFile(files[i], this);
+			            }
+			        }
+				}
+	  });
+}) // SummerNote ready end 
 
 	let fileIdx = 0; /*[- 파일 인덱스 처리용 전역 변수 -]*/
 	function addFile() {
@@ -39,24 +60,21 @@ $(function(){
 			alert('파일은 최대 세 개까지 업로드 할 수 있습니다.');
 			return false;
 		}
-	
 		fileIdx++;
-	
-		const fileHtml = `
-			<div data-name="fileDiv" class="form-group filebox bs3-primary">
-				<label for="file_${fileIdx}" class="col-sm-2 control-label"></label>
-				<div class="col-sm-10">
-					<input type="text" class="upload-name" value="파일 찾기" readonly />
-					<label for="file_${fileIdx}" class="control-label">찾아보기</label>
-					<input type="file" name="files" id="file_${fileIdx}" class="upload-hidden" onchange="changeFilename(this)" />
-	
-					<button type="button" onclick="removeFile(this)" class="btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline">
-						<i class="fa fa-minus" aria-hidden="true"></i>
-					</button>
-				</div>
-			</div>
-		`;
-	
+		console.log(fileIdx);
+			
+			var	fileHtml = "<div data-name='fileDiv' class='form-group filebox bs3-primary'>";
+			    fileHtml +="<label for='file_"+ fileIdx +"'class='col-sm-2 control-label'></label>";
+			    fileHtml +="<div class='col-sm-10'>";
+				fileHtml +="<input type='text' class='upload-name' value='파일 찾기' readonly />";
+				fileHtml +="<label for='file_"+ fileIdx +"' class='control-label'>찾아보기</label>";
+				fileHtml +="<input type='file' name='files' id='file_"+ fileIdx +"' class='upload-hidden' onchange='changeFilename(this)' />";
+				fileHtml +="<button type='button' onclick='removeFile(this)' class='btn btn-bordered btn-xs visible-xs-inline visible-sm-inline visible-md-inline visible-lg-inline'>";
+				fileHtml +="<i class='fa fa-minus' aria-hidden='true'></i>";
+				fileHtml +="</button>";
+				fileHtml +="</div>";
+				fileHtml +="</div>";
+		
 		$('#btnDiv').before(fileHtml);
 	}
 	
@@ -123,7 +141,7 @@ $(function(){
 					</div>	 
 						<!-- 첨부파일 영역 -->
 					<div data-name="fileDiv" class="form-group filebox bs3-primary">
-						<label for="file_0" class="col-sm-2 control-label">파일1</label>
+						<label for="file_0" class="col-sm-2 control-label">첨부파일</label>
 						<div class="col-sm-10">
 							<input type="text" class="upload-name" value="파일 찾기" readonly />
 							<label for="file_0" class="control-label">찾아보기</label>

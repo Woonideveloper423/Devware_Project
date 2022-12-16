@@ -134,7 +134,8 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		            </div>
 		          </div>
 		          <div class="input-field second-wrap">
-		            <input id="keyword" type="text" name='keyword' placeholder='검색어를 입력하세요'/>
+		          	<input hidden="hidden">
+		            <input id="keyword"  type="text" name='keyword' placeholder='검색어를 입력하세요'/>
 		          </div>
 		          <div class="input-field third-wrap">
 		            <button type="button" class="btn-search" id='btn-search' onclick='searchBtnChk()'>
@@ -180,7 +181,7 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		   		<!-- js로 body 구현 -->
 		   		</tbody>
 		   </table>
-		   <hr/>
+		   <hr>
 		   
 		   <div class="paging-menu">
 			  <!--  페이징 -->
@@ -206,7 +207,6 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
       }); 
 
     </script>		
-	
 </body>
 </html>			
 			

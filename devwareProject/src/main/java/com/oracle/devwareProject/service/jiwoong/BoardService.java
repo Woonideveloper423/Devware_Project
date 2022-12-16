@@ -24,7 +24,7 @@ public interface BoardService {
 	
 	List<BoardEmpDept> boardCheckList(BoardEmpDept bEmp);
 	
-	BoardEmpDept detailBoard(BoardEmpDept bEmpDept);
+	void detailBoard(BoardEmpDept bEmpDept);
 
 	int brdDelete(BoardEmpDept bEmpDept);
 

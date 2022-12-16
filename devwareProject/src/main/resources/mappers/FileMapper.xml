@@ -3,9 +3,10 @@
 
 <mapper namespace="com.oracle.devwareProject.mapper.jiwoong.FileMapper">
 <sql id="FileColumns">
-			 file_seq.nextval
+			 file_num
 			,brd_type
 			,brd_num
+			,emp_num
 			,file_original_name
 			,file_save_name
 			,file_size
@@ -21,9 +22,10 @@
 	) VALUES
 	<foreach collection="list" item="item" separator=",">
 	(
-			#{item.file_num}
+			file_seq.nextval
 		   ,#{item.brd_type}
-		   ,#{item.brd_num}
+		   ,1
+		   ,#{item.emp_num}
 		   ,#{item.file_original_name}
 		   ,#{item.file_save_name}
 		   ,#{item.file_size}
@@ -33,9 +35,6 @@
 	)
 	</foreach>
 </insert>
-
-
-
 
 
 </mapper>

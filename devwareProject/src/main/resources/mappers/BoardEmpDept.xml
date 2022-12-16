@@ -2,42 +2,45 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.oracle.devwareProject.BoardEmpDeptMapper">
-
+	<resultMap  type="BoardAttach" id="attachResult">
+    	<result property="file_original_name" column="file_original_name" />
+    	<result property="file_save_name"  column="file_save_name" />
+    	<result property="file_size"  column="file_size" />
+    </resultMap>
 	<!-- 유형별 게시판 게시글 insert -->
 	<insert id="jwBoardInsert" parameterType="BoardEmpDept">
-
 		INSERT ALL
 		INTO Board values(#{emp_num},     
-		                         #{brd_type},
-		                        <choose>
-		                        	<when test="brd_type==1">brd1_num_seq.nextval,</when>
-		                        	<when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.nextval,</when>
-		                        	<when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.nextval,</when>
-		                        	<when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.nextval,</when>
-		                        	<when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.nextval,</when>
-		                        	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.nextval,</when>
-		                        	<when test="brd_type==3">brd3_num_seq.nextval,</when>
-		                        	<when test="brd_type==4">brd4_num_seq.nextval,</when>
-		                        </choose>
-		                         #{brd_title},
-		                         #{brd_content},
-		                         SYSDATE,
-		                         0,  <!-- 조회수 -->
-		                         0,  <!--  삭제여부 -->
-		                         <choose>
-		                        	<when test="brd_type==1">brd1_num_seq.currval,</when>
-		                        	<when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.currval,</when>
-		                        	<when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.currval,</when>
-		                        	<when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.currval,</when>
-		                        	<when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.currval,</when>
-		                        	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.currval,</when>
-		                        	<when test="brd_type==3">brd3_num_seq.currval,</when>
-		                        	<when test="brd_type==4">brd4_num_seq.currval,</when>
-		                        </choose>	
-		                        0, <!-- 답변글 순서 -->
-		                        0, <!-- 들여쓰기 -->
-								0, <!-- 해결상태 -->
-								0) <!-- 댓글수 -->	
+		                  #{brd_type},
+                        <choose>
+                        	<when test="brd_type==1">brd1_num_seq.nextval,</when>
+                        	<when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.nextval,</when>
+                        	<when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.nextval,</when>
+                        	<when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.nextval,</when>
+                        	<when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.nextval,</when>
+                        	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.nextval,</when>
+                        	<when test="brd_type==3">brd3_num_seq.nextval,</when>
+                        	<when test="brd_type==4">brd4_num_seq.nextval,</when>
+                        </choose>
+                         #{brd_title},
+                         #{brd_content},
+                         SYSDATE,
+                         0,  <!-- 조회수 -->
+                         0,  <!--  삭제여부 -->
+                         <choose>
+                        	<when test="brd_type==1">brd1_num_seq.currval,</when>
+                        	<when test="brd_type==2 and dept_num==1">BRD2_DEPT1_SEQ.currval,</when>
+                        	<when test="brd_type==2 and dept_num==2">BRD2_DEPT2_SEQ.currval,</when>
+                        	<when test="brd_type==2 and dept_num==3">BRD2_DEPT3_SEQ.currval,</when>
+                        	<when test="brd_type==2 and dept_num==4">BRD2_DEPT4_SEQ.currval,</when>
+                        	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.currval,</when>
+                        	<when test="brd_type==3">brd3_num_seq.currval,</when>
+                        	<when test="brd_type==4">brd4_num_seq.currval,</when>
+                        </choose>	
+                        0, <!-- 답변글 순서 -->
+                        0, <!-- 들여쓰기 -->
+						0, <!-- 해결상태 -->
+						0) <!-- 댓글수 -->	
 			<foreach collection="boardAttachs" item="item" separator=" ">
 				into BRD_FILE values(
 				 #{item.file_num},
@@ -279,10 +282,25 @@
 	   </choose>	
 	</select>
 	<!-- 게시글 상세 조회 -->
-	<select id="jwBoardSelOne" parameterType="BoardEmpDept" resultType="BoardEmpDept">
-		select b.*,d.dept_name,e.emp_name from board b inner join emp e on e.emp_num=b.emp_num
-		     								  		   inner join dept d on d.dept_num = e.dept_num 
-		 											   where b.emp_num=#{emp_num} and b.brd_type=${brd_type} and b.brd_num=${brd_num}
+	<select id="jwBoardSelOne" parameterType="BoardEmpDept" statementType="CALLABLE">
+		call board_detail_Proc(
+	                       #{emp_num,mode=IN,    jdbcType=INTEGER}
+	                     , #{brd_type,mode=IN,    jdbcType=INTEGER}
+	                     , #{brd_num,mode=IN,    jdbcType=INTEGER}
+	                     , #{brd_title,mode=OUT,    jdbcType=VARCHAR}
+	                     , #{brd_content,mode=OUT,    jdbcType=VARCHAR}
+	                     , #{brd_ref,mode=OUT,    jdbcType=INTEGER}
+	                     , #{brd_re_level,mode=OUT,    jdbcType=INTEGER}
+	                     , #{brd_re_step,mode=OUT,    jdbcType=INTEGER}
+	                     , #{brd_date,mode=OUT,    jdbcType=DATE}
+	                     , #{brd_view,mode=OUT,    jdbcType=INTEGER}
+	                     , #{qa_status,mode=OUT,    jdbcType=INTEGER}
+	                     , #{emp_name,mode=OUT,    jdbcType=VARCHAR}
+	                     , #{dept_name,mode=OUT,    jdbcType=VARCHAR}
+	                     , #{boardAttachs,   mode=OUT,   jdbcType=CURSOR
+	                     ,   javaType=java.sql.ResultSet 
+	                     ,   resultMap=attachResult}
+	                     )
 	</select>
 	
 	<!-- 게시글 조회수 증가 -->
@@ -359,7 +377,7 @@
 	
 	<!-- 게시글 댓글 목록 -->
 	<select id="jwGetReplyList" parameterType="BoardEmpDept" resultType="BoardEmpDept">
-		SELECT *FROM (SELECT rownum rn , a.* FROM (select b.*,d.dept_name,e.emp_name from board b  inner join emp e on e.emp_num=b.emp_num
+		SELECT *FROM (SELECT rownum rn , a.* FROM (select b.*,d.dept_name,e.emp_name,e.emp_gender from board b  inner join emp e on e.emp_num=b.emp_num
       		  																					   inner join dept d on d.dept_num = e.dept_num
 		    <choose>
 		    	<when test="brd_type!=2">where b.brd_type=#{brd_type} and b.brd_ref=#{brd_num}  and b.brd_re_step!=0</when>

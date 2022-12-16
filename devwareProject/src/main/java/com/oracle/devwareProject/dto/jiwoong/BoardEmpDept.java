@@ -22,7 +22,7 @@ public class BoardEmpDept {
 		
 		private String emp_name;		private int dept_num;       
 		private String emp_id;			private int auth_num;
-		private int status_num;   		 
+		private int status_num;   	    private String emp_gender;	 
 		
 		
 		private String dept_name;

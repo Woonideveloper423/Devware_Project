@@ -254,6 +254,8 @@ function sendMessage(){
 			// Client --> Server
 			ws.send(JSON.stringify(userOption));
 	}
+	$("#openSendFile").val("보내기");
+	$("#sendMsg").val("");
 }
 
 function leaveLookRoom(){
