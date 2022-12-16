@@ -31,7 +31,7 @@ public class RestReplyController {
 		//  댓글목록 조회
 		@GetMapping(value ="/replies")
 		public List<BoardEmpDept> replyList(int brd_type,int brd_num,int dept_num) {
-			  System.out.println("RestReplyController /replies start");
+			  log.info("/replies start");
 			  BoardEmpDept board = new BoardEmpDept(); 
 			  board.setBrd_type(brd_type);
 			  board.setBrd_num(brd_num);
@@ -39,12 +39,12 @@ public class RestReplyController {
 			  log.info("board.getBrd_type()=>" +board.getBrd_type());
 			  log.info("board.getBrd_num()=>" +board.getBrd_num());
 			  log.info("board.getDept_num()=>" +board.getDept_num());
-			  System.out.println("board.getBrd_num()=>" +board.getBrd_num());
+			  log.info("Brd_num():" +board.getBrd_num());
 			  int totalReply = as.totalReply(board);
-			  System.out.println("RestReplyController replyList totalReply=>" +totalReply);
+			  log.info("/replies totalReply=>" +totalReply);
 			  
 			  List<BoardEmpDept> getReplyList = as.getListReply(board);
-			  System.out.println("RestReplyController list replyList.size()=>" +getReplyList.size());
+			  log.info("/replies.size()=>" +getReplyList.size());
 			 
 			  return getReplyList;
 			}	
@@ -52,22 +52,14 @@ public class RestReplyController {
 		// ajax 게시글 댓글 작성
 		@PostMapping(value ="/reply/write")
 		public BoardEmpDept replyInsert(BoardEmpDept board,Model model) {
-			System.out.println("RestReplyController Start...");
-			System.out.println("RestReplyController 넘어온 Parameter");
-			System.out.println(board);
-			
+			log.info("/reply/write Start...");
+			log.info("/reply/writer 넘어온 Parameter");
+			log.info(""+board);
 			int insertCount = 0;
-			
 			insertCount = as.insertReply(board);
-		
-			System.out.println("AjaxController as.writeReply insertCount=>" + insertCount);
-			
+			log.info("/reply/write insertCount=>" + insertCount);
 			return board;
 		 }
-		
-		
-	
-		
 }
 	
 

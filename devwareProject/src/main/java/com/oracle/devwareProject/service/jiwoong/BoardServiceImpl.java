@@ -29,7 +29,6 @@ public class BoardServiceImpl implements BoardService {
 	
 	private final BoardDao bd;
 
-	
 	@Override
 	public int brdInsert(BoardEmpDept bEmp) {
 		log.info("brdInsert start");
@@ -42,7 +41,7 @@ public class BoardServiceImpl implements BoardService {
 	  public int brdInsert(HttpSession session, BoardEmpDept bEmp, MultipartFile[] files) {
 		  log.info("brdInsert(file) start");
 		  int brdFileInsert = 0;
-		  String uploadFolder = session.getServletContext().getRealPath("/upload/board");
+		  String uploadFolder = session.getServletContext().getRealPath("/upload");
 		  log.info("emp_num:" +bEmp.getEmp_num());
 		  log.info("brd_type:"+bEmp.getBrd_type());
 		  log.info("brd_num:" +bEmp.getBrd_num());
@@ -75,8 +74,6 @@ public class BoardServiceImpl implements BoardService {
 		  } catch (Exception e) {
 			// TODO: handle exception
 		  }
-		  
-		  
 		  return brdFileInsert; 
 	  }
 	 
@@ -93,18 +90,17 @@ public class BoardServiceImpl implements BoardService {
 			fileDirectory.mkdirs();
 			System.out.println("업로드용 폴더 생성 : " + uploadPath);
 		}
-
+	
 	    String savedName = uid.toString() + "_" + originalName;
 	    log.info("savedName: " + savedName);
 	    File target = new File(uploadPath, savedName);
-//	    File target = new File(requestPath, savedName);
+	//	    File target = new File(requestPath, savedName);
 	    // File UpLoad   --->  uploadPath / UUID+_+originalName
 	    FileCopyUtils.copy(fileData, target);   // org.springframework.util.FileCopyUtils
 	    
 	    return savedName;
-	  }	
+		  }	
 	 
-	
 	@Override
 	public int checkListTotalCnt(BoardEmpDept bEmp) {
 		log.info("checkListTotalCnt start");
@@ -121,17 +117,10 @@ public class BoardServiceImpl implements BoardService {
 		}
 	
 	@Override
-	public BoardEmpDept detailBoard(BoardEmpDept bEmpDept) {
+	public void detailBoard(BoardEmpDept bEmpDept) {
 		log.info("BoardServiceImpl detailBoard Start");
-		int viewUpdateCnt=0;
-		BoardEmpDept boardInfo=null;
-		// 게시글 조회수 증가 service
-		viewUpdateCnt=bd.brdViewUpdate(bEmpDept);
-		log.info("viewUpdateCount:" +viewUpdateCnt);
 		// 게시글 상세조회 service
-		boardInfo = bd.detailBoard(bEmpDept);
-		
-		return boardInfo;
+		 bd.detailBoard(bEmpDept);
 	}
 
 	@Override

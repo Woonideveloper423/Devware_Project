@@ -1,0 +1,42 @@
+	DROP SEQUENCE brd1_num_seq;
+DROP SEQUENCE brd2_num_seq;
+DROP SEQUENCE brd3_num_seq;
+DROP SEQUENCE brd4_num_seq;
+
+CREATE SEQUENCE brd1_num_seq
+       INCREMENT BY 1
+       START WITH 1
+       MINVALUE 1
+       MAXVALUE 9999
+       NOCYCLE
+       NOCACHE
+       NOORDER;
+
+CREATE SEQUENCE brd2_num_seq
+       INCREMENT BY 1
+       START WITH 1
+       MINVALUE 1
+       MAXVALUE 9999
+       NOCYCLE
+       NOCACHE
+       NOORDER;
+       
+CREATE SEQUENCE brd3_num_seq
+       INCREMENT BY 1
+       START WITH 1
+       MINVALUE 1
+       MAXVALUE 9999
+       NOCYCLE
+       NOCACHE
+       NOORDER;  
+
+CREATE SEQUENCE brd4_num_seq
+       INCREMENT BY 1
+       START WITH 1
+       MINVALUE 1
+       MAXVALUE 9999
+       NOCYCLE
+       NOCACHE
+       NOORDER;       
+       
+commit;       

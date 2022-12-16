@@ -3,8 +3,10 @@ package com.oracle.devwareProject.dto.jiwoong;
 import java.time.LocalDateTime;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class BoardAttach {
 private long file_num;  private int  brd_type;	
 		
@@ -18,4 +20,10 @@ private long file_num;  private int  brd_type;
 		
 		
 		private int dept_num;  // 부서게시판 타겟 join 용
+		
+		public BoardAttach(String file_original_name,String file_save_name) {
+			this.file_original_name=file_original_name;
+			this.file_save_name=file_save_name;
+		}
+	
 }

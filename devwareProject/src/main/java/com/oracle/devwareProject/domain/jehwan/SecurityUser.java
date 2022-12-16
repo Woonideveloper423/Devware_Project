@@ -17,7 +17,7 @@ public class SecurityUser{
 		log.info("SecurityUser member.username = {}", username);
 	    log.info("SecurityUser member.password = {}", password);
 	    log.info("SecurityUser member.role = {}",  role);
-
+	   
 		this.username = username;
 		this.password = password;
 		this.role = role;

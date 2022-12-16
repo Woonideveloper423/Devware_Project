@@ -1,24 +1,20 @@
 package com.oracle.devwareProject.controller.jiwoong;
 
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
-
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import com.oracle.devwareProject.domain.Emp;
-
+import com.oracle.devwareProject.dto.jiwoong.BoardAttach;
 import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
 import com.oracle.devwareProject.dto.jiwoong.BoardEmpDeptVo;
 import com.oracle.devwareProject.service.jiwoong.BoardService;
@@ -56,18 +52,28 @@ public class BoardController {
 	
 	// 게시판 게시글 수정 화면 이동
 	@GetMapping(value ="/board/UpdateForm")
-	public String boardupdateForm(BoardEmpDept bEmpDept,Model model) throws Exception {
+	public String boardupdateForm(BoardEmpDept bEmpDept,String[] saveName,String[] realName,Model model) throws Exception {
 		log.info("/board/UpdateForm start");
 		log.info("brd_type:"+bEmpDept.getBrd_type());
 		log.info("brd_num:"+bEmpDept.getBrd_num());
 		log.info("dept_num:"+bEmpDept.getDept_num());
+		log.info("brd_content:"+bEmpDept.getBrd_content());
+		log.info("brd_title:"+bEmpDept.getBrd_title());
+		if(saveName.length==0){
+			List<BoardAttach> boardAttachs=new ArrayList<BoardAttach>();
+			for(int i=0; i<saveName.length; i++) {
+			BoardAttach boardAttach=new BoardAttach(realName[i],saveName[i]);
+			boardAttachs.add(boardAttach);
+			}
+			bEmpDept.setBoardAttachs(boardAttachs);
+		}
 		model.addAttribute("board",bEmpDept);
 		return "/board/user/updateForm";
 		}
 	
 	// 게시판 게시글 수정
 	@PostMapping(value ="/board/update")
-	public ModelAndView boardUpdate(BoardEmpDept bEmpDept,Model model) {
+	public ModelAndView boardUpdate(BoardEmpDept bEmpDept,String[] saveName,String[] realName,Model model) {
 		log.info("/board/update start");
 		ModelAndView mView = new ModelAndView("redirect:/board/checkList?brd_type="+bEmpDept.getBrd_type()+"");
 		log.info("brd_title:"+bEmpDept.getBrd_title());
@@ -154,8 +160,15 @@ public class BoardController {
 			  }
 		  log.info("brd_date=>" +brd_date);
 		  bEmpDept.setDept_num(emp.getDept().getDept_num());
-		  BoardEmpDept detailInfo=bs.detailBoard(bEmpDept);
-		  model.addAttribute("board",detailInfo);
+		  bs.detailBoard(bEmpDept);
+		  log.info("brd_type: "+bEmpDept.getBrd_type());
+		  log.info("emp_num: " +bEmpDept.getEmp_num());
+		  log.info("brd_num: " +bEmpDept.getBrd_num());
+		  log.info("dept_num:" +emp.getDept().getDept_num());
+		  log.info("brd_ref: " +bEmpDept.getBrd_ref());
+		  log.info("brd_re_level: " +bEmpDept.getBrd_re_level());
+		  log.info("brd_re_step: " +bEmpDept.getBrd_re_step());
+		  model.addAttribute("board",bEmpDept);
 		  return "/board/user/detailBoard"; 
 	  }
 }

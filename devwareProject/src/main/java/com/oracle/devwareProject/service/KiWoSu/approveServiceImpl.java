@@ -52,7 +52,7 @@ public class approveServiceImpl implements approveService {
 	public int writeApv(HttpSession session, Approve approve, Approve_Progress approve_Progress, Calendar calendar, MultipartFile[] files) {
 		int result = 0;
 		System.out.println("approveServiceImpl writeApv start...");
-		 String uploadFolder = session.getServletContext().getRealPath("/upload/approve");
+		 String uploadFolder = session.getServletContext().getRealPath("/upload");
 		
 		
 		 try {

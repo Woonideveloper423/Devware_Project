@@ -26,7 +26,6 @@ $(function(){
 		$('#delete_btn').hide();
 	}
 	
-	 
 	 if(${board.emp_num}==${emp.emp_num}){ // 게시글 수정 버튼 동적 생성
 		$('#update_btn').show();
 	}else{
@@ -44,7 +43,12 @@ $(function(){
 		}
 		console.log($(this).attr('id'));
 	})
+ 	$(document).on('click','.save_attachBtn',function(){
+ 		console.log($(this).attr('id'));
+ 		console.log($(this).attr('name'));		
+ 		location.href='/saveAttach?saveName='+$(this).attr('id')+'&realName='+$(this).attr('name');
  	
+ 	})
 	});	
 
 	function getReplyList(){ // 댓글 리스트 ajax 이벤트
@@ -63,7 +67,7 @@ $(function(){
             	replyStr ="";
             	
             	$(data).each(function(){
-            		showReplyList(this.dept_name,this.emp_name,this.brd_content,this.brd_date,this.brd_num,this.brd_re_level,this.brd_re_step);
+            		showReplyList(this.dept_name,this.emp_name,this.emp_gender,this.brd_content,this.brd_date,this.brd_num,this.brd_re_level,this.brd_re_step);
             	});
             	$('#reply_data').html(replyStr);
             		
@@ -77,14 +81,18 @@ $(function(){
         });
 	}
 
-function showReplyList(dept_name,emp_name,brd_content,brd_date,brd_num,brd_re_level,brd_re_step){ // 게시물 댓글 목록 출력 함수
+function showReplyList(dept_name,emp_name,emp_gender,brd_content,brd_date,brd_num,brd_re_level,brd_re_step){ // 게시물 댓글 목록 출력 함수
 	replyStr+="<div style='margin-left:"+ (parseInt(brd_re_level) * 30) +"px' class='d-flex mb-4'>";
 	replyStr+="<input type='hidden' id='step"+brd_num+"'  value='"+brd_re_step+"'>";
 	replyStr+="<input type='hidden' id='level"+brd_num+"' value='"+brd_re_level+"'>";
 	replyStr+="<div class='flex-shrink-0'>";
     if(parseInt(brd_re_level)>=2){
   	replyStr+="&#8627;&nbsp;&nbsp;";}
+    if(emp_gender=='남'){
 	replyStr+="<img class='rounded-circle' src='${pageContext.request.contextPath}/resources/css/images/man.png' alt='...' /></div>";
+	}else if(emp_gender=='여'){
+	replyStr+="<img class='rounded-circle' src='${pageContext.request.contextPath}/resources/css/images/female.png' alt='...' /></div>";	
+	}
 	replyStr+="<div class='ms-3'>";
 	replyStr+="<div class='fw-bold'>" +dept_name+"&nbsp;&nbsp;"+emp_name+"</div>";
 	replyStr+=brd_content;
@@ -180,6 +188,13 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 		<input type="hidden" name="brd_num"  value="${board.brd_num }">
 		<input type="hidden" name="dept_num" value="${emp.dept.dept_num}">
 		<input type="hidden" name="emp_num"  value="${emp.emp_num }">
+		<input type="hidden" name="brd_title" value="${board.brd_title}">
+		<input type="hidden" name="brd_content"  value="${board.brd_content}">
+		
+		<c:forEach items="${board.boardAttachs}"  var="attach_file">
+		 	<input type="hidden" name="saveName"  value="${attach_file.file_save_name }">
+		 	<input type="hidden" name="realName"  value="${attach_file.file_original_name}">
+		</c:forEach> 
 	</form>
 	
 	<!-- 게시글 삭제 POST form -->
@@ -196,9 +211,14 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 	<h5>${board.dept_name } ${board.emp_name } &emsp; ${board.brd_date}</h5>
 	<hr>
 	${board.brd_content} 
-	
+	<hr>
 	<div class='upload_File'>
-		<첨부파일 구현>
+	<label>첨부파일</label><br>
+		<c:forEach items="${board.boardAttachs}"  var="attach_file">
+		 	<c:out value="${attach_file.file_original_name}"></c:out>
+		     &emsp;<button class="save_attachBtn btn btn-outline-primary" id="${attach_file.file_save_name }" name="${attach_file.file_original_name}">다운로드</button> 
+		     &emsp;파일크기: <c:out value="${attach_file.file_size }"></c:out>kb<p>	  
+		</c:forEach>
 	</div>
 	</div>
 	<hr>
@@ -222,7 +242,7 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
                        </form>
                        <!-- 댓글 List 영역(javascript 구현) -->
                       <div class='reply_data' id='reply_data'></div>
-                          </div>
+                   </div>
                </div>
            </section>           	 
      
