@@ -69,14 +69,14 @@ public class EmpController
 		{
 			model.addAttribute("emp",emp);
 			model.addAttribute("empForSearch",empForSearch);
-			return "/member/admin/adminMain";
+			return "/main/user/Main";
 		}
 		//일반 유저 일 경우 
 		else
 		{	
 			model.addAttribute("emp",emp);
 			model.addAttribute("empForSearch",empForSearch);
-			return "/member/user/userMain";
+			return "/main/user/Main";
 		}
 	}
 
@@ -414,7 +414,7 @@ public class EmpController
 //				model.addAttribute("emp",emp);
 //				model.addAttribute("empForSearch",empForSearch);
 				System.out.println("관리자 메인으로 이동");
-				return "/member/admin/adminMain";
+				return "/main/user/Main";
 			}
 			//일반 유저 일 경우 
 			else
@@ -422,7 +422,7 @@ public class EmpController
 //				model.addAttribute("emp",emp);
 //				model.addAttribute("empForSearch",empForSearch);
 				System.out.println("유저 메인으로 이동");
-				return "/member/user/userMain";
+				return "/main/user/Main";
 			}
 	}
 	

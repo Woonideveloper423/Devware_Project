@@ -496,11 +496,7 @@ $(document).ready(function(){
 
 <body id="page-top">
 
-    <!-- Content Wrapper -->
-    <div id="content-wrapper" class="d-flex flex-column">
 
-      <!-- Main Content -->
-      <div id="content">
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
@@ -715,11 +711,7 @@ $(document).ready(function(){
           
         
      
-      </div>
-      <!-- End of Main Content -->
 
-    </div>
-    <!-- End of Content Wrapper -->
 
   <!-- Page level plugins -->
   <script src="${pageContext.request.contextPath}/resources/vendor/chart.js/Chart.min.js"></script>

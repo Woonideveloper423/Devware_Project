@@ -709,8 +709,6 @@ $(document).ready(function(){
           
           
           
-        
-     
 
 
   <!-- Page level plugins -->

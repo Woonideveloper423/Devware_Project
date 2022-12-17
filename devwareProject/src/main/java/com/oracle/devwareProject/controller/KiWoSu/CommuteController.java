@@ -55,7 +55,7 @@ public class CommuteController {
 	}
 	
 	//리스트 맵핑
-	@RequestMapping("/commute")
+	@RequestMapping("/user/commute")
 	public String listCommute(Model model, Commute commute) {
 		List<Commute> listCommute = cs.ListCommute(commute);
 		System.out.println("CommuteController listCommute start....");
