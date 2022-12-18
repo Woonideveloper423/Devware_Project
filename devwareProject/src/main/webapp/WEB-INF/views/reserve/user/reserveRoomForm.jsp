@@ -83,11 +83,11 @@ function modifyEvent()
   	
   	var endDate = moment($('#pend').text()).format('YYYY-MM-DD');
   	console.log("수정 끝 날짜 : " + endDate);
-  	var endTime = moment($('#pend').text()).format('hh:mm:ss');
+  	var endTime = moment($('#pend').text()).format('hh:mm');
   	console.log("수정 끝 시간 : " + endTime);
   	var startDate = moment($('#pstart').text()).format('YYYY-MM-DD');
   	console.log("수정 시작 날짜 : " + startDate);
-  	var startTime = moment($('#pstart').text()).format('hh:mm:ss');
+  	var startTime = moment($('#pstart').text()).format('hh:mm');
   	console.log("수정 시작 시간 : " + startTime);
   	
 	$('#modend_date').val(endDate);

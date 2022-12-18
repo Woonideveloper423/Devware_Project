@@ -1,5 +1,6 @@
 package com.oracle.devwareProject.domain.jehwan;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -21,6 +22,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.Emp;
@@ -45,9 +47,11 @@ public class Room_res {
 	private String res_name;
 	private String res_date;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-	private Date res_start;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+9")
+	private LocalDateTime res_start;
 	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
-	private Date res_end;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+9")
+	private LocalDateTime res_end;
 	private String res_cancel;
 	private Long res_amount;
 	private String meeting_info;

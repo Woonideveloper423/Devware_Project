@@ -154,17 +154,20 @@ public class ResRepositoryImpl implements ResRepository {
 				}	
 				//em.persist(meeting_atd);
 			}
-			List<Meeting_atd> meeting_atds = room_res.getMeeting_atds();
-			System.out.println("how many?->" + meeting_atds.size());
-			for(Meeting_atd meeting_atd : meeting_atds) {
+			List<Meeting_atd> meeting_atds = new ArrayList<Meeting_atd>();
+			for(Meeting_atd meeting_atd : room_res.getMeeting_atds()) {
 				System.out.println("검사시작");
 				if(!(Arrays.asList(roomResVo.getRes_emp_nums()).contains(String.valueOf(meeting_atd.getEmp_atd().getEmp_num())))) {
 					System.out.println("삭제 멤버 있음");
-					room_res.getMeeting_atds().remove(meeting_atd);
-					System.out.println("삭제 완료");
+					meeting_atds.add(meeting_atd);
+					//room_res.getMeeting_atds().remove(meeting_atd);
 				}
 			}
-			
+			System.out.println("삭제요소 길이는?->" + meeting_atds.size());
+			for(int i = 0 ; i < meeting_atds.size() ; i ++) {
+				System.out.println("삭제 시작");
+				room_res.getMeeting_atds().remove(meeting_atds.get(i));
+			}
 			
 			
 			
