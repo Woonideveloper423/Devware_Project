@@ -19,6 +19,7 @@ import com.oracle.devwareProject.domain.Calendar;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.Emp;
 import com.oracle.devwareProject.domain.EmpForSearch;
+import com.oracle.devwareProject.domain.jehwan.RoomResVo;
 import com.oracle.devwareProject.domain.jehwan.Room_info;
 import com.oracle.devwareProject.domain.jehwan.Room_res;
 import com.oracle.devwareProject.service.GH.CalendarService;
@@ -117,8 +118,22 @@ public class ResController {
 		return result;
 	}
 	
+	//캘린더 이벤트 변경 함수
+	@ResponseBody
+	@RequestMapping("/modifyRes")
+	public int modifyRes(RoomResVo roomResVo)
+	{
+		int result = 0;
+		System.out.println("CalendarController modifyEventOnCalendar Start res_emp_nums->" + roomResVo.getRes_emp_nums().length);
+		System.out.println("roomResVo->" + roomResVo);
+		
+		result = resService.modifyRes(roomResVo);
+		return result;
+	}
+	
+	
 	@RequestMapping(value="/user/findEmpList")
-	public String approval(HttpSession session,Model model, Long sel_room_num) {
+	public String approval(HttpSession session,Model model, Long sel_room_num, Long is_modify, String[] res_emp_nums) {
 		System.out.println("sel_room_num->" + sel_room_num);
 		List<EmpForSearch> emplist = new ArrayList<EmpForSearch>();
 		List<Dept> deptlist = new ArrayList<Dept>();
@@ -132,55 +147,62 @@ public class ResController {
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
 		}
-		
+		System.out.println("res_emp_nums length->" + res_emp_nums);
+//		List<String> resEmpNums = new ArrayList<String>();
+//		for(int i = 0 ; i < res_emp_nums.length ; i++) {
+//			resEmpNums.add(res_emp_nums[i]);
+//		}
 		model.addAttribute("emplist",emplist);
 		model.addAttribute("deptlist",deptlist);
 		model.addAttribute("sel_room_num",sel_room_num);
+		model.addAttribute("is_modify",is_modify);
+		model.addAttribute("res_emp_nums",res_emp_nums);
 		
 		
 		return "/reserve/resmemList";
 	}
 	
 
-//	//캘린더 이벤트 변경 함수
-//	@ResponseBody
-//	@RequestMapping("/modifyEvent")
-//	public int modifyEventOnCalendar(Calendar calendar)
-//	{
-//		int result = 0;
-//		System.out.println("CalendarController modifyEventOnCalendar Start");
-//		
-//		//result = calendarService.modifyEvent(calendar);
-//		return result;
-//	}
+
 	
 	//캘린더의 이벤트를 출력하기 위해서 Map, Key를 설정해서 해쉬맵에 저장
 	@ResponseBody
 	@RequestMapping("/roomResCheck")
 	@SuppressWarnings("unchecked")
-	public List<Map<String, Object>> roomResCheck(@RequestParam int room_num)
+	public List<RoomResVo> roomResCheck(@RequestParam int room_num, HttpSession session)
 	{
-		List <Room_res> room_res = new ArrayList<Room_res>();
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		List <RoomResVo> roomResVos = new ArrayList<RoomResVo>();
 		System.out.println("CalendarController roomResCheck Start");
-		room_res = resService.roomResCheck(room_num);
-		
+		roomResVos = resService.roomResCheck(room_num, emp.getEmp_num());
+		if(roomResVos != null) {
+			for(RoomResVo roomResVo : roomResVos) {
+				System.out.println("controller check test start->" + roomResVo.getStart());
+				System.out.println("controller check test end->" + roomResVo.getFin());
+				if(roomResVo.getEmp_num() == emp.getEmp_num()) {
+					roomResVo.setColor("lightgreen");
+				}else {
+					roomResVo.setColor("skyblue");
+				}
+			}
+		}
 		JSONObject jsonObj = new JSONObject();
         JSONArray jsonArr = new JSONArray();
 		
 		HashMap<String, Object> hash = new HashMap<String, Object>();
 		
-		for(int i = 0; i < room_res.size(); i++)
-		{
-			hash.put("title",room_res.get(i).getMeeting_info());
-			hash.put("start",room_res.get(i).getRes_start());
-			hash.put("fin",room_res.get(i).getRes_end());
-            hash.put("memList",room_res.get(i).getMeeting_atd_vos());
-            hash.put("id",room_res.get(i).getRes_num());
-			jsonObj = new JSONObject(hash);
-            jsonArr.add(jsonObj);
-		}
+//		for(int i = 0; i < roomResVos.size(); i++)
+//		{
+//			hash.put("title",roomResVos.get(i).getMeeting_info());
+//			hash.put("start",roomResVos.get(i).getRes_start());
+//			hash.put("fin",roomResVos.get(i).getRes_end());
+//            hash.put("memList",roomResVos.get(i).getMeeting_atd_vos());
+//            hash.put("id",roomResVos.get(i).getRes_num());
+//			jsonObj = new JSONObject(hash);
+//            jsonArr.add(jsonObj);
+//		}
 		
-		return jsonArr;
+		return roomResVos;
 	}
 	
 }

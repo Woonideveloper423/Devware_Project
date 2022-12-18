@@ -575,7 +575,7 @@ public class MailServiceImpl implements MailService {
 	      return "MSIE";
 	 }
 	
-		
+	
 	private void upFileDelete(String deleteFileName) throws Exception{
 		log.info("upFileDelete result->" + deleteFileName);
 		File file = new File(deleteFileName);
