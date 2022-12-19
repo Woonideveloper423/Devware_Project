@@ -16,12 +16,6 @@
  	</select>
  	
 
- 	<select id="wsCusListAll" parameterType="commute" resultType="Commute">
-	 	select 	*
-        from   	commute_cus
-        where 	emp_num = #{emp_num}	
- 	</select>
-
 	<select id="wsComFindTime" parameterType="commute" resultType="Commute">
 	 	select * from commute where com_num = #{com_num} and emp_num = #{emp_num}
  	</select>
@@ -48,4 +42,10 @@
  		insert into commute_cus( emp_num, com_num, cus_seq, cus_start, cus_end, cus_cus, cus_detail) values
  		 ( #{emp_num}, #{com_num},commute_seq.nextval ,  #{com_start},  #{com_end}, 1, '근무중') 
  	</insert>
+ 	
+ 	<select id="wsCusListAll" parameterType="commuteCus" resultType="commuteCus">
+	 	select *
+		from commute_cus
+		where emp_num =  #{emp_num}
+ 	</select>
 </mapper>

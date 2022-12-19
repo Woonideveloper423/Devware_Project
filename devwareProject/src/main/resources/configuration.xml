@@ -30,5 +30,6 @@
 	    <typeAlias alias="ChatRoomDto"    		type="com.oracle.devwareProject.dto.jehwan.ChatRoomDto"/>
 	    <typeAlias alias="EmpDto"    			type="com.oracle.devwareProject.dto.jehwan.EmpDto"/>
 	    <typeAlias alias="EmpDtoVO"     		type="com.oracle.devwareProject.dto.jehwan.EmpDtoVO" />
+	    <typeAlias alias="commuteCus"  			type="com.oracle.devwareProject.dto.KiWoSu.Commute_cus" />
 	</typeAliases>
 </configuration>

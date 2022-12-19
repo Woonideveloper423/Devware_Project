@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.oracle.devwareProject.dao.KiWoSu.CommuteDao;
 import com.oracle.devwareProject.dto.KiWoSu.Commute;
+import com.oracle.devwareProject.dto.KiWoSu.Commute_cus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -60,6 +61,14 @@ public class ComServiceImpl implements ComService {
 		cd.saveTime(commute);
 		return;
 		
+	}
+
+	@Override
+	public List<Commute_cus> ListCommuteCus(Commute_cus commuteCus) {
+		System.out.println("CommuteService ListCommute start");
+		List<Commute_cus> listCommuteCus = cd.commuteCusList(commuteCus);
+		System.out.println("CommuteService ListCommute listCommute.size() ->"+ listCommuteCus.size());
+		return listCommuteCus;
 	}
 
 
