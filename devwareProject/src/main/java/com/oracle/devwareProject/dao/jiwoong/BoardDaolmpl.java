@@ -57,10 +57,12 @@ public class BoardDaolmpl implements BoardDao {
 		try {
 			if(bEmp.getKeyword()=="" || bEmp.getSearchType()=="") {
 				brdCheckList = session.selectList("jwBrdCheckList",bEmp);
+				log.info("jwBrdCheckList.size:" +brdCheckList.size());
 			}else {
 				brdCheckList= session.selectList("jwSearchList",bEmp);
+				log.info("jwSearchList.size:" +brdCheckList.size());
 			}
-				log.info("brdCheckList.size:" +brdCheckList.size());
+				
 		}catch (Exception e) {
 			System.out.println("BoardDaolmpl boardCheckList Exception=>" +e.getMessage());
 		}
@@ -118,5 +120,19 @@ public class BoardDaolmpl implements BoardDao {
 			log.info("Exception:"+e.getMessage());
 		}
 		return brdUpdateCnt;
+	}
+
+	@Override
+	public int statusUpdate(BoardEmpDept bEmpDept) {
+		log.info("statusUpdate start");
+		int statusUpdateCnt=0;
+		log.info("brd_type:" +bEmpDept.getBrd_type());
+		log.info("qa_status:"+bEmpDept.getQa_status());
+		try {
+			statusUpdateCnt=session.update("jwUpdateStatus",bEmpDept);
+		} catch (Exception e) {
+			log.info("Exception:"+e.getMessage());
+		}
+		return 0;
 	}
 }

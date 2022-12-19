@@ -170,6 +170,11 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		   		</thead>
 		   		<tbody id='tbody' align="center">
 		   		</tbody>
+		   		 <div align="right">
+					<button class='btn btn-primary btn-lg' onclick="location.href='/board/WriteForm?brd_type=${brd_type}'">
+					<i class="fa-solid fa-pen">글쓰기</i></button>
+				 </div> 
+		 	</div>
 		   </table>
 		   <hr>
 		  <!--  페이징 -->
@@ -179,10 +184,6 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 						  <ul id='pagingNation' class="pagination pagination-lg justify-content-center">
 						  </ul> 
 				  </nav>
-				  <div align="right">
-				<button class='btn btn-primary btn-lg' onclick="location.href='/board/WriteForm?brd_type=${brd_type}'">
-				<i class="fa-solid fa-pen">글쓰기</i></button>
-			 </div> 
 		 	</div>
 	</div>
 	

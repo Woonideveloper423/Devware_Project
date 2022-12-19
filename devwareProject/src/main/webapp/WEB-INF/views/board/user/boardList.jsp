@@ -22,12 +22,14 @@
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
 <script type="text/javascript">
 $(function(){  // 게시글 목록 불러오기
-	getBoardList();
-	$(document).on('click','.sortType',function(){
-		$(this).attr('id');
+	getBoardList(1,'recent');
+	
+})
+
+$(document).on('click','.sortType',function(){
+		console.log($(this).attr('id'))
 		getBoardList(1,$(this).attr('id'));
 	})
-})
 
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
 	 getBoardList();
@@ -70,7 +72,8 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
         	$('#tbody').html(brdListStr);
         	
         	/* 페이징 */
-        	var pageInfo = "";
+   			
+        	var pageInfo ="";
     		var startPage = parseInt(data.page.startPage);
     		var endPage   = parseInt(data.page.endPage);
     		var blockSize   = parseInt(data.page.pageBlock);
@@ -78,17 +81,18 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
     		var currentPage = parseInt(data.page.currentPage);
     		console.log(startPage);
     		console.log(endPage);
+    		console.log(arrayType);
     		if(startPage > blockSize){
     			pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
-    			pageInfo+="onclick=getBoardList("+startPage-blockSize+")>이전</a></li>";
+    			pageInfo+="onclick=getBoardList("+startPage-blockSize+",\'"+arrayType+"\')>이전</a></li>";
     		}
     		for(startPage ; startPage<=endPage ; startPage++){
     				pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
-    				pageInfo+="onclick=getBoardList("+startPage+")>"+startPage+"</a></li>";
+    				pageInfo+="onclick=getBoardList("+startPage+",\'"+arrayType+"\')>"+startPage+"</a></li>";
     		}
     		if(endPage < pageCnt){
     			pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
-    			pageInfo+="onclick=getBoardList("+startPage+blockSize+")>다음</a></li>";
+    			pageInfo+="onclick=getBoardList("+startPage+blockSize+",\'"+arrayType+"\')>다음</a></li>";
     		}
     		$('#pagingNation').html(pageInfo);
      		
@@ -162,6 +166,7 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 			    <a id='replyNum' class="nav-link sortType" href="javascript:void(0);" ><span style="font-size: 20px;">댓글많은순</span></a>
 			  </li>
 			</ul>
+			<input type="hidden" id='arrayType' value="${arrayType}">
 		   
 		   <!--  게시글 목록 -->
 		     <table style="margin-top: 20px"  class="table table-hover" >
@@ -169,7 +174,7 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		   		<tr>
 		   			<th>글번호</th>
 		   			<c:if test="${brd_type==4||brd_type==3}"><th>상태</th></c:if>
-		   			<th>제목</th>
+		   			<th width="18%">제목</th>
 		   			<th>작성자</th>
 		   			<th>댓글 수</th>
 		   			<th>조회 수</th>
@@ -180,21 +185,24 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		   		<tbody id="tbody" align="center">
 		   		<!-- js로 body 구현 -->
 		   		</tbody>
+		   		 <div  align="right">
+					<button  class='btn btn-primary btn-lg' onclick="location.href='/board/WriteForm?brd_type=${brd_type}'">
+					<i class="fa-solid fa-pen">글쓰기</i></button>
+	 	  		</div> 
 		   </table>
+		    	
 		   <hr>
-		   
+		  
 		   <div class="paging-menu">
 			  <!--  페이징 -->
 			   <nav  aria-label="Page navigation example">
 					  <ul id='pagingNation' class="pagination pagination-lg justify-content-center">
 					  </ul> 
 			  </nav>
-			  <div align="right">
-			<button class='btn btn-primary btn-lg' onclick="location.href='/board/WriteForm?brd_type=${brd_type}'">
-			<i class="fa-solid fa-pen">글쓰기</i></button>
-			 </div> 
-		 </div>
-	</div>
+			
+		</div>
+		
+		
 	
 	 <script src="${pageContext.request.contextPath}/resources/js/extention/choices.js"></script>
 	<script type="text/javascript">
