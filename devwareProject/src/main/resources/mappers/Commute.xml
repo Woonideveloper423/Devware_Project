@@ -7,11 +7,19 @@
 
 	<select id="wsComListAll" parameterType="commute" resultType="Commute">
 	 <![CDATA[
-	 	select com.*   
-              , work_time(com.com_start , com.com_end) com_workTime
-              , work_time( CONCAT(com_num, '090000'), com_start) com_lateTime
-        from   commute com
+	 	select 	com.*   
+              	, work_time(com.com_start , com.com_end) com_workTime
+              	, work_time( CONCAT(com_num, '090000'), com_start) com_lateTime
+        from   	commute com
+        where 	emp_num = #{emp_num}
       ]]>	
+ 	</select>
+ 	
+
+ 	<select id="wsCusListAll" parameterType="commute" resultType="Commute">
+	 	select 	*
+        from   	commute_cus
+        where 	emp_num = #{emp_num}	
  	</select>
 
 	<select id="wsComFindTime" parameterType="commute" resultType="Commute">

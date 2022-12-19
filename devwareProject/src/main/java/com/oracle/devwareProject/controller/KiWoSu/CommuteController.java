@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.Commute;
 import com.oracle.devwareProject.service.KiWoSu.ComService;
 
@@ -56,7 +57,9 @@ public class CommuteController {
 	
 	//리스트 맵핑
 	@RequestMapping("/user/commute")
-	public String listCommute(Model model, Commute commute) {
+	public String listCommute(Model model, Commute commute, HttpSession session) {
+		EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
+		commute.setEmp_num(empForSearch.getEmp_num());
 		List<Commute> listCommute = cs.ListCommute(commute);
 		System.out.println("CommuteController listCommute start....");
 		model.addAttribute("listCommute", listCommute);
@@ -64,9 +67,9 @@ public class CommuteController {
 		
 	}
 	
-	
+	@ResponseBody
 	@PostMapping("/startTime")
-	public String startTime(Commute commute, String msg, String com_start, String com_end, Date com_date, int emp_num ) {
+	public String startTime(Commute commute, String msg, String com_start, String com_end, Date com_date, int emp_num, int com_num ) {
 		
 		System.out.println("CommuteController startTime Start");
 		System.out.println("msg -> " + msg);
@@ -78,6 +81,8 @@ public class CommuteController {
 		System.out.println("commute -> " + commute.getCom_date());
 		System.out.println("emp_num -> " + emp_num);
 		System.out.println("commute -> " + commute.getEmp_num());
+		System.out.println("emp_num -> " + com_num);
+		System.out.println("commute -> " + commute.getCom_num());
 		cs.saveTime(commute); 
 		
 		
