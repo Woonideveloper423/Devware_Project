@@ -22,9 +22,10 @@ $.ajax({
 	type:'POST',
 	url: '${ pageContext.request.contextPath }/approval/user/notAuthApvCount',
 	success: function(data){
-		//console.log(data);
+		console.log(data);
 		$('#apvCount2').text(data);
 		$('#apvCount3').text(data);
+		$('#apvCount4').text(data);
 	}
 })
 
@@ -35,8 +36,8 @@ $(function(){
 	console.log("empno는?" + '${empForSearch.emp_num}');
 	email();
 	setInterval('email()', 30000);
-
 	getMsgCnt();
+	
 	console.log("wsOpen  location.host: " + location.host);
     var wsUri  = "ws://" + location.host + "${pageContext.request.contextPath}/chating";
     // WebSocket 프로토콜을 사용하여 통신하기 위해서는 WebSocket객체를 생성. 
@@ -66,7 +67,12 @@ $(function(){
 		// 자바스크립트의 값을 JSON 문자열로 변환
 		// Client --> Server
 		ws.send(JSON.stringify(userOption));
-		$('#detailRoom').empty($("#chattingRoomId").val());
+		/* $('#detailRoom').empty($("#chattingRoomId").val()); */
+		$('#' + $("#chattingRoomId").val()).remove();
+		leaveLookRoom();
+		$('#detailRoom').remove();
+		
+		$('#roomlist').show();
 	});
 	$(document).on("click","#inviteMember", function(){
 		$('#detailRoom').hide();
@@ -207,6 +213,7 @@ $(function(){
 		// Client --> Server
 		ws.send(JSON.stringify(userOption)); */
 		detailRoom($(this).attr("id"), $(this).attr("name"));
+		$('#msgCnt').html(parseInt($('#msgCnt').html())-parseInt($("#count"+ $(this).attr("id")).html()));
 		$("#count"+ $(this).attr("id")).html(0);
 	});
 	
@@ -215,6 +222,7 @@ $(function(){
 });
 
 function sendMessage(){
+	
 	if($("#openSendFile").val() == "취소"){
 		var inputFile = $('#inputFile')[0].files[0];
         var formData = new FormData();
@@ -243,6 +251,12 @@ function sendMessage(){
             }
         });
 	}else{
+		
+		if($("#sendMsg").val() == null || $("#sendMsg").val().trim() == ""){
+			alert("메세지 내용을 입력해주세요.");
+			return;
+		}
+		
 		var userOption ={
 				type       : "TALK", 
 				roomId  : $("#chattingRoomId").val(),
@@ -254,21 +268,25 @@ function sendMessage(){
 			// Client --> Server
 			ws.send(JSON.stringify(userOption));
 	}
-	$("#openSendFile").val("보내기");
+	$("#openSendFile").val("파일 보내기");
 	$("#sendMsg").val("");
 }
 
 function leaveLookRoom(){
-	$.ajax(
-			{
-				url:"/chat/leaveRoomLook",
-				data:{"roomId"  : $("#chattingRoomId").val()},
-				dataType:'text',
-				success:function(data){
-					
-				}
-			}		
-	);
+	if($("#chattingRoomId").val() == null || $("#chattingRoomId").val().trim() == ""){
+		console.log("보고있는 방 없음");
+	}else{
+		$.ajax(
+				{
+					url:"/chat/leaveRoomLook",
+					data:{"roomId"  : $("#chattingRoomId").val()},
+					dataType:'text',
+					success:function(data){
+						
+					}
+				}		
+		);
+	}
 }
 
 function showEmpList(empType) {
@@ -371,7 +389,7 @@ function detailRoom(roomNum, roomName) {
 								str += "<div class='friend-chat'><img class='profile-img' src='${pageContext.request.contextPath}/resources/img/chatImg.png' alt='채팅이미지'><div class = 'friend-chat-col'><span class='profile-name'>" + this.member_name + "</span><span class='balloon'>" + this.msg_content + "<input class='save_attach' type='button' value='첨부다운' id='" + this.attach_name + "' name='"+ this.msg_content +"'></span></div><div class='time'>" + this.send_date +"</div><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div></div>";
 							}
 						}else if(this.msg_type == "2"){
-								str += "<div class = 'notice-chat'><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div>" + this.member_name + " : " + this.msg_content + "<br>" + this.send_date +"</div>";
+								str += "<div class = 'notice-chat'><div id='msgCnt" + this.log_num +"' class='notRead'>" + this.not_read_cnt + "</div>" + this.msg_content + "<br>" + this.send_date +"</div>";
 
 						}else{
 							if(this.emp_num == '${empForSearch.emp_num}'){
@@ -399,7 +417,7 @@ function getRoomList() {
 				dataType:'json',
 				success:function(data){
 					var str ="<div id='roomlist' style='position: relative;'>";
-					str += "<header><i id='addRoom' class='fa-solid fa-circle-plus' style='color:tomato; font-size:25px;'></i></header><main>";
+					str += "<header><i id='addRoom' class='fa-solid fa-circle-plus' style='color:lightgreen; font-size:25px;'></i></header><main>";
 					$(data).each(function(){
 						console.log("리스트 조회 성공" + this.room_num);
 						/* str =  "<p><form action='roomDetail' id='frm" + this.room_num +"' class='roomEnter'>";
@@ -480,6 +498,15 @@ function  wsEvt() {
 		// 추가한 태그 sessionId에 값을 세팅
 		if(jsonMsg.type == "CREATE"){
 			if(jsonMsg.sender == '${empForSearch.emp_num}'){
+				var str =  "<div id='"+ jsonMsg.roomId +"' name ='" + jsonMsg.roomName +"' class='roomEnter'>";
+				str +=  "<div class='talk'>";
+				str += "<p class='friend-name'> " + jsonMsg.roomName + "</p><p id='content"+ jsonMsg.roomId +"' class='chat-content'>" + jsonMsg.sender_name + " : " + jsonMsg.message +"</p></div>";
+				str += "<div class='chat-status'>";
+				str += "<div id='count"+ jsonMsg.roomId +"' class='chat-balloon'>"+ 0 +"</div>";
+				str += "<div class='time'>" + new Date() + "</div>";
+				str += "</div></div>";
+				$("#roomlist").children('main').prepend(str);
+				
 				var str ="<div id='detailRoom'>";
 				str += "<div class='setting_bar'><input type='hidden' id='chattingRoomId' value='" + jsonMsg.roomId +"'>";
 				str += "<i class='fa-solid fa-arrow-left' onclick='cancelAction(1)'></i>";
@@ -499,7 +526,7 @@ function  wsEvt() {
 				$("#chatContainer").append(str);
 			}else{
 				$('#msgCnt').html(parseInt($('#msgCnt').html())+1);
-				str =  "<div id='"+ jsonMsg.roomId +"' name ='" + jsonMsg.roomName +"' class='roomEnter'>";
+				var str =  "<div id='"+ jsonMsg.roomId +"' name ='" + jsonMsg.roomName +"' class='roomEnter'>";
 				str +=  "<div class='talk'>";
 				str += "<p class='friend-name'> " + jsonMsg.roomName + "</p><p id='content"+ jsonMsg.roomId +"' class='chat-content'>" + jsonMsg.sender_name + " : " + jsonMsg.message +"</p></div>";
 				str += "<div class='chat-status'>";
@@ -517,6 +544,7 @@ function  wsEvt() {
 				$("#content"+ jsonMsg.roomId).html(jsonMsg.sender_name + " : " + jsonMsg.message);
 				$("#count"+ jsonMsg.roomId).html(readCount);
 			}else{
+				$("#content"+ jsonMsg.roomId).html(jsonMsg.sender_name + " : " + jsonMsg.message);
 				if(jsonMsg.showType == "1"){
 					console.log("방에 들어가있음");
 					var str = "";
@@ -671,7 +699,7 @@ function  wsEvt() {
                 <a class="dropdown-item text-center small text-gray-500" href="${pageContext.request.contextPath}/user/notAuthApvList?currentPage=1">문서함으로 가기</a>
               </div>
             </li>
-
+	
             <!-- Nav Item - Messages -->
             <li class="nav-item dropdown no-arrow mx-1">
               <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

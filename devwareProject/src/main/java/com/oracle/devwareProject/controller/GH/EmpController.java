@@ -978,7 +978,7 @@ public class EmpController
 		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
 		model.addAttribute("msg","권한이 없습니다.");
 		if(emp != null) {
-			return "/member/user/userMain";
+			return "/main/user/Main";
 		}else {
 			return "/member/loginForm";
 		}	

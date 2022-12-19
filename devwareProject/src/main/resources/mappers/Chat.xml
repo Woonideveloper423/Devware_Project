@@ -74,6 +74,7 @@
 		and cr.ROOM_NUM = rc.ROOM_NUM(+)
 		ORDER BY send_date desc -->
 		
+		
 		select cr.ROOM_NUM, ROOM_TITLE,emp_name last_sender, msg_content last_msg, SEND_DATE last_msg_date, NVL(not_read_cnt, 0) not_read_cnt
 		from CHAT_ROOM cr, 
 		(select cl2.room_num, count(*) not_read_cnt
@@ -85,14 +86,21 @@
 		and cl2.log_num > cm2.last_read_log
 		group by cl2.room_num) cm, 
 		(select cl_sort.ROOM_NUM,cl_sort.emp_num, cl_sort.MSG_CONTENT, cl_sort.SEND_DATE
-		from CHAT_LOG cl_sort, (select max(SEND_DATE) SEND_DATE from CHAT_LOG group by ROOM_NUM) max_date
-		where cl_sort.SEND_DATE = max_date.SEND_DATE
+		from CHAT_LOG cl_sort, 
+        (select cl3.room_num, max(SEND_DATE) SEND_DATE 
+        from CHAT_LOG cl3,  
+        (select room_num from chat_member where emp_num = #{empno})cm3 
+        where cl3.room_num = cm3.room_num
+        group by cl3.ROOM_NUM) max_date
+		where cl_sort.room_num = max_date.room_num
+        and cl_sort.SEND_DATE = max_date.SEND_DATE
 		) cl,
         emp e
 		where cr.ROOM_NUM = cm.ROOM_NUM(+)
 		and cr.ROOM_NUM = cl.ROOM_NUM
         and cl.emp_num = e.emp_num
 		ORDER BY send_date desc
+		
 	</select>
 	
 	<select id="getMessageList" parameterType="ChatMessageProc" statementType="CALLABLE">

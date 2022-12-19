@@ -70,5 +70,19 @@ public class CalDaoImpl implements CalDao
 		System.out.println("이벤트 수정 결과: "+result);
 		return result;
 	}
+
+	@Override
+	public String calCount(int emp_num) {
+		String result = "0";
+		
+		try {
+			result = session.selectOne("calCount",emp_num);
+			
+		} catch (Exception e) {
+			System.out.println("CalDaoImpl deleteEvent Error "+e.getMessage());
+		}
+		
+		return result;
+	}
 	
 }
