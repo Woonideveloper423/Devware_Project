@@ -297,7 +297,6 @@ function reReplyBtn(){// 답글 등록 ajax 이벤트
 		     &emsp;<button class="save_attachBtn btn btn-outline-primary" id="${attach_file.file_save_name }" name="${attach_file.file_original_name}">다운로드</button> 
 		     &emsp;size : <c:out value="${attach_file.file_size }"></c:out>kb<p>	  
 		</c:forEach>
-		
 	</div>
 	</div>
 	<hr>
