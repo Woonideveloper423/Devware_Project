@@ -76,16 +76,15 @@ public class BoardController {
 			}
 			log.info("BoardAttachs():"+bEmpDept.getBoardAttachs());
 			}else {
-				System.out.println("첨부파일 없음");
+				log.info("첨부파일 없음");
 			}
 			model.addAttribute("board",bEmpDept);
 			return "/board/user/updateForm";
 		}
 	
-
 	// 게시판 게시글 수정
 	@PostMapping(value ="/board/update")
-	public ModelAndView boardUpdate(BoardEmpDept bEmpDept,String[] attachNum,MultipartFile[] files,Model model) {
+	public ModelAndView boardUpdate(HttpSession session,BoardEmpDept bEmpDept,String[] attachNum,MultipartFile[] files,Model model) {
 		log.info("/board/update start");
 		ModelAndView mView = new ModelAndView("redirect:/board/checkList?brd_type="+bEmpDept.getBrd_type()+"");
 		log.info("brd_title:"+bEmpDept.getBrd_title());
@@ -94,8 +93,9 @@ public class BoardController {
 		log.info("dept_num:"+bEmpDept.getDept_num());
 		log.info("brd_type:"+bEmpDept.getBrd_type());
 		log.info("brd_num:"+bEmpDept.getBrd_num());
+		log.info("files[]:"+files.length);
 		int updateCnt=0;
-		updateCnt=bs.brdUpdate(bEmpDept);
+		updateCnt=bs.brdUpdate(bEmpDept,session);
 		log.info("updateCnt:" +updateCnt);
 		return mView;
 	}
@@ -118,6 +118,8 @@ public class BoardController {
 	  model.addAttribute("brd_type",brd_type);
 	  if(brd_type==5) {
 		  return "/board/user/myBoardList"; 
+	  }else if(brd_type==6){
+		  return "/board/user/noticeList"; 
 	  }else {
 		  return "/board/user/boardList"; 
 		  }
@@ -197,6 +199,7 @@ public class BoardController {
 		return mView;
 		  
 	  }
+	  
 	  
 }
 	 

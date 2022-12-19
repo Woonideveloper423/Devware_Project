@@ -133,7 +133,34 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public int brdUpdate(BoardEmpDept bEmpDept) {
+	public int brdUpdate(BoardEmpDept bEmpDept, HttpSession session) {
+		 if(bEmpDept.getFiles() != null) { // 파일이 추가됐다면
+			  try {
+				  int file_num = Integer.parseInt(bEmpDept.getAttachNums()[bEmpDept.getAttachNums().length])+1;
+				  String uploadFolder = session.getServletContext().getRealPath("/upload");
+				  for(MultipartFile multipartFile : bEmpDept.getFiles()) {
+					  if(multipartFile.getOriginalFilename().length()!=0) {
+						  file_num++;
+						  System.out.println(file_num);
+						  BoardAttach boardAttach = new BoardAttach();
+						  String original_name = multipartFile.getOriginalFilename();
+						  System.out.println(original_name);
+						  boardAttach.setBrd_num(bEmpDept.getBrd_type());
+						  boardAttach.setFile_num(file_num);
+						  boardAttach.setFile_original_name(original_name);
+						  boardAttach.setFile_size(multipartFile.getSize());
+						  boardAttach.setFile_save_name(uploadFile(original_name, multipartFile.getBytes(), uploadFolder));
+						  System.out.println(boardAttach.getFile_num());
+						  bEmpDept.getBoardAttachs().add(boardAttach);
+					  }else {
+						  System.out.println("공갈 파일 넘어옴");
+					  }
+				  }
+				 
+			} catch (Exception e) {
+				// TODO: handle exception
+			}
+		  }
 		log.info("brdUpdate start");
 		int brdUpdateCnt=0;
 		brdUpdateCnt=bd.brdUpdate(bEmpDept);

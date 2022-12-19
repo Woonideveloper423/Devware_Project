@@ -195,8 +195,8 @@ $(document).ready(function(){
 					
 					 <!-- 작성 -->
 					<div id='btnDiv' class="form-submit" align="right">
-							<a href="${pageContext.request.contextPath}/board/checkList?brd_type=${enterBrdType}" class="btn-lg btn btn-primary">돌아가기</a>  
-							<a style="color: white" class="btn-lg btn btn-primary" onclick="fn_formSubmit()">작성</a>
+							<a href="${pageContext.request.contextPath}/board/checkList?brd_type=${enterBrdType}" class="btn-lg btn btn-info"><i class="fa-solid fa-rotate-left"></i> 돌아가기</a>  
+							<a style="color: white" class="btn-lg btn btn-primary" onclick="fn_formSubmit()"><i class="fa-solid fa-pen"></i> 작성</a>
 					</div>
 
 				</form>

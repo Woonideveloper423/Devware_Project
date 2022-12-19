@@ -28,7 +28,7 @@ public interface BoardService {
 
 	int brdDelete(BoardEmpDept bEmpDept);
 
-	int brdUpdate(BoardEmpDept bEmpDept);
+	int brdUpdate(BoardEmpDept bEmpDept, HttpSession session);
 
 	int updateStatus(BoardEmpDept bEmpDept);
 

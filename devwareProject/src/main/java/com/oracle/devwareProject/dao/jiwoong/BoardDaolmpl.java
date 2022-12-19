@@ -102,11 +102,12 @@ public class BoardDaolmpl implements BoardDao {
 		log.info("brdDelete start");
 		int brdDeleteCnt=0;
 		try {
+			
 			brdDeleteCnt=session.update("jwBoardDelete",bEmpDept);
 		} catch (Exception e) {
 			log.info("Exception:" +e.getMessage());
 		}
-		return 0;
+		return brdDeleteCnt;
 	}
 
 	@Override
@@ -114,7 +115,10 @@ public class BoardDaolmpl implements BoardDao {
 		log.info("brdUpdate start");
 		int brdUpdateCnt=0;
 		try {
-			brdUpdateCnt=session.update("jwBoardUpdate",bEmpDept);
+			session.update("jwBoardUpdate",bEmpDept);
+			session.delete("jwDeleteAttach",bEmpDept);
+			session.insert("jwInsertAttachFile",bEmpDept);
+			brdUpdateCnt=1;
 			log.info("brdUpdateCnt:"+brdUpdateCnt);
 		} catch (Exception e) {
 			log.info("Exception:"+e.getMessage());

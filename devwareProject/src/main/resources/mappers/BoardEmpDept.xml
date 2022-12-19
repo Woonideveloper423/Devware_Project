@@ -87,6 +87,33 @@
 	    </choose>             
 	</update>
 	
+	<!-- 첨부파일 삭제 -->
+	<delete id="jwDeleteAttach" parameterType="BoardEmpDept">
+		delete from brd_file where file_num=#{file_num} and brd_type=#{brd_type} and emp_num=#{emp_num}
+		and file_num not in 
+		<foreach collection="attachNums" item="item" open="(" separator=", " close=")">
+			#{item}
+		</foreach>
+	</delete>
+	
+	<!-- 첨부파일 추가 -->
+	<insert id="jwInsertAttachFile" parameterType="BoardEmpDept">
+		Insert all
+		<foreach collection="boardAttachs" item="item" separator=" ">
+				into BRD_FILE values(
+				 #{item.file_num},
+				 #{brd_type},
+				 #{brd_num},				
+		         #{emp_num},
+				 #{item.file_original_name},
+				 #{item.file_save_name}, 
+				 #{item.file_size},
+				'N',
+				sysdate,
+				null) 
+			</foreach>
+			select * from DUAL  
+	</insert>
 	<!-- 유형별 게시판 게시글 삭제  -->
 	<update id="jwBoardDelete" parameterType="BoardEmpDept">
 			<choose>
@@ -101,6 +128,8 @@
 		    	</when>
 		    </choose>             
 	</update>
+	
+	<delete id=""></delete>
 	
 	<!--   유형별 게시판 게시물 총 개수   -->            
     <select id="jwcheckListTotal" parameterType="BoardEmpDept" resultType="int">
@@ -198,23 +227,21 @@
 		<choose>
 			<when test="brd_type==2">
 				<include refid="selectList"></include>  where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0
-				      									order by b.brd_date desc) a)
-				    								    WHERE rn BETWEEN #{start} and #{end} order by 
-				    								    <include refid="arrayBoardList"></include> 
+				      									order by <include refid="arrayBoardList"></include>) a)
+				    								    WHERE rn BETWEEN #{start} and #{end}  
+				    								    
 		    </when>
 				     									
 		    <when test="brd_type==5">
 				<include refid="selectList"></include>  where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0
-		       										    order by b.brd_date desc) a)
-		      										    WHERE rn BETWEEN #{start} and #{end} order by 
-		      										    <include refid="arrayBoardList"></include> 
+		       										    order by <include refid="arrayBoardList"></include>) a)
+		      										    WHERE rn BETWEEN #{start} and #{end} 
 		    </when>
 			       										  
 		     <otherwise>
 			    <include refid="selectList"></include> 	where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 
-                                                        order by b.brd_date desc) a)
-                                                        WHERE rn BETWEEN #{start} and #{end} order by 
-		      										    <include refid="arrayBoardList"></include> 
+                                                        order by <include refid="arrayBoardList"></include>) a)
+                                                        WHERE rn BETWEEN #{start} and #{end} 
 			 </otherwise>
 		  </choose>       
 	</select>
@@ -225,78 +252,67 @@
 			<when test="searchType =='W'.toString()">
 				<if test="brd_type==2">
 					<include refid="selectList"></include>  where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-							     							e.emp_name || d.dept_name like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-							      							WHERE rn BETWEEN #{start} and #{end} order by 
-							     							<include refid="arrayBoardList"></include> 
+							     							e.emp_name || d.dept_name like '%' ||#{keyword}||'%' order by <include refid="arrayBoardList"></include>) a)
+							      							WHERE rn BETWEEN #{start} and #{end}  
 				</if>
 				
 				<if test="brd_type!=2">
 					<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-							     							e.emp_name || d.dept_name like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-							     							WHERE rn BETWEEN #{start} and #{end} order by 
-															<include refid="arrayBoardList"></include> 
+							     							e.emp_name || d.dept_name like '%' ||#{keyword}||'%' order by <include refid="arrayBoardList"></include>) a)
+							     							WHERE rn BETWEEN #{start} and #{end} 
 				</if>			   							
 		   </when>
 		   <when test="searchType =='T'.toString()">
 		   		<if test="brd_type==2">
 					<include refid="selectList"></include>  where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-							     							b.brd_title like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-							      							WHERE rn BETWEEN #{start} and #{end} order by 
-															<include refid="arrayBoardList"></include>
+							     							b.brd_title like '%' ||#{keyword}||'%' order by <include refid="arrayBoardList"></include>) a)
+							      							WHERE rn BETWEEN #{start} and #{end} 
 				</if>											
 				<if test="brd_type==5">
 					<include refid="selectList"></include> where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and
-			       										   b.brd_title like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-			      										   WHERE rn BETWEEN #{start} and #{end} order by 
-			      										   <include refid="arrayBoardList"></include>
+			       										   b.brd_title like '%' ||#{keyword}||'%' order by  <include refid="arrayBoardList"></include>) a)
+			      										   WHERE rn BETWEEN #{start} and #{end} 
 		    	</if>
 				<if test="brd_type!=2 and brd_type!=5">
 					<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-							     							b.brd_title like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-							      							WHERE rn BETWEEN #{start} and #{end} order by
-						      							    <include refid="arrayBoardList"></include>
+							     							b.brd_title like '%' ||#{keyword}||'%' order by  <include refid="arrayBoardList"></include>) a)
+							      							WHERE rn BETWEEN #{start} and #{end} 
 				</if>			   
 		   </when>
 		   <when test="searchType =='C'.toString()">
 		   		<if test="brd_type==2">
 					<include refid="selectList"></include> where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-							     							b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-							      							WHERE rn BETWEEN #{start} and #{end} order by 
-							      							<include refid="arrayBoardList"></include>  
+							     							b.brd_content like '%' ||#{keyword}||'%' order by <include refid="arrayBoardList"></include>) a)
+							      							WHERE rn BETWEEN #{start} and #{end} 
 				</if>
 				<if test="brd_type==5">
 					<include refid="selectList"></include> where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and
-			       										   b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-			      										   WHERE rn BETWEEN #{start} and #{end} order by 
-			      										   <include refid="arrayBoardList"></include> 
-			       										   
+			       										   b.brd_content like '%' ||#{keyword}||'%' order by    <include refid="arrayBoardList"></include>) a)
+			      										   WHERE rn BETWEEN #{start} and #{end} 
 		    	</if>
 				<if test="brd_type!=2 and brd_type!=5">
 					<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-							     							b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-							      							WHERE rn BETWEEN #{start} and #{end} order by
- 															<include refid="arrayBoardList"></include>
+							     							b.brd_content like '%' ||#{keyword}||'%' order by <include refid="arrayBoardList"></include>) a)
+							      							WHERE rn BETWEEN #{start} and #{end} 
 				</if>			   
 		   </when>
 		     <when test="searchType =='TC'.toString()">
 		   		<if test="brd_type==2">
 					<include refid="selectList"></include>	where b.brd_type=2 and e.dept_num=#{dept_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-							     							b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-							      							WHERE rn BETWEEN #{start} and #{end} order by 
-							      							<include refid="arrayBoardList"></include>   
-							     						
+							     							b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by <include refid="arrayBoardList"></include>) a)
+							      							WHERE rn BETWEEN #{start} and #{end} 
+							      							
 				</if>
 				<if test="brd_type==5">
 					<include refid="selectList"></include> where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and
-			       										   b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date desc) a)
-			      										   WHERE rn BETWEEN #{start} and #{end} order by 
-			       										   <include refid="arrayBoardList"></include>
+			       										   b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by   <include refid="arrayBoardList"></include>) a)
+			      										   WHERE rn BETWEEN #{start} and #{end} 
+			       										 
 		    	</if>
 				<if test="brd_type!=2 and brd_type!=5">
 			     	<include refid="selectList"></include>  where b.brd_type=#{brd_type} and b.brd_re_step=0 and b.brd_deleteYn=0 and 
-						     								b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by b.brd_date) a)
-						      							    WHERE rn BETWEEN #{start} and #{end} order by
-						      							   <include refid="arrayBoardList"></include>  
+						     								b.brd_title || b.brd_content like '%' ||#{keyword}||'%' order by  <include refid="arrayBoardList"></include>) a)
+						      							    WHERE rn BETWEEN #{start} and #{end} 
 				</if>			   
 		   </when>
 	   </choose>	
