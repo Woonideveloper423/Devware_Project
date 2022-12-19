@@ -69,7 +69,7 @@ $(function(){
 		ws.send(JSON.stringify(userOption));
 		/* $('#detailRoom').empty($("#chattingRoomId").val()); */
 		$('#' + $("#chattingRoomId").val()).remove();
-		leaveLookRoom();
+
 		$('#detailRoom').remove();
 		
 		$('#roomlist').show();
