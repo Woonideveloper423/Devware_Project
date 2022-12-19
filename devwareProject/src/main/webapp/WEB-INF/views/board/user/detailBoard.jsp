@@ -140,7 +140,7 @@ function showReplyList(dept_name,emp_num,emp_name,emp_gender,brd_content,brd_dat
 function writeReReply(brd_num,step,level){ // 답글 등록폼 show 이벤트
 
 	var str= "<form class='mb-4' id='re_reply_form'name='re_reply_form' action='/ajaxWriteReply' method='post'>";
-  		str+="<textarea id='brd_content' name='brd_content' class='form-control' rows='3' placeholder='답글을 입력해주세요'></textarea>";
+  		str+="<textarea id='brd_content' name='brd_content' class='form-control reReply_content' rows='3' placeholder='답글을 입력해주세요'></textarea>";
 	    str+="<input type='hidden' name='brd_type' 	value='${board.brd_type}'>";
 	    str+="<input type='hidden' name='brd_ref'	value='${board.brd_ref}'>";
 	    str+="<input type='hidden' name='brd_re_level'	value='"+level+"'>";
@@ -168,7 +168,7 @@ function chkreplyValue(id,msg){ // 댓글 입력 유효성 체크
 } 
 	
 function replyBtn(){ // 댓글 등록 ajax 이벤트
-	if (!chkreplyValue("#brd_content","댓글을"))
+	if (!chkreplyValue(".reply_content","댓글을"))
 		return;
 	var	replyData = $('#reply_form').serialize()
 		console.log(replyData);
@@ -194,7 +194,7 @@ function replyBtn(){ // 댓글 등록 ajax 이벤트
    }
 
 function reReplyBtn(){// 답글 등록 ajax 이벤트
-	if (!chkreplyValue("#brd_content","답글을"))
+	if (!chkreplyValue(".reReply_content","답글을"))
 		return;
 	var	replyData = $('#re_reply_form').serialize()
 		console.log(replyData);
@@ -262,6 +262,7 @@ function reReplyBtn(){// 답글 등록 ajax 이벤트
 		<input type="hidden" name="emp_num"  value="${emp.emp_num }">
 		<input type="hidden" name="brd_title" value="${board.brd_title}">
 		<input type="hidden" name="brd_content"  value="${board.brd_content}">
+		<input type="hidden" name="qa_status"  value="${board.qa_status}">
 		
 		<c:forEach items="${board.boardAttachs}"  var="attach_file">
 		 	<input type="hidden" name="saveName"  value="${attach_file.file_save_name }">
@@ -308,7 +309,7 @@ function reReplyBtn(){// 답글 등록 ajax 이벤트
                     
                        <!-- 댓글 작성 폼-->
                        <form class='mb-4' id='reply_form'name='reply_form'  action="/reply/write" method='post'>
-	                       <textarea id='brd_content' name='brd_content' class='form-control' rows='3' placeholder='댓글을 입력해 주세요.'></textarea>
+	                       <textarea id='brd_content' name='brd_content' class='form-control reply_content' rows='3' placeholder='댓글을 입력해 주세요.'></textarea>
 	                       <input type='hidden' name='brd_type' 	value='${board.brd_type }'>
 						   <input type='hidden' name='brd_ref'		value='${board.brd_ref}'>
 						   <input type='hidden' name='brd_re_level'	value='${board.brd_re_level}'>

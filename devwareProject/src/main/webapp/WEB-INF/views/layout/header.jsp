@@ -181,10 +181,7 @@ $(function(){
 		}else{
 			alert("한명 이상의 인원을 선택해주세요");
 		}
-		
-		
 	});
-	
 	
 	$(document).on("click",".unchecked", function(){
 		$(this).removeClass("unchecked").addClass("checked");
