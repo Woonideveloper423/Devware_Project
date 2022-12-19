@@ -1,6 +1,7 @@
 <%@ page language='java' contentType='text/html; charset=UTF-8'
 	pageEncoding='UTF-8'%>
 <%@ taglib prefix='c' uri='http://java.sun.com/jsp/jstl/core'%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,17 +9,19 @@
 <title>Insert title here</title>
 <!-- 헤드 네비게이션 효과 -->
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin-2.min.css" rel="stylesheet">
-  <link href="${pageContext.request.contextPath}/resources/css/board/boardWriteForm.css" rel="stylesheet">
+  <link href="${pageContext.request.contextPath}/resources/css/board/detailBoard.css" rel="stylesheet">
 
-<!-- include libraries(jQuery, bootstrap) -->
+<!-- include libraries(jQuery, bootstrap,sweetalert ) -->
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>  
 
 <script type='text/javascript'>
 $(function(){ 
-	getReplyList();   // 댓글목록 ajax 조회
+	getReplyList(${board.qa_status},0);   // 댓글목록 ajax 조회
 	
 	$('#update_btn').hide(); 
-	$('#delete_btn').hide(); 
+	$('#delete_btn').hide();
+	$('#gathering_btn').hide(); 
 	
 	if(${board.emp_num}==${emp.emp_num}){ // 게시글 삭제 버튼 동적 생성
 		$('#delete_btn').show();
@@ -31,7 +34,23 @@ $(function(){
 	}else{
 		$('#update_btn').hide();
 	}
-	
+	 
+	 if(${board.emp_num}==${emp.emp_num}&&${board.brd_type}==4&&${board.qa_status}==0){ // 모집완료 버튼 동적 이벤트
+		 $('#gathering_btn').html("<i class='fa-solid fa-handshake'></i> 모집완료");
+		 $('#gathering_btn').show();
+	 }else if(${board.emp_num}==${emp.emp_num}&&${board.brd_type}==4&&${board.qa_status}==1){
+		 $('#gathering_btn').html("<i class='fa-solid fa-handshake'></i> 모집중");
+		 $('#gathering_btn').show();
+	 }else{
+		 $('#gathering_btn').hide();
+	}
+	 
+    if(${board.emp_num}==${emp.emp_num}){ // 게시글 수정 버튼 동적 생성
+		$('#update_btn').show();
+	}else{
+		$('#update_btn').hide();
+	}
+	  
 	$(document).on('click','.re_reply_btn',function(){ // 답글쓰기 버튼 이벤트
 		var brdNum=$(this).attr('id');
 		var replyFormLength= $('#reply'+$(this).attr('id'));
@@ -43,17 +62,25 @@ $(function(){
 		}
 		console.log($(this).attr('id'));
 	})
- 	$(document).on('click','.save_attachBtn',function(){
+ 	
+	$(document).on('click','.save_attachBtn',function(){
  		console.log($(this).attr('id'));
  		console.log($(this).attr('name'));		
  		location.href='/saveAttach?saveName='+$(this).attr('id')+'&realName='+$(this).attr('name');
- 	
  	})
 	});	
-
-	function getReplyList(){ // 댓글 리스트 ajax 이벤트
-		var	replyData = $('#detail_info').serialize();
+	
+	$(document).on('click','.choice_reply_btn',function(){ // 답변 체택 버튼 이벤트
+		var step=$(this).attr('id');
+		getReplyList(1,step);
+	})
+	
+	function getReplyList(qa_status,brd_re_step){ // 댓글 리스트 ajax 이벤트
+		var	replyData = $('#reply_info').serialize();
 		console.log(replyData);
+		replyData+="&qa_status="+qa_status
+		console.log(replyData);
+		replyData+="&brd_re_step="+brd_re_step
         $.ajax({
             url:'/replies',
             type:'GET',
@@ -67,7 +94,7 @@ $(function(){
             	replyStr ="";
             	
             	$(data).each(function(){
-            		showReplyList(this.dept_name,this.emp_name,this.emp_gender,this.brd_content,this.brd_date,this.brd_num,this.brd_re_level,this.brd_re_step);
+            		showReplyList(this.dept_name,this.emp_num,this.emp_name,this.emp_gender,this.brd_content,this.brd_date,this.brd_num,this.brd_re_level,this.brd_re_step,this.qa_status);
             	});
             	$('#reply_data').html(replyStr);
             		
@@ -81,22 +108,30 @@ $(function(){
         });
 	}
 
-function showReplyList(dept_name,emp_name,emp_gender,brd_content,brd_date,brd_num,brd_re_level,brd_re_step){ // 게시물 댓글 목록 출력 함수
+function showReplyList(dept_name,emp_num,emp_name,emp_gender,brd_content,brd_date,brd_num,brd_re_level,brd_re_step,qa_status){ // 게시물 댓글 목록 출력 함수
 	replyStr+="<div style='margin-left:"+ (parseInt(brd_re_level) * 30) +"px' class='d-flex mb-4'>";
 	replyStr+="<input type='hidden' id='step"+brd_num+"'  value='"+brd_re_step+"'>";
 	replyStr+="<input type='hidden' id='level"+brd_num+"' value='"+brd_re_level+"'>";
 	replyStr+="<div class='flex-shrink-0'>";
     if(parseInt(brd_re_level)>=2){
-  	replyStr+="&#8627;&nbsp;&nbsp;";}
+  		replyStr+="&#8627;&nbsp;&nbsp;";}
     if(emp_gender=='남'){
-	replyStr+="<img class='rounded-circle' src='${pageContext.request.contextPath}/resources/css/images/man.png' alt='...' /></div>";
-	}else if(emp_gender=='여'){
-	replyStr+="<img class='rounded-circle' src='${pageContext.request.contextPath}/resources/css/images/female.png' alt='...' /></div>";	
+		replyStr+="<img class='rounded-circle' src='${pageContext.request.contextPath}/resources/css/images/man.png' alt='...' /></div>";
+	}
+    else if(emp_gender=='여'){
+		replyStr+="<img class='rounded-circle' src='${pageContext.request.contextPath}/resources/css/images/female.png' alt='...' /></div>";	
 	}
 	replyStr+="<div class='ms-3'>";
-	replyStr+="<div class='fw-bold'>" +dept_name+"&nbsp;&nbsp;"+emp_name+"</div>";
+	replyStr+="<div class='fw-bold'><b>" +dept_name+"&nbsp;&nbsp;"+emp_name+"</b>";
+	if(parseInt(qa_status)==1){
+		replyStr+="&nbsp;&nbsp;<i class='fa-regular fa-circle-check' style='color: #03C75A;'></i><b style='color: #03C75A;'> 채택답변 </b>";
+	}
+	replyStr+="</div>";
 	replyStr+=brd_content;
 	replyStr+="<br>"+brd_date+"&nbsp; <a href='#' onclick='return false'; class='re_reply_btn' id='"+brd_num+"'>답글쓰기</a>";
+	if(${board.emp_num}==${emp.emp_num}&&${board.brd_type}==3&&parseInt(brd_re_level)==1&&parseInt(qa_status)==0){
+		replyStr+="&nbsp;&nbsp;<a href='#' onclick='return false'; class='choice_reply_btn' id='"+brd_re_step+"'><i class='fa-solid fa-circle-check'></i>답변 채택</a>";
+	}
 	replyStr+="</div> </div>";
 	replyStr+="<div id='reply"+brd_num+"'>";
 	replyStr+="</div>";
@@ -104,7 +139,7 @@ function showReplyList(dept_name,emp_name,emp_gender,brd_content,brd_date,brd_nu
     
 function writeReReply(brd_num,step,level){ // 답글 등록폼 show 이벤트
 
-	var str="<form class='mb-4' id='re_reply_form'name='re_reply_form' action='/ajaxWriteReply' method='post'>";
+	var str= "<form class='mb-4' id='re_reply_form'name='re_reply_form' action='/ajaxWriteReply' method='post'>";
   		str+="<textarea id='brd_content' name='brd_content' class='form-control' rows='3' placeholder='답글을 입력해주세요'></textarea>";
 	    str+="<input type='hidden' name='brd_type' 	value='${board.brd_type}'>";
 	    str+="<input type='hidden' name='brd_ref'	value='${board.brd_ref}'>";
@@ -119,8 +154,22 @@ function writeReReply(brd_num,step,level){ // 답글 등록폼 show 이벤트
 	$('#reply'+brd_num).html(str); 
 	
 }	
+function chkreplyValue(id,msg){ // 댓글 입력 유효성 체크
+	if ($.trim($(id).val()) =="") {
+		Swal.fire({
+			  icon: 'warning',
+			  text: msg + ' 입력해 주세요.',
+			  position: 'top'
+			})
+		$(id).focus();
+		return false;
+	}
+	return true;
+} 
 	
-function replyBtn(){  // 댓글 등록 ajax 이벤트
+function replyBtn(){ // 댓글 등록 ajax 이벤트
+	if (!chkreplyValue("#brd_content","댓글을"))
+		return;
 	var	replyData = $('#reply_form').serialize()
 		console.log(replyData);
         $.ajax({
@@ -143,7 +192,10 @@ function replyBtn(){  // 댓글 등록 ajax 이벤트
         });
 
    }
-function reReplyBtn(){  // 답글 등록 ajax 이벤트
+
+function reReplyBtn(){// 답글 등록 ajax 이벤트
+	if (!chkreplyValue("#brd_content","답글을"))
+		return;
 	var	replyData = $('#re_reply_form').serialize()
 		console.log(replyData);
         $.ajax({
@@ -178,12 +230,32 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 	 	detail_info.method="GET";
 	 	detail_info.submit();
 }
- 
-    </script>
+ function statusBtn(detail_info){ // 스터디 모집완료(중) 버튼 클릭 이벤트
+	 	detail_info.action="/board/updateStatus";
+	 	detail_info.method="POST";
+	 	detail_info.submit();
+}
+ </script>
 </head>
 <body>
+
 	<!--  게시글 정보 GET form -->
 	<form id='detail_info' name='detail_info' method="get">                             
+		<input type="hidden" name="brd_type" value="${board.brd_type }">
+		<input type="hidden" name="brd_num"  value="${board.brd_num }">
+		<input type="hidden" name="dept_num" value="${emp.dept.dept_num}">
+		<input type="hidden" name="emp_num"  value="${emp.emp_num }">
+		<input type="hidden" name="brd_title" value="${board.brd_title}">
+		<input type="hidden" name="brd_content"  value="${board.brd_content}">
+		<input type="hidden" name="qa_status"  value="${board.qa_status}">
+		
+		<c:forEach items="${board.boardAttachs}"  var="attach_file">
+		 	<input type="hidden" name="saveName"  value="${attach_file.file_save_name }">
+		 	<input type="hidden" name="realName"  value="${attach_file.file_original_name}">
+		</c:forEach> 
+	</form>
+	
+	<form id='reply_info' name='reply_info' method="get">                             
 		<input type="hidden" name="brd_type" value="${board.brd_type }">
 		<input type="hidden" name="brd_num"  value="${board.brd_num }">
 		<input type="hidden" name="dept_num" value="${emp.dept.dept_num}">
@@ -207,18 +279,25 @@ function reReplyBtn(){  // 답글 등록 ajax 이벤트
 	<!-- 게시글 상세 -->
 	<h2>${board.brd_title }</h2>
 	<br>
+	
 	<div id="board_detail">
 	<h5>${board.dept_name } ${board.emp_name } &emsp; ${board.brd_date}</h5>
 	<hr>
-	${board.brd_content} 
+	
+	<div>${board.brd_content}</div>
+	<div  align="right"><button id='gathering_btn' type="button" class="btn btn-primary" onclick="statusBtn(detail_info)">
+	<i class="fa-solid fa-handshake"></i> 모집완료</button></div>
 	<hr>
+	
+	<!-- 첨부파일  div -->
 	<div class='upload_File'>
-	<label>첨부파일</label><br>
+	<label><i class="fa-solid fa-file-lines"></i> 첨부파일</label><br>
 		<c:forEach items="${board.boardAttachs}"  var="attach_file">
-		 	<c:out value="${attach_file.file_original_name}"></c:out>
+		<a style="color: blue;"><c:out value="${attach_file.file_original_name}"></c:out></a>
 		     &emsp;<button class="save_attachBtn btn btn-outline-primary" id="${attach_file.file_save_name }" name="${attach_file.file_original_name}">다운로드</button> 
-		     &emsp;파일크기: <c:out value="${attach_file.file_size }"></c:out>kb<p>	  
+		     &emsp;size : <c:out value="${attach_file.file_size }"></c:out>kb<p>	  
 		</c:forEach>
+		
 	</div>
 	</div>
 	<hr>

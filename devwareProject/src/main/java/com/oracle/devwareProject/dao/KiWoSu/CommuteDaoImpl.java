@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Repository;
 
 import com.oracle.devwareProject.dto.KiWoSu.Commute;
+import com.oracle.devwareProject.dto.KiWoSu.Commute_cus;
 
 import lombok.RequiredArgsConstructor;
 
@@ -70,8 +71,11 @@ public class CommuteDaoImpl implements CommuteDao {
 	public List<Commute> commuteList(Commute commute) {
 		System.out.println("CommuteDaoImpl commuteList start..");
 		List<Commute> commuteList = null;
+		List<Commute_cus> cusList = null;
+		System.out.println("CommuteDaoImpl commute ->"+ commute.getEmp_num());
 				try {
 					commuteList = session.selectList("wsComListAll", commute);
+					cusList = session.selectList("wsCusListAll", commute);
 				} catch (Exception e) {
 					System.out.println("CommuteDaoImpl commuteList Exception->"+e.getMessage());
 				}

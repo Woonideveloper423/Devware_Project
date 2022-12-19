@@ -11,9 +11,10 @@
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin-2.min.css" rel="stylesheet">
   <link href="${pageContext.request.contextPath}/resources/css/board/writeForm.css" rel="stylesheet">
 
-  <!-- include libraries(jQuery, bootstrap) -->
+  <!-- include libraries(jQuery, bootstrap,sweetalert) -->
   <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js"></script> 
-  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>  
+  <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>  
 
   <!-- include summernote css/js -->
   <link href="http://cdnjs.cloudflare.com/ajax/libs/summernote/0.8.8/summernote.css" rel="stylesheet">
@@ -21,7 +22,6 @@
 	
 <script type="text/javascript">
 $(document).ready(function(){
-
 	$('#brd_content').summernote({
 		  lang: 'ko-KR',
 	      height: 400,
@@ -51,7 +51,9 @@ $(document).ready(function(){
 				}
 	  });
 }) // SummerNote ready end 
-
+</script>
+<script type="text/javascript">
+	
 	let fileIdx = 0; /*[- 파일 인덱스 처리용 전역 변수 -]*/
 	function addFile() {
 	
@@ -101,6 +103,39 @@ $(document).ready(function(){
 		target.val(filename);
 	}
 	
+	function chkInputValue(id, msg) {
+		if ($.trim($(id).val()) =="") {
+			Swal.fire({
+				  icon: 'warning',
+				  text: msg + ' 입력해 주세요.',
+				})
+			/* 	alert(msg + " 입력해주세요."); */
+			$(id).focus();
+			return false;
+		}
+		return true;
+	}
+	function chkSelectValue(id, msg) {
+		if ($.trim($(id).val()) =="") {
+			Swal.fire({
+				  icon: 'warning',
+				  text: msg + ' 선택해 주세요.',
+				})
+		/* 	 alert(msg + " 선택해주세요.");  */
+			$(id).focus();
+			return false;
+		}
+		return true;
+	}
+	function fn_formSubmit() {
+		if (!chkInputValue("#brd_title", "제목을"))
+			return;
+		if (!chkSelectValue("#brd_type", "작성게시판을"))
+			return;
+		if (!chkInputValue("#brd_content", "내용을"))
+			return;
+		$("#board_write").submit();
+	}
 </script>
 </head>
 <body>
@@ -111,10 +146,12 @@ $(document).ready(function(){
 				<br>
 				<h2 class="fw-bolder" align="center">게시글  작성</h2>
 
-				<form id="boardWrite" name="boardWrite" action="/board/write" method="post" enctype="multipart/form-data">
+				<form id="board_write" name="board_write" action="/board/write" method="post" enctype="multipart/form-data">
 			
 					<div class="form-group">
-						<label class="brd_label" for="title">제목:</label> <input placeholder="제목을 입력해 주세요" type="text" class="form-control" id="brd_title" name="brd_title">
+						<label class="brd_label" for="title">제목:</label> 
+						<input  type="text" class="form-control check" id="brd_title" name="brd_title" placeholder="제목을 입력해 주세요" autocomplete="off">
+					<p></p>
 					</div>
 					<div class="form-group">
 						<label class="brd_label" for="brd_label">작성자 정보:</label>
@@ -126,18 +163,18 @@ $(document).ready(function(){
 					</div>
 					<div class="form-group">
 						<label class="brd_label" for="title">작성게시판:</label><br>
-						<select id='brd_type' name='brd_type' class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+						<select id='brd_type' name='brd_type' class="form-select form-select-lg mb-3 check" aria-label=".form-select-lg example">
 						  <option selected="selected" disabled="disabled">게시판 종류</option>
 						  <option value='1'>사내게시판</option>
 						  <option value='2'>${emp.dept.dept_name} 게시판</option>
 						  <option value='3'>Q&A 게시판</option>
 						  <option value='4'>스터디&동호회 게시판</option>
 						</select>
-						
+					<p></p>	
 					</div>	
 					<div style="margin-top: -20px;" class="form-group">
 						<label class="brd_label" for="content">내용:</label>
-						<textarea id="brd_content" class="form-control" name="brd_content" rows="10"></textarea>
+						<textarea id="brd_content" class="form-control check" name="brd_content" rows="10"></textarea>
 					</div>	 
 						<!-- 첨부파일 영역 -->
 					<div data-name="fileDiv" class="form-group filebox bs3-primary">
@@ -159,7 +196,7 @@ $(document).ready(function(){
 					 <!-- 작성 -->
 					<div id='btnDiv' class="form-submit" align="right">
 							<a href="${pageContext.request.contextPath}/board/checkList?brd_type=${enterBrdType}" class="btn-lg btn btn-primary">돌아가기</a>  
-							<input type="submit" class="btn-lg btn btn-primary" onclick="fn_formSubmit()" value="작성">
+							<a style="color: white" class="btn-lg btn btn-primary" onclick="fn_formSubmit()">작성</a>
 					</div>
 
 				</form>

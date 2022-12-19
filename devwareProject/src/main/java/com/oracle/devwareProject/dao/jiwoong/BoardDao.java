@@ -25,4 +25,6 @@ public interface BoardDao {
 
 	int brdUpdate(BoardEmpDept bEmpDept);
 
+	int statusUpdate(BoardEmpDept bEmpDept);
+
 	}

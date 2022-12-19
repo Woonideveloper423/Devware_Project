@@ -54,20 +54,22 @@
 </script>
 <script>
 	function chkInputValue(id, msg) {
-		if ($.trim($(id).val()) == "") {
-			alert(msg + " 입력해주세요.");
+		if ($.trim($(id).val()) =="") {
+			Swal.fire({
+				  icon: 'warning',
+				  text: msg + ' 입력해 주세요.',
+				})
+	
 			$(id).focus();
 			return false;
 		}
 		return true;
 	}
 	function fn_formSubmit() {
-		if (!chkInputValue("#brd_title", "글 제목을"))
+		if (!chkInputValue("#brd_title", "제목을"))
 			return;
-		if (!chkInputValue("#brd_content", "글 내용을"))
+		if (!chkInputValue("#brd_content", "내용을"))
 			return;
-
-		/* $("#writeForm").submit(); */
 	}
 </script>
 </head>

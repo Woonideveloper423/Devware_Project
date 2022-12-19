@@ -141,6 +141,14 @@ public class BoardServiceImpl implements BoardService {
 		return brdUpdateCnt;
 	}
 
+	@Override
+	public int updateStatus(BoardEmpDept bEmpDept) {
+		log.info("updateStatus start");
+		int statusUpdateCnt=0;
+		statusUpdateCnt=bd.statusUpdate(bEmpDept);
+		return statusUpdateCnt;
+	}
+
 	
 
 	

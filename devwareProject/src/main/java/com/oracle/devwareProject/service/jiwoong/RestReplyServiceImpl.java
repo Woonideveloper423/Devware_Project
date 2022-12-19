@@ -9,9 +9,11 @@ import com.oracle.devwareProject.dto.jiwoong.Board;
 import com.oracle.devwareProject.dto.jiwoong.BoardEmpDept;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class RestReplyServiceImpl implements RestReplyService {
 
 	private final RestReplyDao ad;
@@ -36,7 +38,7 @@ public class RestReplyServiceImpl implements RestReplyService {
 	@Override
 	public List<BoardEmpDept> getListReply(BoardEmpDept board) {
 		List<BoardEmpDept> replyList = null;
-		System.out.println("AjaxReplyServiceImpl getListReply start");
+		log.info("getListReply start");
 		replyList = ad.getReplyList(board);
 		System.out.println("AjaxReplyServiceImpl getListReply replyList.size()=>" +replyList.size());
 		return replyList;

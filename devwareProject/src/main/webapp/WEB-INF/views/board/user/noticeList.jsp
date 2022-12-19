@@ -8,7 +8,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="colorlib.com">
-<title>사내 게시판</title>
+<title>공지사항</title>
  <!-- 헤드 네비게이션 효과 -->
  
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin-2.min.css" rel="stylesheet">

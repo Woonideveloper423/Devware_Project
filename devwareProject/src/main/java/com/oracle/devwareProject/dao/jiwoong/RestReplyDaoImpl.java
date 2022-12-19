@@ -58,10 +58,18 @@ public class RestReplyDaoImpl implements RestReplyDao {
 	@Override
 	public List<BoardEmpDept> getReplyList(BoardEmpDept board) {
 		List<BoardEmpDept> replyList = null;
-		System.out.println("AjaxReplyDaoImpl getReplyList start");
+		int updateStatusCnt=0;
+		log.info("getReplyList start");
+		
 		try {
+			log.info("qa_status:"+board.getQa_status());
+			log.info("brd_re_step:"+board.getBrd_re_step());
+			if(board.getQa_status()==1 && board.getBrd_re_step()!=0) {
+				updateStatusCnt=session.update("jwUpdateReplyStatus",board);
+				log.info("updateStatusCnt:"+updateStatusCnt);
+			}
 			replyList = session.selectList("jwGetReplyList", board);
-			System.out.println("AjaxReplyDaoImpl getReplyList replyList.size()=>" +replyList.size());
+			log.info("getReplyList replyList.size()=>" +replyList.size());
 		} catch (Exception e) {
 			System.out.println("AjaxReplyDaoImpl getReplyList e.getMessage()=>" +e.getMessage());
 		}

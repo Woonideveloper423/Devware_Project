@@ -18,7 +18,7 @@ public class BoardEmpDeptVo {
 	
 	private String searchType;		private String keyword;	
 	private String pageNum;			private int end;
-	private int    start;			
+	private int    start;			private String arrayType;
 
 	
 }

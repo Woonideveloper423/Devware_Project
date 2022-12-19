@@ -30,6 +30,8 @@ public interface BoardService {
 
 	int brdUpdate(BoardEmpDept bEmpDept);
 
+	int updateStatus(BoardEmpDept bEmpDept);
+
 	
 
 

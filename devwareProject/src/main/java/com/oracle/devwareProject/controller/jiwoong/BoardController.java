@@ -3,7 +3,10 @@ package com.oracle.devwareProject.controller.jiwoong;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
 import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -59,21 +62,30 @@ public class BoardController {
 		log.info("dept_num:"+bEmpDept.getDept_num());
 		log.info("brd_content:"+bEmpDept.getBrd_content());
 		log.info("brd_title:"+bEmpDept.getBrd_title());
-		if(saveName.length==0){
-			List<BoardAttach> boardAttachs=new ArrayList<BoardAttach>();
+		log.info("saveName:"+saveName);
+		log.info("realName:"+realName);
+			
+		if(saveName!=null){
+			System.out.println("첨부파일 있음");
+			log.info("saveName.length:"+saveName.length);
 			for(int i=0; i<saveName.length; i++) {
+			List<BoardAttach> boardAttachList=new ArrayList<BoardAttach>();
 			BoardAttach boardAttach=new BoardAttach(realName[i],saveName[i]);
-			boardAttachs.add(boardAttach);
+			boardAttachList.add(boardAttach);
+			bEmpDept.setBoardAttachs(boardAttachList);
 			}
-			bEmpDept.setBoardAttachs(boardAttachs);
-		}
-		model.addAttribute("board",bEmpDept);
-		return "/board/user/updateForm";
+			log.info("BoardAttachs():"+bEmpDept.getBoardAttachs());
+			}else {
+				System.out.println("첨부파일 없음");
+			}
+			model.addAttribute("board",bEmpDept);
+			return "/board/user/updateForm";
 		}
 	
+
 	// 게시판 게시글 수정
 	@PostMapping(value ="/board/update")
-	public ModelAndView boardUpdate(BoardEmpDept bEmpDept,String[] saveName,String[] realName,Model model) {
+	public ModelAndView boardUpdate(BoardEmpDept bEmpDept,String[] attachNum,MultipartFile[] files,Model model) {
 		log.info("/board/update start");
 		ModelAndView mView = new ModelAndView("redirect:/board/checkList?brd_type="+bEmpDept.getBrd_type()+"");
 		log.info("brd_title:"+bEmpDept.getBrd_title());
@@ -114,13 +126,14 @@ public class BoardController {
 	// ajax 게시판 게시글 목록 출력
 	  @ResponseBody
 	  @GetMapping(value ="/board/ajaxCheckList")
-	  public BoardEmpDeptVo boardCheckList(BoardEmpDept bEmp,String currentPage, Model model,HttpSession session){
+	  public BoardEmpDeptVo boardCheckList(BoardEmpDept bEmp,String currentPage,Model model,HttpSession session){
 		  log.info("/board/ajaxCheckList start"); 
 		  // Emp 세션 값 받아오기 
 		  Emp emp =(Emp)session.getAttribute("emp");
 		  bEmp.setDept_num(emp.getDept().getDept_num());
 		  bEmp.setDept_name(emp.getDept().getDept_name());
-		  bEmp.setEmp_num(emp.getEmp_num()); 
+		  bEmp.setEmp_num(emp.getEmp_num());
+		  System.out.println(bEmp.getArrayType());
 		  log.info("brd_type:"+bEmp.getBrd_type());
 		  log.info("dept_num:"+bEmp.getDept_num());
 		  log.info("emp_num:" +bEmp.getEmp_num());
@@ -168,9 +181,23 @@ public class BoardController {
 		  log.info("brd_ref: " +bEmpDept.getBrd_ref());
 		  log.info("brd_re_level: " +bEmpDept.getBrd_re_level());
 		  log.info("brd_re_step: " +bEmpDept.getBrd_re_step());
+		  log.info("qa_status: " +bEmpDept.getQa_status());
 		  model.addAttribute("board",bEmpDept);
 		  return "/board/user/detailBoard"; 
 	  }
+	  
+	  // qa 게시판 스터디게시판 qa_status 변경 
+	  @PostMapping(value = "/board/updateStatus")
+	  public ModelAndView updateStatus(BoardEmpDept bEmpDept,Model model) {
+		log.info("/board/updateStatus start");
+		ModelAndView mView = new ModelAndView("redirect:/board/checkList?brd_type="+bEmpDept.getBrd_type()+"");
+		int statusUpdateCnt =0;
+		statusUpdateCnt=bs.updateStatus(bEmpDept);
+		log.info("statusUpdateCnt:"+statusUpdateCnt);
+		return mView;
+		  
+	  }
+	  
 }
 	 
 
