@@ -39,7 +39,7 @@
   
  <script type="text/javascript">
  /* 출석용 시계 */
-setInterval('time()', 1000);
+setInterval('time()', 30000);
 
 function time() {
 	$.ajax({

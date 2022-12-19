@@ -316,7 +316,7 @@ public class MailController {
 			log.info("saveAttach start...");
 			System.out.println(saveName);
 			System.out.println(realName);
-			String uploadFolder = request.getSession().getServletContext().getRealPath("/upload");
+			String uploadFolder = request.getSession().getServletContext().getRealPath("/upload/");
 			
 			mailservice.saveAttach(request,response,saveName,realName,uploadFolder);
 

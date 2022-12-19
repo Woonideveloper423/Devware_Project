@@ -14,4 +14,6 @@ public interface CalDao {
 
 	int modEvent(Calendar calendar);
 
+	String calCount(int emp_num);
+
 }

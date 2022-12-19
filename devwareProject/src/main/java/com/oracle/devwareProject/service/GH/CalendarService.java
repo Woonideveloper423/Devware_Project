@@ -36,5 +36,9 @@ public class CalendarService
 		int result = cd.modEvent(calendar);
 		System.out.println("수정 결과 : " + result);
 		return result;
+	}
+	public String calCount(int emp_num) {
+		String result = cd.calCount(emp_num);
+		return result;
 	}	
 }

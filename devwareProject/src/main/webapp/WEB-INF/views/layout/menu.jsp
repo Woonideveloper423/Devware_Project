@@ -61,7 +61,7 @@ ul .nav-item {padding-left:7px;}
 
  	  <li class="nav-item active">
        	  <a class="nav-link" href="${pageContext.request.contextPath}/boardList?bgno=2">
-         <i class="fa-solid fa-bullhorn"></i>
+           <i class="fa-solid fa-bullhorn"></i>
           <span style="font-size: 15px;">공지사항</span></a>
       </li>
       <hr class="sidebar-divider">
@@ -144,15 +144,13 @@ ul .nav-item {padding-left:7px;}
       <!-- 자원 요청 -->
      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsemem1" aria-expanded="true" aria-controls="collapsemem1">
-          <i class="fas fa-fw fa-wrench"></i>
+          <i class="fa-solid fa-bookmark"></i>
           <span style="font-size: 15px;">자원 요청</span>
         </a>
         <div id="collapsemem1" class="collapse" aria-labelledby="headingmem" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-             <a class="collapse-item" href="/user/showRoomList">회의실 예약</a>
-            <a class="collapse-item" href="#"></a>
-            <a class="collapse-item" href="#"></a>            
-             </div>
+             <a class="collapse-item" href="/user/showRoomList">회의실 예약</a>         
+           </div>
         </div>
       </li>
 

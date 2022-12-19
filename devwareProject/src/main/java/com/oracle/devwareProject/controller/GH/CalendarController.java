@@ -149,4 +149,14 @@ public class CalendarController
 		return jsonArr;
 	}
 	
+	@ResponseBody
+	@RequestMapping("/calendar/calCount")
+	public String calCount(HttpSession session)
+	{
+		EmpForSearch emp = (EmpForSearch) session.getAttribute("empForSearch");
+		String result = calendarService.calCount(emp.getEmp_num());
+		
+		return result;
+	}
+	
 }

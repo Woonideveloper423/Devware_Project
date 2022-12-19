@@ -38,20 +38,28 @@
 </style>
   
  <script type="text/javascript">
- /* 출석용 시계 */
-setInterval('time()', 1000);
-
 function time() {
-	$.ajax({
+	/* $.ajax({
 		type:"POST",
-		url:"${pageContext.request.contextPath}/commuting/current_time",
+		url:"/current_time",
 		success:function(data){
-			var obj = eval('('+data+')');			
-			$("#current_time").html(obj.value);				
+			 var obj = eval('('+data+')'); 
+			console.log(data.value);
+			$("#current_time").html(data.value);
 		}
-	});
+	});*/
+	var nowTime = new Date();
+	var year = nowTime.getFullYear();
+	var month = ("0" + (1 + nowTime.getMonth())).slice(-2);
+	var day = ("0" + nowTime.getDate()).slice(-2);
+	var hour = ("0" + nowTime.getHours()).slice(-2);
+	var miniute = ("0" + nowTime.getMinutes()).slice(-2);
+	var sec = ("0" + nowTime.getSeconds()).slice(-2);
+	$("#current_time").html(year+"-"+month + "-" + day + " " + hour + ":" + miniute + ":" + sec);
+	
+	
 }
-/* 미결재문서 알림숫자 */
+/*  미결재문서 알림숫자
 $.ajax({
 	type:'POST',
 	url: '${ pageContext.request.contextPath }/approval/notAuthApvCount',
@@ -59,9 +67,14 @@ $.ajax({
 		//console.log(data);
 		$('#apvCount4').text(data);
 	}
-});
+}); */
 /* 근태관련 */
 $(function(){
+	
+	 /* 출석용 시계 */
+	 setInterval('time()', 1000);
+
+	
 	$(".board").hover(function(){
 		$(this).css("background", "#dddddd");	
 	},function(){
@@ -233,7 +246,7 @@ $(document).ready(function(){
 				}catch(Exception){}				
 				
 				dataTable.addRows([
-				     [ new Date(${year}, arr[i].month-1, parseInt(arr[i].commuting_status_date.substring(0,2))), status],
+				     [ new Date(new Date().getFullYear(), arr[i].month-1, parseInt(arr[i].commuting_status_date.substring(0,2))), status],
 				   ]);
 				
 			}//for end	
@@ -274,7 +287,7 @@ $(document).ready(function(){
          
          $(document).ready(function(){
             
-            
+             console.log("캘린더 제작 시작");
              // We will refer to $calendar in future code
              var $calendar = $("#calendar").fullCalendar({ //start of options
                  //weekends : false, // do not show saturday/sunday
@@ -311,17 +324,18 @@ $(document).ready(function(){
            );// calendar end
             
             
-            var member_id = '${sessionScope.member.member_id}';
+            var member_id = '${emp.emp_num}';
+            console.log("member_id->" + member_id);
             $.ajax({
                  type: 'POST',
-                 url: "${pageContext.request.contextPath}/calendar/getCalList",
-                 data: "member_id="+member_id,
+                 url: "${pageContext.request.contextPath}/searchAll",
+                 data: "emp_num="+member_id,
                  success: function(data) {    
-                     var list = JSON.parse(data);
-                     //console.log(list);
+                     var list = data;
+                     console.log(list);
                      for(var i = 0 ; i<list.length; i++){
                         var start = new Date(list[i].start);
-                        var end = new Date(list[i].end);
+                        var end = new Date(list[i].fin);
                         
                         var row = printCal(list[i]);
                         
@@ -329,22 +343,17 @@ $(document).ready(function(){
                            row.allDay = true
                         }
                         
-                        //console.log(list[i].id)
+                        console.log(list[i].id)
                         temp.push(list[i].id);
                         
                         $('#calendar').fullCalendar('addEventSource', [{
                              id: list[i].id,
                              title: list[i].title,
                              start: list[i].start,
-                             end: list[i].end,
+                             end: list[i].fin,
                              content: list[i].content,
-                             calendar_cate: list[i].calendar_cate, 
-                             calendar_cateSelf: list[i].calendar_cateSelf, 
-                             member_id: list[i].member_id,
-                             color: list[i].color,
                              allDay: list[i].allDay
                          }]);
-                        
                      } //for end
                  }
             })//ajax end
@@ -355,56 +364,24 @@ $(document).ready(function(){
          
          function printCal(obj){
               if(obj.allDay == 0){
-                 if(obj.calendar_cate != 0){
-                     var event = {
+                   var event = {
                            id: obj.id+"",
-                           member_id: obj.calendar_member_id,
                            title: obj.title+"",
                            content: obj.content+"",
                            start: moment(obj.start),
-                           end: moment(obj.end),
-                           color: obj.color,
-                           calendar_cate: obj.calendar_cate
-                     };
-                  }else{
-                     var event = {
-                           id: obj.id+"",
-                           member_id: obj.calendar_member_id,
-                           title: obj.title+"",
-                           content: obj.content+"",
-                           start: moment(obj.start),
-                           end: moment(obj.end),
-                           color: obj.color,
-                           calendar_cate: obj.calendar_cateSelf
-                     };
-                  }
+                           end: moment(obj.fin)
+                   };
+              
             }else{
-                 if(obj.calendar_cate != 0){
-                      var event = {
+                  var event = {
                          id: obj.id+"",
-                         member_id: obj.calendar_member_id,
                            title: obj.title+"",
                            content: obj.content+"",
                            start: moment(obj.start).format(),
-                           end: moment(obj.end).format(),
-                           color: obj.color,
-                           calendar_cate: obj.calendar_cate,
+                           end: moment(obj.fin).format(),
                           allDay: true
-                      };
-                    }else{
-                      var event = {
-                         id: obj.id+"",
-                         member_id: obj.calendar_member_id,
-                           title: obj.title+"",
-                           content: obj.content+"",
-                           start: moment(obj.start).format(),
-                           end: moment(obj.end).format(),
-                           color: obj.color,
-                           calendar_cate: obj.calendar_cateSelf,
-                          allDay: true
-                      };
-                    }
-                  }
+                  };
+             }
               
               return event;
            }// printCal end
@@ -436,7 +413,7 @@ $(document).ready(function(){
                   
                   $('#calCount3').text(data);
                       
-                   }
+                  }
           })//ajax end
            
            
@@ -583,7 +560,7 @@ $(document).ready(function(){
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <div class="dropdown-header">일정관리:</div>
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/calendar">월간일정확인</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/user/showCalendar">월간일정확인</a>
                      
                     </div>
                   </div>
@@ -629,7 +606,7 @@ $(document).ready(function(){
                   </div>
                 </div>
                  
-                 <input type="hidden" id="commuting_member_id" value="${sessionScope.member.member_id}"/>
+                 <input type="hidden" id="commuting_member_id" value="${emp.emp_num}"/>
                    
                    <div class="timecheck">
                       <div id="arrive" style="width:100%;" class="card bg-info text-white shadow btn-outline-info">

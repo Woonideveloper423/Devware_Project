@@ -21,4 +21,15 @@
 		UPDATE calendar SET calendar_content = #{calendar_content}, calendar_all_day = #{calendar_allDay}, calendar_end = #{calendar_end}, calendar_start = #{calendar_start}, calendar_title = #{calendar_title} WHERE calendar_id = #{calendar_id}
 	</select>
 	
+	<select id="calCount" parameterType="int" resultType="java.lang.String">
+		select count(*) 
+		from 
+		(select calendar_emp_num, 
+		TO_DATE(SUBSTR(calendar_start,1,10),'YYYY-MM-DD') calendar_start,
+		TO_DATE(SUBSTR(calendar_end,1,10),'YYYY-MM-DD') calendar_end
+		from calendar) calendar 
+		where calendar_emp_num = #{emp_num}
+		and sysdate between calendar_start and calendar_end
+	</select>
+	
 </mapper>
