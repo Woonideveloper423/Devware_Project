@@ -1,5 +1,6 @@
 package com.oracle.devwareProject.controller.KiWoSu;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import com.oracle.devwareProject.dto.KiWoSu.Approve;
 import com.oracle.devwareProject.dto.KiWoSu.ApproveAttach;
 import com.oracle.devwareProject.dto.KiWoSu.Approve_Progress;
 import com.oracle.devwareProject.dto.KiWoSu.Vacation;
+import com.oracle.devwareProject.dto.jiwoong.BoardAttach;
 import com.oracle.devwareProject.service.GH.EmpService;
 import com.oracle.devwareProject.service.KiWoSu.Paging;
 import com.oracle.devwareProject.service.KiWoSu.approveService;
@@ -46,7 +48,7 @@ public class ApproveController {
 		}
 		
 		@RequestMapping("/user/myApvDetail")
-		public String myApvDetail(String app_num, HttpSession session, Model model) {
+		public String myApvDetail(String app_num, HttpSession session, String file_name, String file_oriname, Model model) {
 			System.out.println("CommuteController myApvDetail start....");
 			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
 			
@@ -60,8 +62,16 @@ public class ApproveController {
 			System.out.println("allForApprove->"+ allForApprove.getPrg_name1());
 			model.addAttribute("allApv", allForApprove);
 			
-			return "/approve/user/myApvDetail";
 			
+			// 첨부파일 불러오기
+			System.out.println("첨부파일 있음");
+			List<ApproveAttach> approveAttachlist = new ArrayList<ApproveAttach>();
+			ApproveAttach approveAttach = new ApproveAttach();
+			approveAttachlist.add(approveAttach);
+				
+				
+			
+			return "/approve/user/myApvDetail";
 		}
 		
 		@RequestMapping("/ApvDetail2")
@@ -462,5 +472,26 @@ public class ApproveController {
 			System.out.println("approveController totalApv=>" + totalApv);
 			
 			return totalApv;
+		}
+		
+		@RequestMapping("/approve/apvSearch")
+		public String MyListSearch( HttpSession session, String searchType, String key, Model model) {
+			
+			EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch");
+			System.out.println("key -->" + key);
+			System.out.println("searchType -->" + searchType);
+			AllForApprove allForApprove = new AllForApprove();
+			
+			allForApprove.setApp_num(empForSearch.getEmp_num());
+			allForApprove.setKey(key);
+			allForApprove.setSearchType(searchType);
+			
+			List<AllForApprove> MyListSearch = as.myListSearch(allForApprove);
+			model.addAttribute("listApv" , MyListSearch);
+			
+			System.out.println("CommuteController listCommute start....");
+
+			return "redirect:/user/myApvList";
+			
 		}
 }

@@ -45,4 +45,6 @@ public interface approveService {
 
 	String deleteApprove(Approve_Progress approve_Progress, Approve approve);
 
+	List<AllForApprove> myListSearch(AllForApprove allForApprove);
+
 }

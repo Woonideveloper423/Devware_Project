@@ -15,7 +15,36 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+  <script type="text/javascript">
+  function search(){
 
+		    $.ajax({
+					url  : "<%=context%>/approve/apvSearch",
+					type : 'post',
+					data : 	{
+								"app_num" 	: $('#app_num').val(),
+								"searchType": $('#searchType').val(),
+								"key"		: $('#key').val()
+							},
+				    success:function(data){
+				    	if(ChkCtn.style.display !== 'none') {
+				    		ChkCtn.style.display = 'none';
+				    		if(ChkInput.style.display == 'none'){
+				    			ChkInput.style.display = 'block';
+				    		}
+				    		
+				    		
+				  	  }
+			} ,
+		
+		  }); 
+		  
+			  
+		
+		
+	}
+  
+  </script>
 
   <!-- 헤드 네비게이션 효과 -->
 <link href="<%=context%>/resources/css/sb-admin-2.min.css" rel="stylesheet">
@@ -85,24 +114,22 @@
 		</ul> <!-- Paging end -->
 
 		<div align="center">
-			<form id="goSearch" method="POST" action="<%=context%>/apvList/search"> </form>
-				
-				<input type="checkbox" id="cate1" value="1" > 문서결제문서
-				<input type="checkbox" id="cate2" value="2" > 근태결제문서 <br>
-				
+			<form id="goSearch" method="POST" action="<%=context%>/approve/apvSearch"> 
+					<input type="hidden" id="app_num" name="app_num" value="${allApv.app_num }">	
+					
 				
 				
 				<div class="group" style="align:center;">
-				<select class="btn btn-outline-primary dropdown-toggle" id="condition">
-					<option value="title">제목</option>
-					<option value="writer">제출자</option>
+				<select class="btn btn-outline-primary dropdown-toggle" id="searchType" name="searchType">
+					<option value="APP_TITLE">제목</option>
 					<option value="apvNum">문서번호</option>
 				</select>
 						   
-					<input class="btn btn-outline-primary" id="word" type="text" placeholder="검색어 입력" aria-label="Search" aria-describedby="basic-addon2">
-					<button class="btn btn-outline-primary" id="search" onclick="search()"><i class="fas fa-search fa-sm"></i></button>
+					<input class="btn btn-outline-primary" id="key" name="key" type="text" placeholder="검색어 입력" aria-label="Search" aria-describedby="basic-addon2">
+					<button class="btn btn-outline-primary" id="search" onclick="search() "><i class="fas fa-search fa-sm"></i></button>
 					<!-- <button onclick="resetSc()">검색 초기화</button> --> 
 				</div>
+				</form>
 		</div>
 	
 	</div>

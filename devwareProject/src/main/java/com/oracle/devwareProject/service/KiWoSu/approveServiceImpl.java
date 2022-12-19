@@ -201,5 +201,12 @@ public class approveServiceImpl implements approveService {
 		return result;
 	}
 
+	@Override
+	public List<AllForApprove> myListSearch(AllForApprove allForApprove) {
+		List<AllForApprove> myListSearch = null;
+		myListSearch = ad.myListSearch(allForApprove);
+		return myListSearch;
+	}
+
 
 }

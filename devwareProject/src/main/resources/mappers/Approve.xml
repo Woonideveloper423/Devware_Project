@@ -331,4 +331,33 @@
     	from calendar
     	 WHERE CALENDAR_ID = #{ calendar_id }
     </delete>
+    
+   
+<!--     	 <select id="getMySearch" parameterType=allForApprove resultType="AllForApprove">
+
+		SELECT *
+		FROM
+		(
+		        SELECT rownum rn , a.*
+		        FROM
+		                   (
+		                    select p.*, e.emp_name, c.ca_content
+						    from approve p
+						    inner join emp e
+						    on e.emp_num=p.emp_num
+                            inner join common_approve c
+                            on 
+                            p.comu_type + p.comu_app = c.ca_num + c.ca_appnum 
+                            or
+                            p.docs_type + p.docs_app = c.ca_num + c.ca_appnum 
+                            ORDER BY app_date desc
+                            ) a
+		 )   
+ 		WHERE  rn >= #{start} 
+ 		and    rn <= #{end} 
+ 		and	   emp_num = #{emp_num}
+
+ 		and    APP_TITLE LIKE '%key%'
+
+    </select> -->
 </mapper>

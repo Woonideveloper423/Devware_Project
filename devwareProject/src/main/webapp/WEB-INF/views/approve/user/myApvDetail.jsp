@@ -36,7 +36,13 @@
 </head>
 
 <script type="text/javascript">
-
+$(function(){ 
+	$(document).on('click','.save_attachBtn',function(){
+ 		console.log($(this).attr('id'));
+ 		console.log($(this).attr('name'));		
+ 		location.href='/saveAttach?saveName='+$(this).attr('id')+'&realName='+$(this).attr('name');
+ 	})
+});
 function authChkBtn(prg_auth){
 	const ChkCtn = document.getElementById('chkBtn');
 	const ChkInput = document.getElementById('chkInput');
@@ -331,7 +337,14 @@ function authChkBtn(prg_auth){
 				<th>반려사유</th>
 				<td>${ allApv.prg_return }</td>
 			</c:if>
+			<div class='upload_File'>
+				<label><i class="fa-solid fa-file-lines"></i> 첨부파일</label><br>
+					<a style="color: blue;"><c:out value="${attach_file.file_original_name}"></c:out></a>
+					     &emsp;<button class="save_attachBtn btn btn-outline-primary" id="${attach_file.file_save_name }" name="${attach_file.file_original_name}">다운로드</button> 
+					     &emsp;size : <c:out value="${attach_file.file_size }"></c:out>kb<p>	  
 
+				
+			</div>
 		</table>
 		
 			<div>

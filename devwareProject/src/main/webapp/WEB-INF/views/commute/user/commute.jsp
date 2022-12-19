@@ -82,8 +82,14 @@ function startTime(){
 					com_num,
 					
 				},
-		dataType : 'json'
+		dataType : 'json',
+		success:function(data){
+			location.replace("<%=context%>/user/commute");
+ 			
+		}
 	}); 
+
+	
 }
 
 function endTime(){
@@ -166,6 +172,7 @@ function time() {
 	var divDate = document.getElementById("current_date");
 	var dateMsg = currentDate.getFullYear() + "년 "
 	dateMsg += currentDate.getMonth() + 1 + "월";
+	dateMsg += currentDate.getDay() + 1 + "일";
 	
     var msg = currentDate.getHours()+"시"
     msg += currentDate.getMinutes()+"분";
@@ -198,8 +205,8 @@ function time() {
 	</div>	
 	 <div class="float-right">
 					<input type="hidden" id="commuting_member_id" value="${sessionScope.empForSearch.emp_num}"/>
-					<input style="width: 150pt;" type="button" id="startTime" onclick="startTime();" class="btn btn-outline-success" value="출근"></input>
-					<input style="width: 150pt;" type="button" id="endTime" onclick="endTime();" class="btn btn-outline-success" value="퇴근"></input>
+					<input style="width: 150pt;" type="button" id="startTime" onclick="startTime(); return false;" class="btn btn-outline-success" value="출근"></input>
+					<input style="width: 150pt;" type="button" id="endTime" onclick="endTime(); return false;" class="btn btn-outline-success" value="퇴근"></input>
 					</div>
 					
 					</div>
@@ -213,12 +220,12 @@ function time() {
                   <div class="clearfix">
                   <div class="float-right">
                   
-		<input class="btn btn-outline-primary" type="text" id="halfPick" name="halfPick" onchange="datePick()" value="${ dPick }">
+		<%-- <input class="btn btn-outline-primary" type="text" id="halfPick" name="halfPick" onchange="datePick()" value="${ dPick }">
 		<button class="btn btn-outline-primary" onclick="previousYear()">이전해</button>
 		<button class="btn btn-outline-primary" onclick="previousMonth()">이전달</button>
 		<button class="btn btn-outline-primary" onclick="today()">오늘</button>
 		<button class="btn btn-outline-primary" onclick="nextMonth()">다음달</button>
-		<button class="btn btn-outline-primary" onclick="nextYear()">다음해</button>
+		<button class="btn btn-outline-primary" onclick="nextYear()">다음해</button> --%>
 	</div></div>
                   <hr>
                    <div style="height:650px; overflow:auto; overflow-x:hidden; overflow-y:auto;" align=left>

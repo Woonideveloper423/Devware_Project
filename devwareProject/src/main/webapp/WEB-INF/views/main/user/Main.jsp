@@ -149,57 +149,122 @@ $(document).ready(function(){
 	});// ajax end
 	
 	$("#arrive").click(function(){
+		var Now = new Date(); // 현재 날짜 및 시간
+		var nowyear = Now.getFullYear(); //년
+		var nowMonth = Now.getMonth() + 1; // 월
+		var nowDay = Now.getDate(); // 일
+		var nowHour = Now.getHours(); // 시
+		var nowMins = Now.getMinutes(); // 분
+		var nowSecs = Now.getSeconds(); // 초
+		
+		//일자리 시간에 앞자리 0 추가
+		if(nowMonth < 10) {
+			nowMonth = "0"+nowMonth;
+		}
+		if(nowDay < 10) {
+			nowDay = "0"+nowDay;
+		}
+		if(nowHour < 10) {
+			nowHour = "0"+nowHour;
+		}
+		if(nowMins < 10) {
+			nowMins = "0"+nowMins;
+		}
+		if(nowSecs < 10) {
+			nowSecs = "0"+nowSecs;
+		}
+			
+		//데베 컬럼
+		var emp_num = ${sessionScope.empForSearch.emp_num};//
+		var com_date = new Date();
+		var com_start = nowyear +""+ nowMonth +""+ nowDay +""+ nowHour +""+ nowMins + "" +nowSecs +"";
+		var com_end = null;
+		var com_num = nowyear +""+ nowMonth +""+ nowDay
+		
+		
+		var msg = nowyear +"년"+ nowMonth +"월"+ nowDay +"일"+ nowHour +"시"+ nowMins + "분" +nowSecs +"초";
+		
+		
+		alert(msg + "에 출근 기록되었습니다");
 		$.ajax({
-			type:"POST",
-			async: false,
-			url:"${pageContext.request.contextPath}/commuting/arrive",
-			success:function(data){
-				//console.log(data);
-				try{
-					var obj = JSON.parse(data);		
-				}catch(Exception){
-					alert(data);
-					return;
-				}
-				
-				$('#arrTime').val('arrive');
-				$('#arrTime').empty();
-				$('#arrTime').css('color','yellow').css('font-size','20px').text(obj.commuting_arrive);
-				alert('${emp.emp_name}님 '+obj.commuting_arrive+' 출근처리 되었습니다.');
-				
-				return;
-				
-			}
-		});
+			url : "${pageContext.request.contextPath}/startTime",
+			type : 'post',
+			data : { 	
+						com_start,
+						com_end,
+						msg,
+						emp_num,
+						com_date,
+						com_num,
+						
+					},
+			dataType : 'json'
+		}); 
 	});	//arrive end
 	
 $("#leave").click(function(){
 		
-		if($('#arrTime').val() != 'arrive'){
-			alert('출근처리 먼저 해주세요.');
-			return;
-		}
 		if(confirm('정말 퇴근처리 하시겠습니까?')){
 		
-	 		$.ajax({
-				type:"POST",
-				url:"${pageContext.request.contextPath}/commuting/leave",
-				success:function(data){
-					//console.log(data);
-					try{
-						var obj = JSON.parse(data);		
-					}catch(Exception){
-						alert(data);
-						return;
-					}
-					
-					alert('${emp.emp_name}님 '+obj.commuting_leave+' 퇴근처리 되었습니다.');
-					$('#leavTime').empty();
-					$('#leavTime').css('color','DarkBlue').css('font-size','20px').text(obj.commuting_leave);
-					
-				}
-			});//ajax end 
-	 		
+			var Now = new Date(); // 현재 날짜 및 시간
+			var nowyear = Now.getFullYear(); //년
+			var nowMonth = Now.getMonth() + 1; // 월
+			var nowDay = Now.getDate(); // 일
+			var nowHour = Now.getHours(); // 시
+			var nowMins = Now.getMinutes(); // 분
+			var nowSecs = Now.getSeconds(); // 초
+			
+			//일자리 시간에 앞자리 0 추가
+			if(nowMonth < 10) {
+				nowMonth = "0"+nowMonth;
+			}
+			if(nowDay < 10) {
+				nowDay = "0"+nowDay;
+			}
+			if(nowHour < 10) {
+				nowHour = "0"+nowHour;
+			}
+			if(nowMins < 10) {
+				nowMins = "0"+nowMins;
+			}
+			if(nowSecs < 10) {
+				nowSecs = "0"+nowSecs;
+			}
+				
+			//데베 컬럼
+			var emp_num = 1;
+			var com_date = new Date();
+			var com_end = nowyear +""+ nowMonth +""+ nowDay +""+ nowHour +""+ nowMins + "" +nowSecs +"";
+			var com_num = nowyear +""+ nowMonth +""+ nowDay
+			var com_start = null;
+			
+			
+			var msg = nowyear +"년"+ nowMonth +"월"+ nowDay +"일"+ nowHour +"시"+ nowMins + "분" +nowSecs +"초";
+			console.log("테스트"+com_num);
+			
+			$.ajax({
+				url : "${pageContext.request.contextPath}/findTime",
+				type : 'post',
+				data : { 	
+							emp_num,
+							"com_end" : com_end,
+							"com_num" : com_num
+						},
+				dataType : 'json',
+		 		success:function(commute){
+		 			var com_end2 = data;
+					var endstr = data.substring(0,4) + '년 ' + data.substring(4,6) + '월 ' + data.substring(6,8) + '일 ' + data.substring(8,10) + '시 '+ data.substring(10,12)+ '분 ' + data.substring(12,14) + '초';
+					console.log("값전달 ->"+endstr);
+					$("#com_end"+com_num).empty();
+		 			$("#com_end"+com_num).html(endstr);
+		 			
+		 			com_start=$("#com_start"+com_num).attr('name');
+		 
+		 			
+		  			$("#com_gap").html(commute.com_workTime);
+		 			
+				} 
+			}); 
 		}
 	}); // leave end
 	
@@ -589,7 +654,7 @@ $(document).ready(function(){
                     </a>
                     <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
                       <div class="dropdown-header">근태 관련:</div>
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/commuting/commuting">월간 근태확인</a>
+                      <a class="dropdown-item" href="${pageContext.request.contextPath}/user/commute">월간 근태확인</a>
                     
                     </div>
                   </div>
