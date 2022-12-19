@@ -25,7 +25,7 @@
 
 var allDay = false;
 var aDay = false;
-function adChBx() //allTimeCheck 시 
+/* function adChBx() //allTimeCheck 시 
 {
 	if($('#allDay').is(':checked'))
 	{
@@ -48,7 +48,7 @@ function modadChBx(){
 		$('#modstart_time').removeAttr('disabled')
 		$('#modend_time').removeAttr('disabled')
 	}
-}
+} */
 
 function modifyEvent()
 {
@@ -62,14 +62,14 @@ function modifyEvent()
 	var modIsAllDay = $('#isallDay').val();
 	console.log("하루 체크 : " + modIsAllDay);
 	
-	if(modIsAllDay == 1)
+ 	/* if(modIsAllDay == 1)
 	{
 		$('#modallDay').attr('checked', 'checked');	
 	}
 	else if(modIsAllDay == 0)
 	{
 		$('#modallDay').removeAttr('checked');	
-	}
+	} */
 	
 	var title = $("#psubject").text();
 	console.log("수정 제목: " + title);
@@ -77,15 +77,17 @@ function modifyEvent()
   	var content = $("#pcontent").html();
   	console.log("수정 내용: " + content);
   	$("#pcontent").empty();
-  	var str= "<button type='button' class='btn btn-outline-primary' onclick='selectMem(" + sel_room_num +")'>참여자 수정</button>";
+	$('#modsummernote').empty();
+	$('#pcontent').empty();
+  	var str= "<button type='button' class='btn btn-outline-primary' onclick='selectMem(" + sel_room_num +",1)'>참여자 수정</button>";
   	
   	var endDate = moment($('#pend').text()).format('YYYY-MM-DD');
   	console.log("수정 끝 날짜 : " + endDate);
-  	var endTime = moment($('#pend').text()).format('hh:mm:ss');
+  	var endTime = moment($('#pend').text()).format('hh:mm');
   	console.log("수정 끝 시간 : " + endTime);
   	var startDate = moment($('#pstart').text()).format('YYYY-MM-DD');
   	console.log("수정 시작 날짜 : " + startDate);
-  	var startTime = moment($('#pstart').text()).format('hh:mm:ss');
+  	var startTime = moment($('#pstart').text()).format('hh:mm');
   	console.log("수정 시작 시간 : " + startTime);
   	
 	$('#modend_date').val(endDate);
@@ -137,6 +139,9 @@ function modifyBtn()
 	  var stitle = $('#modsname').val(); //글 제목
 	  console.log("글 제목 : " + stitle);
 	  
+	  var scontent = $('#modsummernote').val(); //글 내용
+	  console.log("글 내용 : " +scontent);
+	  
 	  var start = $('#modstart_date').val();	// 시작 날짜
 	  console.log("시작 날짜 : " +start);
 	  
@@ -160,39 +165,56 @@ function modifyBtn()
 	  }
 	  
 	  //제목 & 내용이 공백이 아닐 때 
-	  if (stitle != '' && scontent != '' && start != null && end != null) 
+	  if (stitle != '' && start != null && end != null) 
 	  {
 		  
 	  	var st;
 	  	var en;
-	    if(!aDay && st >= en)
-	    {
-	  		alert("종료 일이 시작일 보다 빠를 수 없습니다.");
-	  		return;
-	    }
 			
 	    var allDayCheck = 0;
 	    
-	    if(aDay)
+	    /* if(aDay)
 	    {
 	    	st = start;
 	    	en = moment(end).add(1, 'days').format('YYYY-MM-DD');
 	    	allDayCheck = 1;
 	    }
 	    else 
+	    { */
+		st = start+" "+start_time;
+		en = end+" "+end_time;
+		allDayCheck = 0;
+	    /* } */
+	    
+	    if(st >= en)
 	    {
-		    st = start+" "+start_time;
-		    en = end+" "+end_time;
-		    allDayCheck = 0;
+	  		alert("종료 일이 시작일 보다 빠를 수 없습니다.");
+	  		return;
 	    }
+	    
+	    if(new Date(st)<new Date()){
+	    	alert("이미 지난 시간을 선택하셨습니다.");
+	  		return;
+	    }
+	    
+	    var res_emp_nums = [];
 		
-	    var param = "calendar_id="+modId+"&calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num=${emp.emp_num}";	
+		$('.resChecked').each(function(){
+			res_emp_nums.push($(this).attr("id"));
+		});
+	    console.log(res_emp_nums.length);
+	    if(res_emp_nums.length == 0){
+	    	alert("적어도 한명 이상의 인원을 선택해주세요.");
+	  		return;
+	    }
+	    var param = "id="+modId+"&start="+st+"&fin="+en+"&title="+stitle.trim()+"&res_emp_nums="+res_emp_nums +"&emp_num=${emp.emp_num}" +"&room_num=" + sel_room_num;
+	    
 	    console.log(param);
 
 	    $.ajax(
 	    {
 	    	type: 'POST',
-	     	url: "<%=context%>/modifyEvent",
+	     	url: "<%=context%>/modifyRes",
 	     	data: param,
 	     	success: function(data) 
 	     	{
@@ -200,13 +222,17 @@ function modifyBtn()
 	    	  if(result == 0)
 	    	  {
 	    		alert("일정 수정에 실패하였습니다. 다시 입력해 주세요");  
+	    	  }else if(result == 2){
+	      		alert("해당 시간대는 이미 예약되었습니다. 다시 입력해 주세요");  
 	    	  }
 	    	  else
 	    	  {
 	    		alert("일정 수정에 성공하였습니다.");  
-	    		$("#modId").modal('hide');
+	    		$("#modModal").modal('hide');
 	    		$("#calendar").fullCalendar('destroy');
 	    		makeResCal(sel_room_num);
+	    		
+	    		
 	    	  }
 	      	}
 	  	});
@@ -242,17 +268,14 @@ function registBtn()
 	  return;
   }
   
+ 
   //제목 & 내용이 공백이 아닐 때 
   if (stitle != '' && scontent != '' && start != null && end != null) 
   {
 	  
   	var st;
   	var en;
-    if(!allDay && st >= en)
-    {
-  		alert("종료 일이 시작일 보다 빠를 수 없습니다.");
-  		return;
-    }
+
 		
     var allDayCheck = 0;
     
@@ -268,12 +291,29 @@ function registBtn()
 	    en = end+" "+end_time;
 	    allDayCheck = 0;
     }
+    
+    if(st >= en)
+    {
+  		alert("종료 일이 시작일 보다 빠를 수 없습니다.");
+  		return;
+    }
+    
+    if(new Date(st)<new Date()){
+    	alert("이미 지난 시간을 선택하셨습니다.");
+  		return;
+    }
+    
     var res_emp_nums = [];
 	
 	$('.resChecked').each(function(){
 		res_emp_nums.push($(this).attr("id"));
 	});
     console.log(res_emp_nums.length);
+    
+    if(res_emp_nums.length == 0){
+    	alert("적어도 한명 이상의 인원을 선택해주세요.");
+  		return;
+    }
     var param = "res_start="+st+"&res_end="+en+"&meeting_info="+stitle.trim()+"&res_emp_nums="+res_emp_nums+"&emp_num=${emp.emp_num}"+"&room_num=" + sel_room_num;
     	
     console.log(param);
@@ -289,6 +329,8 @@ function registBtn()
     	  if(result == 0)
     	  {
     		alert("일정 추가에 실패하였습니다. 다시 입력해 주세요");  
+    	  }else if(result == 2){
+    		alert("해당 시간대는 이미 예약되었습니다. 다시 입력해 주세요");  
     	  }
     	  else
     	  {
@@ -302,14 +344,14 @@ function registBtn()
   }
 }
 
-function selectMem(sel_room_num) {
+function selectMem(sel_room_num, is_modify) {
 	 var res_emp_nums = [];
-		
+	console.log("is_modify->" + is_modify);
 	$('.resChecked').each(function(){
 		res_emp_nums.push($(this).attr("id"));
 	});
-	console.log(res_emp_nums.length);
-	window.open('${pageContext.request.contextPath}/user/findEmpList?sel_room_num='+ sel_room_num + '&res_emp_nums=' + res_emp_nums,'참여자 선택','width=1100, height=500 ,resizable = no, scrollbars = no');
+	console.log("after select->" + res_emp_nums.length);
+	window.open('${pageContext.request.contextPath}/user/findEmpList?sel_room_num='+ sel_room_num + '&res_emp_nums=' + res_emp_nums + '&is_modify=' + is_modify,'참여자 선택','width=1100, height=500 ,resizable = no, scrollbars = no');
 }
 
 function makeResCal(room_id){
@@ -342,23 +384,31 @@ function makeResCal(room_id){
 	        resizeable: false,
 	        events: data,
 			
-	      	select: function (start,end) //캘린더에서 드래그로 이벤트 발생시
-		   	{
-	      		var str= "<button type='button' class='btn btn-outline-primary' onclick='selectMem(" + sel_room_num +")'>참여자 선택</button>";
-	      		
-	      		 
-		   		$("#myModal").modal(); //모달 창 생성
-		   		$("#EmpaddBtn").html(str);
-		   		$('#start_date').val(moment(start).format('YYYY-MM-DD'));
-		        $('#end_date').val(moment(end).subtract(1, 'days').format('YYYY-MM-DD'));
-		   	},
+	        
+		    select: function (start,end) //캘린더에서 드래그로 이벤트 발생시
+			{
+		    	if(sel_room_num != 0){
+		      		var str= "<button type='button' class='btn btn-outline-primary' onclick='selectMem(" + sel_room_num +",0)'>참여자 선택</button>";
+		      		
+		    		$('#modsummernote').empty();
+		    		$("#pcontent").empty();
+		    		$('#showEmpList').empty();
+			   		$("#myModal").modal(); //모달 창 생성
+			   		$("#EmpaddBtn").html(str);
+			   		$('#start_date').val(moment(start).format('YYYY-MM-DD'));
+			        $('#end_date').val(moment(end).subtract(1, 'days').format('YYYY-MM-DD'));
+				}
+			},
 	        
 	        eventClick: function(event, jsEvent, view) 
 	        {
-	        	$('#modsummernote').empty();
+	        	
 	        	console.log(event);
-	        	var str = ""
-	        	$(event.memList).each(function(){
+	    		$('#modsummernote').empty();
+	    		$("#pcontent").empty();
+	    		$('#showEmpList').empty();
+	        	var str = "";
+	        	$(event.meeting_atd_vos).each(function(){
 	        		str += "<div id='" + this.emp_num +"' class='resChecked'>";
 					str += this.emp_name + this.position_name;
 					str += "</div>";
@@ -371,13 +421,19 @@ function makeResCal(room_id){
 	        	{
 		        	$('#isallDay').val('1');	
 		        	$('#pend').text(moment(event.fin).format('YYYY-MM-DD  HH:mm:ss'));
-	        	} else if(event.allDay == 0)
+	        	} else
 	        	{
 		        	$('#isallDay').val('0');
 		        	$('#pend').text(moment(event.fin).format('YYYY-MM-DD  HH:mm:ss'));
 	        	}
 	        	$("#psubject").text(event.title);
 	        	$("#pcontent").html(str);
+	        	
+	        	if((event.emp_num == '${emp.emp_num}') && (sel_room_num!=0)){
+	        		$("#res_modify_btn").show();
+	        	}else{
+	        		$("#res_modify_btn").hide();
+	        	}
 	        	$('#pstart').text(moment(event.start).format('YYYY-MM-DD  HH:mm:ss'));
 	        	$("#dayModal").modal();	
 	        }
@@ -389,24 +445,43 @@ function makeResCal(room_id){
 
 $(function()
 {  	
+
+	$(document).on("click","#myResCheck", function(){
+		$("#title").html("<h1>나의 예약 확인</h1><input type='button' id='resCalDestroy' value='뒤로가기'>")
+		$("#res_main").hide();
+		makeResCal(0);
+	});
+	
 	$(document).on("click",".resAction", function(){
+		$("#title").html("<h1>"+$(this).attr("name")+"</h1><input type='button' id='resCalDestroy'  value='뒤로가기'>")
+		$("#res_main").hide();
 		makeResCal($(this).attr("id"));
+	});
+	
+	$(document).on("click","#resCalDestroy", function(){
+		$("#title").html("<h1>회의실 예약</h1>")
+		$("#res_main").show();
+		$("#calendar").fullCalendar('destroy');
 	});
 });
 
 </script>
 <body>
+<div id="title"><h1>회의실 예약</h1></div>
+<div id="res_main">
+<input type="button" id="myResCheck" value="나의 예약 확인"><p>
+<c:forEach var="roomShow" items="${roomInfo }">
+	<c:out value="${roomShow.room_name }(수용인원  : ${roomShow.room_cntmax}명)"></c:out>
+	<input type="hidden" id="maxCnt${roomShow.room_num }" value="${roomShow.room_cntmax}">
+	<input type="button" class="resAction" name="${roomShow.room_name }" id="${roomShow.room_num }" value="예약하기"><p>
+</c:forEach>
+</div>
 
 
 
 <div id="calendar">
 </div>
-<input type="button" id="myResCheck" value="나의 예약 확인"><p>
-<c:forEach var="roomShow" items="${roomInfo }">
-	<c:out value="${roomShow.room_name }(수용인원  : ${roomShow.room_cntmax}명)"></c:out>
-	<input type="hidden" id="maxCnt${roomShow.room_num }" value="${roomShow.room_cntmax}">
-	<input type="button" class="resAction" id="${roomShow.room_num }" value="예약하기"><p>
-</c:forEach>
+
 	<!-- 일정 확인 모달 -->
 <div class="modal fade" id="dayModal" role="dialog">
     <div class="modal-dialog">
@@ -445,7 +520,7 @@ $(function()
 				</div>			
 			</form>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default" data-dismiss="modal" onclick="modifyEvent()">수정하기</button>
+				<button type="button" id="res_modify_btn" class="btn btn-default" data-dismiss="modal" onclick="modifyEvent()">수정하기</button>
 				<button type="button" class="btn btn-default" id="deleteBtn" onclick="deleteEvent()" >삭제하기</button>
 				<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
 			</div>
@@ -470,7 +545,7 @@ $(function()
 							<div class="col-8">
 								<input type="date" name="sstart_date" id="start_date"> 
 								<input type="time" name="sstart_time" id="start_time" class="st">
-								<input type="checkbox" name="aDay" id="allDay" onchange="adChBx()">종일
+								<!-- <input type="checkbox" name="aDay" id="allDay" onchange="adChBx()">종일 -->
 							</div>
 					</div>
 					<div class="form-group row">
@@ -518,7 +593,7 @@ $(function()
 							<div class="form-group row">
 								<div class="col-5">
 									<div style="padding-left: 40px;">
-										<input type="checkbox" name="aDay" id="modallDay" onchange="modadChBx();">하루종일
+										<!-- <input type="checkbox" name="aDay" id="modallDay" onchange="modadChBx();">하루종일 -->
 									</div>
 								</div>
 							</div>

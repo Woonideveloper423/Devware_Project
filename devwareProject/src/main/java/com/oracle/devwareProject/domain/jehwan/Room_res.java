@@ -1,5 +1,6 @@
 package com.oracle.devwareProject.domain.jehwan;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,9 +18,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Transient;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.oracle.devwareProject.domain.Dept;
 import com.oracle.devwareProject.domain.Emp;
@@ -43,8 +46,12 @@ public class Room_res {
 	private Long res_num;
 	private String res_name;
 	private String res_date;
-	private String res_start;
-	private String res_end;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+9")
+	private LocalDateTime res_start;
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+9")
+	private LocalDateTime res_end;
 	private String res_cancel;
 	private Long res_amount;
 	private String meeting_info;
@@ -61,7 +68,7 @@ public class Room_res {
 	
 	@OneToMany(mappedBy = "room_res", cascade = CascadeType.ALL, orphanRemoval = true)
 	@JsonBackReference
-	private List<Meeting_atd> Meeting_atd = new ArrayList<Meeting_atd>();
+	private List<Meeting_atd> Meeting_atds = new ArrayList<Meeting_atd>();
 	
 	
 	@Transient

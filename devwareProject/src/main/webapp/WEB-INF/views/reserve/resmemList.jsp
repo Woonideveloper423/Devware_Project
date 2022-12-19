@@ -158,10 +158,21 @@
 		}
 		console.log(str);
 		$('#finalList').append(str);
-    	for(var i = MIN_NUM; i <= MAX_NUM ; i++){
-    		
-    		
-    		
+		/* for(var i = 0 ; i < '${res_emp_nums}'.length ; i ++){
+			console.log("emp exist?->" + this.toString())
+			pikAuthMem(this.toString());
+		} */
+		/* $('${res_emp_nums}').each(function(){
+			console.log("emp exist?->" + this);
+			pikAuthMem(this);
+		}) */
+		
+		<c:forEach items='${res_emp_nums}' var="item">
+			console.log("emp exist?->" + "${item}");
+			pikAuthMem("${item}");
+		</c:forEach>
+    	/* for(var i = MIN_NUM; i <= MAX_NUM ; i++){
+
 	    	if($(opener.document).find('#authRank'+i+'').text().trim() != ''){
 	    	$('#rank_'+i+'').text($(opener.document).find('#authRank'+i+'').text());
 	    	$('#name_'+i+'').text($(opener.document).find('#authName'+i+'').text());
@@ -174,7 +185,7 @@
 
 	    	}// if end
 			 
-    	}// for end
+    	}// for end */
     	
     })// ready end
     
@@ -277,7 +288,7 @@
 		 
 		var trArr = $('#finalList > tr');
 		 
-		var cnt = 3;
+		var cnt = MAX_NUM;
 		for(var j = MIN_NUM; j <= MAX_NUM ; j++){
 			
 			if(parseInt($('#memId_'+j+'').text()) == emp_num){
@@ -292,7 +303,7 @@
 		}
 		
 		
-		if(cnt == 3){
+		if(cnt == MAX_NUM){
 			alert('결재자가 모두 선택되었습니다. 삭제하고 다시 추가해주세요.');
 			return;
 		}
@@ -357,8 +368,13 @@
 				str += "</div>";
 		 	}
 		 }
-		 $(opener.document).find('#showEmpList').html(str);
 		
+		 if('${is_modify}' == '0'){
+			 $(opener.document).find('#showEmpList').html(str);
+				
+		 }else{
+			$(opener.document).find('#modsummernote').html(str);
+		 }
 		window.close();
 		
 	 }
