@@ -326,6 +326,20 @@ public class approveDaoImpl implements approveDao {
 		return result;
 	}
 
+	@Override
+	public List<AllForApprove> myListSearch(AllForApprove allForApprove) {
+		List<AllForApprove> myListSearch = new ArrayList<AllForApprove>();
+		System.out.println("approveDaoImpl getempDeptInfo Start..." );
+		try {
+			myListSearch = session.selectList("getMySearch", allForApprove);
+			System.out.println("EmpDaoImpl emplist.size: " + myListSearch.size());
+		} catch (Exception e) {
+			System.out.println("Error Occurred->" + e.getMessage());
+		}
+		return myListSearch;
+	}
+
+
 
 
 }

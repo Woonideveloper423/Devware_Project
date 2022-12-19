@@ -86,8 +86,8 @@
 		<div align="center">
 			<form id="goSearch" method="POST" action="<%=context%>/apvList/search"> </form>
 				
-				<input type="checkbox" id="cate1" value="1" > 문서결제문서
-				<input type="checkbox" id="cate2" value="2" > 근태결제문서 <br>
+			<!-- 	<input type="checkbox" id="cate1" value="1" > 문서결제문서
+				<input type="checkbox" id="cate2" value="2" > 근태결제문서 <br> -->
 				
 				
 				

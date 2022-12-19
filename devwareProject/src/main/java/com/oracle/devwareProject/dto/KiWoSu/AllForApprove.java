@@ -50,5 +50,15 @@ public class AllForApprove {
 	
 	private String position_name;
 	
+	private int file_num;
+	
+	private String file_oriname;  private String file_name; 
+	
+	private Date file_date;
+
+	//검색
+	private String searchType;
+	private String key;
+	
 	
 }
