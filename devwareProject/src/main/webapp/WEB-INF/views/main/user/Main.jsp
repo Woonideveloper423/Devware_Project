@@ -8,15 +8,16 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-  <title>KITWARE-BETA</title>
+  <title>DEVWARE</title>
 
   <!-- Custom fonts for this template-->
   <link href="${pageContext.request.contextPath}/resources/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <!-- Custom styles for this template-->
   <link href="${pageContext.request.contextPath}/resources/css/sb-admin-2.min.css" rel="stylesheet">
-  
+   <!-- include libraries(jQuery, bootstrap) -->
+  <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
   <style>
  .timecheck{
   margin-top: 5px;
@@ -586,31 +587,37 @@ $(document).ready(function(){
           <div class="row">
 
           
-            <!-- 1번카드 공지사항  -->
+            <!-- 1번카드 공지사항 -->
             <div class="col-xl-4 col-lg-5">
               <div class="card shadow mb-4">
                 <!-- 1번 상단바 -->
                 <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                  <h6 class="m-0 font-weight-bold text-primary">공지사항</h6>
+                  <h6 class="m-0 font-weight-bold text-primary"><a href=${pageContext.request.contextPath}/board/checkList?brd_type=6>공지사항</a></h6>
                   <div class="dropdown no-arrow">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                       <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
                     </a>
-                    <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                      <div class="dropdown-header">게시판:</div>
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/boardList?bgno=2">공지사항으로</a>
-                      <a class="dropdown-item" href="${pageContext.request.contextPath}/boardList?bgno=1">자유게시판으로</a>
-                   
-                    </div>
                   </div>
-                </div>
+               
+        </div>
                 <!-- Card Body -->
          <div id="manin_board" class="card-body">
-                                             
-                   
-                  </div>
-                </div>
-              </div>
+	          <table  class="table table-condensed" >
+			   		<thead  align="center">
+			   		<tr>
+			   			<th width="18%">글번호</th>
+			   			<th width="70%;">제목</th>
+			   			<th>작성일</th>
+			   		</tr>
+			   		</thead>
+		   		<tbody id="tbody" align="center">
+		   		<!-- js로 body 구현 -->
+		   		</tbody>
+		   </table> 
+		                           
+       </div>
+     </div>
+   </div>
           
           
            <!-- 2번카드 일정관리  -->
@@ -715,6 +722,68 @@ $(document).ready(function(){
   <script src="${pageContext.request.contextPath}/resources/js/chart-pie-demo.js"></script>
    --%>
   
+  <script type="text/javascript">
+  $(function(){  // 게시글 목록 불러오기
+		getBoardList(1,'recent');
+	})
+	
+	function leadingZeros(n, digits) { // 날짜 변환 함수
+	    var zero = '';
+	    n = n.toString();
+
+	    if (n.length < digits) {
+	        for (i = 0; i < digits - n.length; i++)
+	            zero += '0';
+	    }
+	    return zero + n;
+	}
+	
+  function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
+		 $.ajax({
+	        url:'/board/ajaxCheckList',
+	        type:'GET',
+	        data: {"brd_type":6,"currentPage":currentPage,"searchType":'W',"keyword":'',"arrayType":arrayType},
+	        dataType:'JSON',
+	        success : function(data){
+	        	/* alert("목록조회 성공"); */
+	            console.log(data); // ajax 데이터 확인용
+	        	brdListStr ="";
+	        	$(data.brdCheckList).each(function(){
+	        		var date=this.brd_date;
+	        		var formatDate=date.substr(0,10);
+	        		var now = new Date();
+	        		
+	        		if(formatDate){
+	        			 now = 
+        				    leadingZeros(now.getFullYear(), 4) + '-' +
+        				    leadingZeros(now.getMonth() + 1, 2) + '-' +
+        				    leadingZeros(now.getDate(), 2);
+	        			 	console.log(now);
+       			   if(formatDate == now){
+       				    formatDate=date.substr(10,12);
+       				  }	 
+	        		}
+	        		brdListStr+="<tr>";
+	        		brdListStr+="<td>"+this.rn+"</td>";
+	        		brdListStr+="<td><a href='/board/detail?emp_num="+this.emp_num+"&brd_type="+this.brd_type+"&brd_num="+this.brd_num+"'>";
+	        		brdListStr+=this.brd_title+"</a></td>";
+	        		brdListStr+="<th>"+formatDate+"</th>";
+	        		brdListStr+="</tr>";
+	        		if(this.rn==4){
+	        			return false;
+	        		}
+	        	});
+	        	$('#tbody').html(brdListStr);
+	        }, 
+	     	error:function(request,status,error){
+	            alert('code = '+ request.status + ' message = ' + request.responseText + ' error = ' + error); // 실패 시 처리
+	        },
+	        complete : function(data){
+				
+	        }
+	    });
+	}
+  </script>
 
 </body>
 

@@ -39,7 +39,14 @@ public class BoardController {
 		model.addAttribute("enterBrdType",brd_type);
 		return "/board/user/writeForm";
 	}
-
+	
+	// 공지사항 글쓰기 화면 이동
+	@GetMapping(value = "/admin/noticeWriteForm")
+	public String noticeWriteForm(Model model) {
+		log.info("noticeWriteForm start");
+		return "/board/admin/noticeWriteForm";
+	}
+	
 	// 게시판 게시글 작성
 	@PostMapping(value ="/board/write")
 	public ModelAndView boardInsert(HttpSession session, BoardEmpDept bEmp,MultipartFile[] files,Model model) {
@@ -114,8 +121,11 @@ public class BoardController {
 	// 선택 게시판 게시글 목록 이동
 	@GetMapping(value ="/board/checkList") 
 	public String boardList(int brd_type,Model model,HttpSession session) {
-	  log.info("/board/checkList start"); 
+	  log.info("/board/checkList start");
+	  Emp emp =(Emp)session.getAttribute("emp");
+	  log.info("auth_num:"+emp.getAuth_num());
 	  model.addAttribute("brd_type",brd_type);
+	  model.addAttribute("auth_num",emp.getAuth_num());
 	  if(brd_type==5) {
 		  return "/board/user/myBoardList"; 
 	  }else if(brd_type==6){

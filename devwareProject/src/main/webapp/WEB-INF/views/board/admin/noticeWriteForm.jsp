@@ -131,8 +131,6 @@ $(document).ready(function(){
 	function fn_formSubmit() {
 		if (!chkInputValue("#brd_title", "제목을"))
 			return;
-		if (!chkSelectValue("#brd_type", "작성게시판을"))
-			return;
 		if (!chkInputValue("#brd_content", "내용을"))
 			return;
 		$("#board_write").submit();
@@ -145,7 +143,7 @@ $(document).ready(function(){
 		<div class="row content">
 			<div class="col-sm text-left">
 				<br>
-				<h2 class="fw-bolder" align="center">게시글  작성</h2>
+				<h2 class="fw-bolder" align="center">공지사항 작성</h2>
 
 				<form id="board_write" name="board_write" action="/board/write" method="post" enctype="multipart/form-data">
 			
@@ -155,25 +153,14 @@ $(document).ready(function(){
 					<p></p>
 					</div>
 					<div class="form-group">
-						<label class="brd_label" for="brd_label">작성자 정보:</label>
-						<input style="width: 120px;" type='text' class="form-control" id="emp_id" name="emp_id" value="${emp.dept.dept_name} ${emp.emp_name}" readonly="readonly">
+						<!-- 작성자 정보 -->
 						<input type='hidden' id='dept_num' name='dept_num' value='${emp.dept.dept_num }'>
 						<input type='hidden' id='emp_num' name='emp_num' value="${emp.emp_num }">
 						<input type='hidden' id='dept_name' name='dept_name' value="${emp.dept.dept_name }">
-						
 					</div>
-					<div class="form-group">
-						<label class="brd_label" for="title">작성게시판:</label><br>
-						<select id='brd_type' name='brd_type' class="form-select form-select-lg mb-3 check" aria-label=".form-select-lg example">
-						  <option selected="selected" disabled="disabled">게시판 종류</option>
-						  <option value='1'>사내게시판</option>
-						  <option value='2'>${emp.dept.dept_name} 게시판</option>
-						  <option value='3'>Q&A 게시판</option>
-						  <option value='4'>스터디&동호회 게시판</option>
-						</select>
-					<p></p>	
-					</div>	
-					<div style="margin-top: -20px;" class="form-group">
+						<!-- brd_type=6 공지사항 -->
+						<input type='hidden' id='brd_type' name='brd_type' value='6'>
+					<div  class="form-group">
 						<label class="brd_label" for="content">내용:</label>
 						<textarea id="brd_content" class="form-control check" name="brd_content" rows="10"></textarea>
 					</div>	 
@@ -196,7 +183,7 @@ $(document).ready(function(){
 					
 					 <!-- 작성 -->
 					<div id='btnDiv' class="form-submit" align="right">
-							<a href="${pageContext.request.contextPath}/board/checkList?brd_type=${enterBrdType}" class="btn-lg btn btn-info"><i class="fa-solid fa-rotate-left"></i> 돌아가기</a>  
+							<a href="${pageContext.request.contextPath}/board/checkList?brd_type=6" class="btn-lg btn btn-info"><i class="fa-solid fa-rotate-left"></i> 돌아가기</a>  
 							<a style="color: white" class="btn-lg btn btn-primary" onclick="fn_formSubmit()"><i class="fa-solid fa-pen"></i> 작성</a>
 					</div>
 

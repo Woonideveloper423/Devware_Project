@@ -24,6 +24,7 @@
                         	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.nextval,</when>
                         	<when test="brd_type==3">brd3_num_seq.nextval,</when>
                         	<when test="brd_type==4">brd4_num_seq.nextval,</when>
+                        	<when test="brd_type==6">brd6_num_seq.nextval,</when>
                         </choose>
                          #{brd_title},
                          #{brd_content},
@@ -39,6 +40,7 @@
                         	<when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.currval,</when>
                         	<when test="brd_type==3">brd3_num_seq.currval,</when>
                         	<when test="brd_type==4">brd4_num_seq.currval,</when>
+                        	<when test="brd_type==6">brd6_num_seq.currval,</when>
                         </choose>	
                         0, <!-- 답변글 순서 -->
                         0, <!-- 들여쓰기 -->
@@ -57,6 +59,7 @@
 		               <when test="brd_type==2 and dept_num==5">BRD2_DEPT5_SEQ.currval,</when>
 		               <when test="brd_type==3">brd3_num_seq.currval,</when>
 		               <when test="brd_type==4">brd4_num_seq.currval,</when>
+		               <when test="brd_type==6">brd6_num_seq.currval,</when>
 		        </choose>
 		        #{emp_num},
 				#{item.file_original_name},
@@ -79,7 +82,7 @@
 				where brd_type=#{brd_type} and brd_num=#{brd_num} and emp_num=#{emp_num}		
 	    	</when>
 	    	<when test="brd_type==2"> 
-	    		update (select b.brd_title,b.brd_content from board b,emp e,dept d
+	    		 update (select b.brd_title,b.brd_content from board b,emp e,dept d
 		         where  b.emp_num=e.emp_num and e.dept_num=d.dept_num
 		         and d.dept_num=#{dept_num} and b.brd_type=2 and b.brd_ref=#{brd_num} and b.brd_num=#{brd_num})
 		         set brd_title=#{brd_title},brd_content=#{brd_content}	 	
@@ -287,7 +290,7 @@
 				</if>
 				<if test="brd_type==5">
 					<include refid="selectList"></include> where e.emp_num=#{emp_num} and b.brd_re_step=0 and b.brd_deleteYn=0 and
-			       										   b.brd_content like '%' ||#{keyword}||'%' order by    <include refid="arrayBoardList"></include>) a)
+			       										   b.brd_content like '%' ||#{keyword}||'%' order by <include refid="arrayBoardList"></include>) a)
 			      										   WHERE rn BETWEEN #{start} and #{end} 
 		    	</if>
 				<if test="brd_type!=2 and brd_type!=5">

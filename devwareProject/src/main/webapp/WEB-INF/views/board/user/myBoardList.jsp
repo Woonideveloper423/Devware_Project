@@ -22,16 +22,30 @@
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.js'></script>
 <script type="text/javascript">
  $(function(){  // 게시글 목록 불러오기
-	getBoardList();
-	$(document).on('click','.sortType',function(){
+	getBoardList(1,'recent');
+	
+})
+
+$(document).on('click','.sortType',function(){
 		$(this).attr('id');
 		getBoardList(1,$(this).attr('id'));
-	})
 })
 
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
 	 getBoardList();
  }
+ 
+function leadingZeros(n, digits) { // 날짜 변환 함수
+	    var zero = '';
+	    n = n.toString();
+
+	    if (n.length < digits) {
+	        for (i = 0; i < digits - n.length; i++)
+	            zero += '0';
+	    }
+	    return zero + n;
+} 
+ 
 function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 	 var searchType=$('#searchType').val(); 
 	 var keyword=$('#keyword').val();
@@ -46,6 +60,20 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
             console.log(data); // ajax 데이터 확인용
         	brdListStr ="";
         	$(data.brdCheckList).each(function(){
+        		var date=this.brd_date;
+        		var formatDate=date.substr(0,10);
+        		var now = new Date();
+        		
+        		if(formatDate){
+        			 now = 
+    				    leadingZeros(now.getFullYear(), 4) + '-' +
+    				    leadingZeros(now.getMonth() + 1, 2) + '-' +
+    				    leadingZeros(now.getDate(), 2);
+        			 	console.log(now);
+   			   if(formatDate == now){
+   				    formatDate=date.substr(10,12);
+   				  }	 
+        		}
         		brdListStr+="<tr>";
         		brdListStr+="<td>"+this.rn+"</td>";
         		brdListStr+="<td>";
@@ -54,7 +82,7 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
         		brdListStr+="<td>"+this.dept_name+" "+this.emp_name+"</td>";
         		brdListStr+="<td>"+this.reply_cnt+"</td>";
         		brdListStr+="<th>"+this.brd_view+"</th>";
-        		brdListStr+="<th>"+this.brd_date+"</th>";
+        		brdListStr+="<th>"+formatDate+"</th>";
         		if(this.brd_type==1){
         			brdListStr+="<th><a href='/board/checkList?brd_type=1'>사내 게시판</th>";
         		}else if(this.brd_type==2){
@@ -63,6 +91,8 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
         			brdListStr+="<th><a href='/board/checkList?brd_type=3'>Q&A 게시판</th>";
         		}else if(this.brd_type==4){
         			brdListStr+="<th><a href='/board/checkList?brd_type=4'>스터디&동호회 게시판</th>";
+        		}else if(this.brd_type==6){
+        			brdListStr+="<th><a href='/board/checkList?brd_type=6'>공지사항</th>";
         		}
         		
         		brdListStr+="</tr>";
@@ -80,15 +110,15 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
     		console.log(endPage);
     		if(startPage > blockSize){
     			pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
-    			pageInfo+="onclick=getBoardList("+startPage-blockSize+")>이전</a></li>";
+    			pageInfo+="onclick=getBoardList("+startPage-blockSize+",\'"+arrayType+"\')>이전</a></li>";
     		}
     		for(startPage ; startPage<=endPage ; startPage++){
     				pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
-    				pageInfo+="onclick=getBoardList("+startPage+")>"+startPage+"</a></li>";
+    				pageInfo+="onclick=getBoardList("+startPage+",\'"+arrayType+"\')>"+startPage+"</a></li>";
     		}
     		if(endPage < pageCnt){
     			pageInfo+="<li class='page-item'><a class='page-link' href='javascript:void(0)'";
-    			pageInfo+="onclick=getBoardList("+startPage+blockSize+")>다음</a></li>";
+    			pageInfo+="onclick=getBoardList("+startPage+blockSize+",\'"+arrayType+"\')>다음</a></li>";
     		}
     		$('#pagingNation').html(pageInfo);
      		
@@ -160,7 +190,7 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		   		<thead align="center">
 		   		<tr>
 		   			<th>글번호</th>
-		   			<th>제목</th>
+		   			<th width="18%">제목</th>
 		   			<th>작성자</th>
 		   			<th>댓글 수</th>
 		   			<th>조회 수</th>

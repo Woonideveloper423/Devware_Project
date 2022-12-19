@@ -34,6 +34,17 @@ $(document).on('click','.sortType',function(){
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
 	 getBoardList();
  }
+ 
+function leadingZeros(n, digits) { // 날짜 변환 함수
+    var zero = '';
+    n = n.toString();
+
+    if (n.length < digits) {
+        for (i = 0; i < digits - n.length; i++)
+            zero += '0';
+    }
+    return zero + n;
+}
 
 function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 	 var searchType=$('#searchType').val(); 
@@ -49,6 +60,20 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
             console.log(data); // ajax 데이터 확인용
         	brdListStr ="";
         	$(data.brdCheckList).each(function(){
+        		var date=this.brd_date;
+        		var formatDate=date.substr(0,10);
+        		var now = new Date();
+        		
+        		if(formatDate){
+        			 now = 
+    				    leadingZeros(now.getFullYear(), 4) + '-' +
+    				    leadingZeros(now.getMonth() + 1, 2) + '-' +
+    				    leadingZeros(now.getDate(), 2);
+        			 	console.log(now);
+   			   if(formatDate == now){
+   				    formatDate=date.substr(10,12);
+   				  }	 
+        		}
         		brdListStr+="<tr>";
         		brdListStr+="<td>"+this.rn+"</td>";
         		if(this.brd_type==4&&this.qa_status==0){
@@ -65,8 +90,7 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
         		brdListStr+="<td>"+this.dept_name+" "+this.emp_name+"</td>";
         		brdListStr+="<td>"+this.reply_cnt+"</td>";
         		brdListStr+="<th>"+this.brd_view+"</th>";
-        		brdListStr+="<th>"+this.brd_date+"</th>";
-        		brdListStr+="<th>"+this.brd_type+"</th>";
+        		brdListStr+="<th>"+formatDate+"</th>";
         		brdListStr+="</tr>";
         	});
         	$('#tbody').html(brdListStr);
@@ -172,14 +196,13 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		     <table style="margin-top: 20px"  class="table table-hover" >
 		   		<thead align="center">
 		   		<tr>
-		   			<th>글번호</th>
+		   			<th width="10%">글번호</th>
 		   			<c:if test="${brd_type==4||brd_type==3}"><th>상태</th></c:if>
-		   			<th width="18%">제목</th>
-		   			<th>작성자</th>
+		   			<th width="35%">제목</th>
+		   			<th width="10%">작성자</th>
 		   			<th>댓글 수</th>
 		   			<th>조회 수</th>
 		   			<th>작성일</th>
-		   			<th>유형</th>
 		   		</tr>
 		   		</thead>
 		   		<tbody id="tbody" align="center">

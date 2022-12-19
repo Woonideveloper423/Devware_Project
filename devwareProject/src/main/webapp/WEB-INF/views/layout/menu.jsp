@@ -50,7 +50,7 @@ ul .nav-item {padding-left:7px;}
     <!-- Sidebar -->
     <ul class="navbar-nav sidebar sidebar-dark" id="accordionSidebar"">
            <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/main/user/Main">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/auth_finder">
 		<i class="fa-brands fa-dev"></i>
         <div class="sidebar-brand-text mx-3" style="font-size: 20px;">DEVWARE</div>
       </a>
@@ -60,7 +60,7 @@ ul .nav-item {padding-left:7px;}
       <hr class="sidebar-divider my-0">
 
  	  <li class="nav-item active">
-       	  <a class="nav-link" href="${pageContext.request.contextPath}/boardList?bgno=2">
+       	  <a class="nav-link" href="${pageContext.request.contextPath}/board/checkList?brd_type=6">
            <i class="fa-solid fa-bullhorn"></i>
           <span style="font-size: 15px;">공지사항</span></a>
       </li>

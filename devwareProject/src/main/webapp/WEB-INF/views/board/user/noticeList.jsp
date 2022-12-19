@@ -23,15 +23,13 @@
 <script type="text/javascript">
 $(function(){  // 게시글 목록 불러오기
 	getBoardList(1,'recent');
-	$('#notice_write_btn').hide();
-	if(${sessionScope.auth_num}==0){
-		$('#notice_write_btn').show();
+	if(${auth_num}==0){ // 공지사항 작성 버튼 동적 생성(auth=0일때 생성)
+			$('#notice_write_btn').show();
 	}else{
 		$('#notice_write_btn').hide();
 	} 
 })
 
- 
 
 $(document).on('click','.sortType',function(){
 		console.log($(this).attr('id'))
@@ -41,6 +39,17 @@ $(document).on('click','.sortType',function(){
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
 	 getBoardList();
  }
+ 
+function leadingZeros(n, digits) { // 날짜 변환 함수
+    var zero = '';
+    n = n.toString();
+
+    if (n.length < digits) {
+        for (i = 0; i < digits - n.length; i++)
+            zero += '0';
+    }
+    return zero + n;
+}
 
 function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 	 var searchType=$('#searchType').val(); 
@@ -56,6 +65,20 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
             console.log(data); // ajax 데이터 확인용
         	brdListStr ="";
         	$(data.brdCheckList).each(function(){
+        		var date=this.brd_date;
+        		var formatDate=date.substr(0,10);
+        		var now = new Date();
+        		
+        		if(formatDate){
+        			 now = 
+    				    leadingZeros(now.getFullYear(), 4) + '-' +
+    				    leadingZeros(now.getMonth() + 1, 2) + '-' +
+    				    leadingZeros(now.getDate(), 2);
+        			 	console.log(now);
+   			   if(formatDate == now){
+   				    formatDate=date.substr(10,12);
+   				  }	 
+        		}
         		brdListStr+="<tr>";
         		brdListStr+="<td>"+this.rn+"</td>";
         		if(this.brd_type==4&&this.qa_status==0){
@@ -69,11 +92,10 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
         		}
         		brdListStr+="<td><a href='/board/detail?emp_num="+this.emp_num+"&brd_type="+this.brd_type+"&brd_num="+this.brd_num+"'>";
         		brdListStr+=this.brd_title+"</a></td>";
-        		brdListStr+="<td>"+this.dept_name+" "+this.emp_name+"</td>";
+        		brdListStr+="<td>게시판 관리자</td>";
         		brdListStr+="<td>"+this.reply_cnt+"</td>";
         		brdListStr+="<th>"+this.brd_view+"</th>";
-        		brdListStr+="<th>"+this.brd_date+"</th>";
-        		brdListStr+="<th>"+this.brd_type+"</th>";
+        		brdListStr+="<th>"+formatDate+"</th>";
         		brdListStr+="</tr>";
         	});
         	$('#tbody').html(brdListStr);
@@ -176,21 +198,21 @@ function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 		     <table style="margin-top: 20px"  class="table table-hover" >
 		   		<thead align="center">
 		   		<tr>
-		   			<th>글번호</th>
+		   			<th width="10%">글번호</th>
 		   			<c:if test="${brd_type==4||brd_type==3}"><th>상태</th></c:if>
-		   			<th width="18%">제목</th>
-		   			<th>작성자</th>
+		   			<th width="35%">제목</th>
+		   			<th width="10%">작성자</th>
 		   			<th>댓글 수</th>
 		   			<th>조회 수</th>
 		   			<th>작성일</th>
-		   			<th>유형</th>
+		   			
 		   		</tr>
 		   		</thead>
 		   		<tbody id="tbody" align="center">
 		   		<!-- js로 body 구현 -->
 		   		</tbody>
 		   		 <div  align="right">
-					<button id='notice_write_btn' class='btn btn-primary btn-lg' onclick="location.href='/board/WriteNotice?brd_type=${brd_type}'">
+					<button id='notice_write_btn' class='btn btn-primary btn-lg' onclick="location.href='/admin/noticeWriteForm'">
 					<i class="fa-solid fa-bullhorn"></i> 공지사항</i></button>
 	 	  		</div> 
 		   </table>
