@@ -59,7 +59,7 @@ function startTime(){
 	}
 		
 	//데베 컬럼
-	var emp_num = 1;//
+	var emp_num = ${sessionScope.empForSearch.emp_num};//
 	var com_date = new Date();
 	var com_start = nowyear +""+ nowMonth +""+ nowDay +""+ nowHour +""+ nowMins + "" +nowSecs +"";
 	var com_end = null;
@@ -197,7 +197,7 @@ function time() {
 		<h2><strong><span id="current_date"></span></strong> <strong><span id="current_time"></span></strong></h2>
 	</div>	
 	 <div class="float-right">
-					<input type="hidden" id="commuting_member_id" value="${sessionScope.member.member_id}"/>
+					<input type="hidden" id="commuting_member_id" value="${sessionScope.empForSearch.emp_num}"/>
 					<input style="width: 150pt;" type="button" id="startTime" onclick="startTime();" class="btn btn-outline-success" value="출근"></input>
 					<input style="width: 150pt;" type="button" id="endTime" onclick="endTime();" class="btn btn-outline-success" value="퇴근"></input>
 					</div>
@@ -253,7 +253,7 @@ function time() {
 										
 				<div class="col-sm">${commute.com_lateTime }</div>
 				<div class="col-sm">${commute.com_workTime }</div>
-				<div class="col-sm" id="reason_${status.count}">상태</div>
+				<div class="col-sm" id="reason_${status.count}"></div>
 				<div style="width:8%" id="reasonBtn_${status.count}">근태사유</div>
 			</div>
 	</c:forEach>						

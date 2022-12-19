@@ -152,7 +152,7 @@ $(document).ready(function(){
 				$('#arrTime').val('arrive');
 				$('#arrTime').empty();
 				$('#arrTime').css('color','yellow').css('font-size','20px').text(obj.commuting_arrive);
-				alert('${sessionScope.member.member_name}님 '+obj.commuting_arrive+' 출근처리 되었습니다.');
+				alert('${emp.emp_name}님 '+obj.commuting_arrive+' 출근처리 되었습니다.');
 				
 				return;
 				
@@ -180,7 +180,7 @@ $("#leave").click(function(){
 						return;
 					}
 					
-					alert('${sessionScope.member.member_name}님 '+obj.commuting_leave+' 퇴근처리 되었습니다.');
+					alert('${emp.emp_name}님 '+obj.commuting_leave+' 퇴근처리 되었습니다.');
 					$('#leavTime').empty();
 					$('#leavTime').css('color','DarkBlue').css('font-size','20px').text(obj.commuting_leave);
 					
@@ -257,62 +257,7 @@ $(document).ready(function(){
 	}); // ajax end
 }) // ready end
 </script>
-<script>
-$(document).ready(function(){
-	var pay2 = 0, pay3 = 0, pay4 = 0, pay5 = 0, pay6 = 0;
-	var type = new Array("교통비", "사무비품", "출장비", "식대", "주유비");	
-	    <c:forEach var="pay" items="${title_2}">
-	    	pay2 += ${pay.pay_cash};	    		    
-	    </c:forEach>    
-	    <c:forEach var="pay" items="${title_3}">
-	    	pay3 += ${pay.pay_cash};	    		    
-	    </c:forEach>    
-	    <c:forEach var="pay" items="${title_4}">
-	    	pay4 += ${pay.pay_cash};	    		    
-	    </c:forEach>    
-	    <c:forEach var="pay" items="${title_5}">
-	    	pay5 += ${pay.pay_cash};	    		    
-	    </c:forEach>
-	    <c:forEach var="pay" items="${title_6}">
-    	pay6 += ${pay.pay_cash};	    		    
-    </c:forEach>
-	// Set new default font family and font color to mimic Bootstrap's default styling
-	Chart.defaults.global.defaultFontFamily = 'Nunito', '-apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif';
-	Chart.defaults.global.defaultFontColor = '#858796';
 
-	// Pie Chart Example
-	var ctx = document.getElementById("myPieChart");
-	var myPieChart = new Chart(ctx, {
-	  type: 'doughnut',
-	  data: {
-	    labels: [type[0], type[1], type[2], type[3], type[4]],
-	    datasets: [{
-	      data: [pay2, pay3, pay4, pay5, pay6],
-	      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#e3aa17', '#e04435'],
-	      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf', '#a2790f', '#b0362a'],
-	      hoverBorderColor: "rgba(234, 236, 244, 1)",
-	    }],
-	  },
-	  options: {
-	    maintainAspectRatio: false,
-	    tooltips: {
-	      backgroundColor: "rgb(255,255,255)",
-	      bodyFontColor: "#858796",
-	      borderColor: '#dddfeb',
-	      borderWidth: 3,
-	      xPadding: 15,
-	      yPadding: 15,
-	      displayColors: false,
-	      caretPadding: 10,
-	    },
-	    legend: {
-	      display: false
-	    },
-	    cutoutPercentage: 80,
-	  },
-	});
-});
-</script>
 <!-- fullcalendar ref -->
 <link rel='stylesheet' href='${pageContext.request.contextPath}/resources/fullcalendar/fullcalendar.css' />
 <script src='${pageContext.request.contextPath}/resources/fullcalendar/lib/moment.min.js'></script>
@@ -464,14 +409,21 @@ $(document).ready(function(){
               return event;
            }// printCal end
            
-           $.ajax({
-               type: 'POST',
-               url: "${pageContext.request.contextPath}/apv_Vacat/getVacation",
-               success: function(data) {
-     				//console.log(data);
+
+           
+           var emp_num = ${sessionScope.empForSearch.emp_num}
+     	  $.ajax({
+               type	: 'POST',
+               url	: "${pageContext.request.contextPath}/getVacation",
+               data 	: {
+             	  		emp_num
+              			 },
+              dataType : 'json',
+               success: function(vacatcion) {
+     				console.log(vacatcion);
                    // Call the "updateEvent" method
                    
-                   $('#mainleftVacat').text(data);
+                   $('#mainleftVacat').text(vacatcion.va_stock);
                    
                }
              });
@@ -503,7 +455,7 @@ $(document).ready(function(){
 
           <!-- Page Heading -->
           <div class="d-sm-flex align-items-center justify-content-between mb-4">
-            <h2 class="h3 mb-0 text-gray-800">환영합니다 ${sessionScope.member.member_name}님!</h2>
+            <h2 class="h3 mb-0 text-gray-800">환영합니다 ${emp.emp_name}님!</h2>
             
           </div>
 
