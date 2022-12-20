@@ -44,8 +44,10 @@
  	</insert>
  	
  	<select id="wsCusListAll" parameterType="commuteCus" resultType="commuteCus">
-	 	select *
-		from commute_cus
-		where emp_num =  #{emp_num}
+	 	select 	cus.*   
+              	, work_time(cus.cus_start , cus.cus_end) com_workTime
+              	, work_time( CONCAT(com_num, '090000'), cus_start) com_lateTime
+        from   	commute_cus cus
+        where 	emp_num =  #{emp_num}
  	</select>
 </mapper>

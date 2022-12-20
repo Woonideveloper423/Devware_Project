@@ -156,11 +156,11 @@ public class EmpController
 		List <Position> poslist = (List<Position>) session.getAttribute("poslist");
 		List <Status> statuslist = (List<Status>) session.getAttribute("statuslist");
 		 
-		model.addAttribute("deptlist",deptlist);
-		model.addAttribute("authlist",authlist);
-		model.addAttribute("poslist",poslist);
-		model.addAttribute("statuslist",statuslist);
-		model.addAttribute("emp",emp);
+//		model.addAttribute("deptlist",deptlist);
+//		model.addAttribute("authlist",authlist);
+//		model.addAttribute("poslist",poslist);
+//		model.addAttribute("statuslist",statuslist);
+//		model.addAttribute("emp",emp);
 		return "/member/admin/adminMyPageForm";
 	}
 	

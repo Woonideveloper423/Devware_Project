@@ -9,7 +9,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Calendar</title>
-	<%-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
@@ -20,7 +20,7 @@
 	<link rel='stylesheet' href='${pageContext.request.contextPath}/resources/fullcalendar/fullcalendar.css' />
 	<script src='${pageContext.request.contextPath}/resources/fullcalendar/lib/moment.min.js'></script>
 	<script src='${pageContext.request.contextPath}/resources/fullcalendar/fullcalendar.js'></script>
-	<script src='${pageContext.request.contextPath}/resources/fullcalendar/lang/ko.js'></script> --%>
+	<script src='${pageContext.request.contextPath}/resources/fullcalendar/lang/ko.js'></script>
 </head>
 <script type="text/javascript">
 
@@ -103,11 +103,9 @@ function modifyEvent()
 function deleteEvent()
 {
 	var eventId = $("#pid").val();
-	alert(eventId);
-	
+
 	var emp_num = $('#emp_num').val();
-	alert(emp_num);
-	
+
 	if(confirm("정말 삭제하시겠습니까?"))
 	{
 		$.ajax({
@@ -136,8 +134,7 @@ function deleteEvent()
 function searchUsingEmpNum()
 {
 	var emp_num = $('#empName').val();
-	alert("사원 번호: "+emp_num);
-	
+
 	location.href='<%=context%>/admin/manageCalendar?emp_num='+emp_num;
 
 }
@@ -145,8 +142,7 @@ function searchUsingEmpNum()
 function modifyBtn()
 {
 	  var emp_num = $('#emp_num').val();
-      alert(emp_num);
-	
+
 	  var stitle = $('#modsname').val(); //글 제목
 	  console.log("글 제목 : " + stitle);
 	  
@@ -203,8 +199,7 @@ function modifyBtn()
 	    }
 		
 	    var emp_num = $('#emp_num').val();
-	    alert(emp_num);
-	    
+
 	    var param = "calendar_id="+modId+"&calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num="+emp_num;	
 	    console.log(param);
 
@@ -252,7 +247,7 @@ function userlistDeptSearch()
 
 function registBtn()
 {
-  alert(allDay);
+
   var stitle = $('#sname').val(); //글 제목
   console.log("글 제목 : " + stitle);
   
@@ -307,8 +302,7 @@ function registBtn()
     }
 	
     var emp_num = $('#emp_num').val();
-    alert(emp_num);
-    
+ 
     var param = "calendar_start="+st+"&calendar_end="+en+"&calendar_title="+stitle.trim()+"&calendar_content="+scontent+"&calendar_allDay="+allDayCheck+"&calendar_emp_num=" + emp_num;
     console.log(param);
     

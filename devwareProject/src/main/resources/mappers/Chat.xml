@@ -42,7 +42,7 @@
 			</when>
 			<when test="type == 2">
 				select cm.emp_num, e.emp_name
-				from emp e , (select * from chat_member where room_num = #{room_num} and emp_num != #{emp_num}) cm
+				from emp e , (select * from chat_member where room_num = #{room_num}) cm
 				where e.emp_num = cm.emp_num
 			</when>
 			<when test="type == 3">

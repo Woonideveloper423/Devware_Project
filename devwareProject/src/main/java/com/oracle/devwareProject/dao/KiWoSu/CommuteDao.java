@@ -17,7 +17,7 @@ public interface CommuteDao {
 
 	List<Commute> commuteList(Commute commute);
 
-	void saveTime(Commute commute);
+	int saveTime(Commute commute);
 
 	List<Commute_cus> commuteCusList(Commute_cus commuteCus);
 

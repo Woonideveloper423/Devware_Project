@@ -105,8 +105,7 @@ function modifyEvent()
 function deleteEvent()
 {
 	var eventId = $("#pid").val();
-	alert(eventId);
-	
+
 	if(confirm("정말 삭제하시겠습니까?"))
 	{
 		$.ajax({
@@ -241,7 +240,7 @@ function modifyBtn()
 
 function registBtn()
 {
-  alert(allDay);
+
   var stitle = $('#sname').val(); //글 제목
   console.log("글 제목 : " + stitle);
   

@@ -67,13 +67,14 @@ public class CommuteController {
 		System.out.println("CommuteController listCommute start....");
 		model.addAttribute("listCommute", listCommute);
 		model.addAttribute("listCommute2", listCommuteCus);
+		
 		return "/commute/user/commute";
 		
 	}
 	
 	@ResponseBody
 	@PostMapping("/startTime")
-	public String startTime(Commute commute, String msg, String com_start, String com_end, Date com_date, int emp_num, int com_num ) {
+	public int startTime(Commute commute, String msg, String com_start, String com_end, Date com_date, int emp_num, int com_num ) {
 		
 		System.out.println("CommuteController startTime Start");
 		System.out.println("msg -> " + msg);
@@ -87,10 +88,16 @@ public class CommuteController {
 		System.out.println("commute -> " + commute.getEmp_num());
 		System.out.println("emp_num -> " + com_num);
 		System.out.println("commute -> " + commute.getCom_num());
-		cs.saveTime(commute); 
+		int result = 0;
+		try {
+			result = cs.saveTime(commute); 
+		} catch (Exception e) {
+			return result;
+		}
 		
 		
-		return "/commute/user/redirect:commute";
+		
+		return result;
 	}
 	
 //	@ResponseBody

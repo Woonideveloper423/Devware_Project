@@ -83,14 +83,16 @@ public class CommuteDaoImpl implements CommuteDao {
 	}
 
 	@Override
-	public void saveTime(Commute commute) {
+	public int saveTime(Commute commute) {
 		System.out.println("CommuteDaoImpl saveTime start..");
+		int result = 0;
 		try {
-			session.insert("wsComInsert", commute);
+			result = session.insert("wsComInsert", commute);
+			session.insert("wsCusInsert", commute);
 		} catch (Exception e) {
 			System.out.println("CommuteDaoImpl commuteList Exception->"+e.getMessage());
 		}
-		return;
+		return result;
 	}
 
 	@Override
@@ -100,6 +102,7 @@ public class CommuteDaoImpl implements CommuteDao {
 		System.out.println("CommuteDaoImpl commute ->"+ commuteCus.getEmp_num());
 				try {
 					commuteCusList = session.selectList("wsCusListAll", commuteCus);
+					System.out.println("commuteCusList ->" + commuteCus.getCus_detail());
 				} catch (Exception e) {
 					System.out.println("CommuteDaoImpl commuteList Exception->"+e.getMessage());
 				}

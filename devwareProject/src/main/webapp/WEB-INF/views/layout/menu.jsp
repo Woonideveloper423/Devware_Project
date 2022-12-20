@@ -176,7 +176,7 @@ ul .nav-item {padding-left:7px;}
             	</c:otherwise>
             </c:choose>
             
-            <a class="collapse-item" href="${pageContext.request.contextPath}/member/myboard?member_name=${sessionScope.member.member_name}">내 게시글</a>            
+            <a class="collapse-item" href="${pageContext.request.contextPath}/board/checkList?brd_type=5">내 게시글</a>            
           
           </div>
         </div>
