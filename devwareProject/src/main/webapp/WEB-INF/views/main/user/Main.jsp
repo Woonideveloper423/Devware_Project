@@ -186,7 +186,6 @@ $(document).ready(function(){
 		var msg = nowyear +"년"+ nowMonth +"월"+ nowDay +"일"+ nowHour +"시"+ nowMins + "분" +nowSecs +"초";
 		
 		
-		alert(msg + "에 출근 기록되었습니다");
 		$.ajax({
 			url : "${pageContext.request.contextPath}/startTime",
 			type : 'post',
@@ -199,7 +198,16 @@ $(document).ready(function(){
 						com_num,
 						
 					},
-			dataType : 'json'
+			success:function(data){
+				if(data==1){
+					alert(msg + "에 출근 기록되었습니다");
+					location.replace("${pageContext.request.contextPath}/user/commute");
+				}
+				else if(data==0){
+					alert("이미 출근 기록되었습니다");
+				}
+				
+			}
 		}); 
 	});	//arrive end
 	
