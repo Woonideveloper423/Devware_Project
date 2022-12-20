@@ -262,7 +262,7 @@ function reReplyBtn(){// 답글 등록 ajax 이벤트
 		<input type="hidden" name="emp_num"  value="${emp.emp_num }">
 		<input type="hidden" name="brd_title" value="${board.brd_title}">
 		<input type="hidden" name="brd_content"  value="${board.brd_content}">
-		<input type="hidden" name="qa_status"  value="${board.qa_status}">
+		
 		
 		<c:forEach items="${board.boardAttachs}"  var="attach_file">
 		 	<input type="hidden" name="saveName"  value="${attach_file.file_save_name }">
