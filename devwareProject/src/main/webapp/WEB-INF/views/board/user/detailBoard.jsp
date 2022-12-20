@@ -180,7 +180,7 @@ function replyBtn(){ // 댓글 등록 ajax 이벤트
             success : function(data){
                /*  alert('댓글 성공했음'); */
                 console.log(data);
-                getReplyList(); //댓글 리스트 갱신
+                getReplyList(${board.qa_status},0); //댓글 리스트 갱신
                 
             },
             error:function(request,status,error){
@@ -206,7 +206,7 @@ function reReplyBtn(){// 답글 등록 ajax 이벤트
             success : function(data){
              /* alert('답글 성공했음'); */
                 console.log(data);
-                getReplyList(); // 댓글 리스트 갱신
+                getReplyList(${board.qa_status},0); // 댓글 리스트 갱신
                 
             },
             error:function(request,status,error){
