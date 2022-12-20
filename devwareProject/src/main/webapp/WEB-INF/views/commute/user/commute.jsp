@@ -119,7 +119,7 @@ function endTime(){
 	}
 		
 	//데베 컬럼
-	var emp_num = 1;
+
 	var com_date = new Date();
 	var com_end = nowyear +""+ nowMonth +""+ nowDay +""+ nowHour +""+ nowMins + "" +nowSecs +"";
 	var com_num = nowyear +""+ nowMonth +""+ nowDay
@@ -244,24 +244,27 @@ function time() {
 	<%-- <c:if test="${commute.com_num.substring(6,8) == status.count }">${commute.com_start }</c:if> --%>
 	<c:forEach items="${listCommute}" var="commute">
 			<div class="row board text-center">	
-				<div class="col-sm">${commute.com_num }</div>	
+				<div style="width:14%">${commute.com_num }</div>	
 				<c:if test="${commute.com_start != null }">
-	 				<div class="col-sm" id="com_start${commute.com_num }" name="${commute.com_start }">${commute.com_start.substring(8,10) }시 ${commute.com_start.substring(10,12) }분</div>
+	 				<div style="width:11%" id="com_start${commute.com_num }" name="${commute.com_start }">${commute.com_start.substring(8,10) }시 ${commute.com_start.substring(10,12) }분</div>
 				</c:if>
 				<c:if test="${commute.com_start == null }">
-					<div class="col-sm" id="com_start${commute.com_num }"></div>	
+					<div style="width:12%" id="com_start${commute.com_num }"></div>	
 				</c:if>
 				<c:if test="${commute.com_end != null }">
-					<div class="col-sm" id="com_end${commute.com_num }" name="${commute.com_end }">${commute.com_end.substring(8,10) }시 ${commute.com_end.substring(10,12) }분 </div>
+					<div style="width:15%" id="com_end${commute.com_num }" name="${commute.com_end }">${commute.com_end.substring(8,10) }시 ${commute.com_end.substring(10,12) }분 </div>
 				</c:if>
 				<c:if test="${commute.com_end == null }">
-					<div class="col-sm" id="com_end${commute.com_num }"></div>	
-				</c:if>
-										
-				<div class="col-sm">${commute.com_lateTime }</div>
-				<div class="col-sm">${commute.com_workTime }</div>
-				<div class="col-sm" id="reason_${status.count}"></div>
-				<div style="width:8%" id="reasonBtn_${status.count}">근태사유</div>
+					<div style="width:15%" id="com_end${commute.com_num }"></div>	
+				</c:if>		
+				<div style="width:13%">${commute.com_lateTime }</div>
+				<div style="width:12%">${commute.com_workTime }</div>
+				<div style="width:12%">${commute2.cus_detail}</div>
+				<%-- <c:forEach items="${listCommute2}" var="commute2">
+					<div style="width:12%">${commute2.cus_detail}</div>
+
+				</c:forEach> --%>	
+				<div style="width:8%" ></div>
 			</div>
 	</c:forEach>						
 </div>

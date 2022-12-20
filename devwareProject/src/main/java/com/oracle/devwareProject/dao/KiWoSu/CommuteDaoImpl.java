@@ -71,11 +71,11 @@ public class CommuteDaoImpl implements CommuteDao {
 	public List<Commute> commuteList(Commute commute) {
 		System.out.println("CommuteDaoImpl commuteList start..");
 		List<Commute> commuteList = null;
-		List<Commute_cus> cusList = null;
+
 		System.out.println("CommuteDaoImpl commute ->"+ commute.getEmp_num());
 				try {
 					commuteList = session.selectList("wsComListAll", commute);
-					cusList = session.selectList("wsCusListAll", commute);
+
 				} catch (Exception e) {
 					System.out.println("CommuteDaoImpl commuteList Exception->"+e.getMessage());
 				}
@@ -87,11 +87,23 @@ public class CommuteDaoImpl implements CommuteDao {
 		System.out.println("CommuteDaoImpl saveTime start..");
 		try {
 			session.insert("wsComInsert", commute);
-			session.insert("wsCusInsert", commute);
 		} catch (Exception e) {
 			System.out.println("CommuteDaoImpl commuteList Exception->"+e.getMessage());
 		}
 		return;
+	}
+
+	@Override
+	public List<Commute_cus> commuteCusList(Commute_cus commuteCus) {
+		System.out.println("CommuteDaoImpl commuteList start..");
+		List<Commute_cus> commuteCusList = null;
+		System.out.println("CommuteDaoImpl commute ->"+ commuteCus.getEmp_num());
+				try {
+					commuteCusList = session.selectList("wsCusListAll", commuteCus);
+				} catch (Exception e) {
+					System.out.println("CommuteDaoImpl commuteList Exception->"+e.getMessage());
+				}
+		return commuteCusList;
 	}
 
 

@@ -27,6 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.oracle.devwareProject.domain.EmpForSearch;
 import com.oracle.devwareProject.dto.KiWoSu.Commute;
+import com.oracle.devwareProject.dto.KiWoSu.Commute_cus;
 import com.oracle.devwareProject.service.KiWoSu.ComService;
 
 import lombok.RequiredArgsConstructor;
@@ -57,12 +58,15 @@ public class CommuteController {
 	
 	//리스트 맵핑
 	@RequestMapping("/user/commute")
-	public String listCommute(Model model, Commute commute, HttpSession session) {
+	public String listCommute(Model model, Commute commute, Commute_cus commuteCus, HttpSession session) {
 		EmpForSearch empForSearch = (EmpForSearch) session.getAttribute("empForSearch"); //JPA 외래키를 설정해 놓은 값을 받아오기 위해서 조회용 객체에 저장한 세션값을 가져온다.
 		commute.setEmp_num(empForSearch.getEmp_num());
+		commuteCus.setEmp_num(empForSearch.getEmp_num());
 		List<Commute> listCommute = cs.ListCommute(commute);
+		List<Commute_cus> listCommuteCus = cs.ListCommuteCus(commuteCus);
 		System.out.println("CommuteController listCommute start....");
 		model.addAttribute("listCommute", listCommute);
+		model.addAttribute("listCommute2", listCommuteCus);
 		return "/commute/user/commute";
 		
 	}

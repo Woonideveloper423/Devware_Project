@@ -11,6 +11,6 @@ public class Commute_cus {
 	private int cus_seq;
 	private String cus_start;
 	private String cus_end;
-	private int cus_detail;
+	private String cus_detail;
 	private String cus_cus;
 }
