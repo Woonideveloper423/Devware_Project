@@ -23,7 +23,6 @@
 <script type="text/javascript">
  $(function(){  // 게시글 목록 불러오기
 	getBoardList(1,'recent');
-	
 })
 
 $(document).on('click','.sortType',function(){
@@ -32,7 +31,9 @@ $(document).on('click','.sortType',function(){
 })
 
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
-	 getBoardList();
+	 console.log('여기왔나');
+	 
+	 getBoardList(1,'recent');
  }
  
 function leadingZeros(n, digits) { // 날짜 변환 함수
@@ -49,7 +50,7 @@ function leadingZeros(n, digits) { // 날짜 변환 함수
 function getBoardList(currentPage,arrayType){ // 게시글 목록 출력
 	 var searchType=$('#searchType').val(); 
 	 var keyword=$('#keyword').val();
-	 
+	 console.log(arrayType);
 	 $.ajax({
         url:'/board/ajaxCheckList',
         type:'GET',

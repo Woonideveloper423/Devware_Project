@@ -32,7 +32,7 @@ $(document).on('click','.sortType',function(){
 	})
 
 function searchBtnChk(){ // 검색 버튼 클릭 이벤트
-	 getBoardList();
+	 getBoardList(1,'recent');
  }
  
 function leadingZeros(n, digits) { // 날짜 변환 함수
