@@ -55,8 +55,8 @@ function authChkBtn(prg_auth){
 		  sendData = "3";  
 	  }
 	  
-	  confirm("결재 하시겠습니까?");
-	    $.ajax({
+	  if(confirm("결재 하시겠습니까?")){
+		  $.ajax({
 				url  : "<%=context%>/authApprove",
 				type : 'post',
 				data : 	{
@@ -73,13 +73,11 @@ function authChkBtn(prg_auth){
 			    		
 			    		
 			  	  }
-		} ,
-	
-	  }); 
-	  
+			} ,
+		
+		  }); 
 		  
-	
-	
+	  }
 }
 
 </script>

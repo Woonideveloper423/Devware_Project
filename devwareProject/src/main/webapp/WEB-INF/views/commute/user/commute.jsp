@@ -64,31 +64,32 @@ function startTime(){
 	var com_start = nowyear +""+ nowMonth +""+ nowDay +""+ nowHour +""+ nowMins + "" +nowSecs +"";
 	var com_end = null;
 	var com_num = nowyear +""+ nowMonth +""+ nowDay
-	
-	
 	var msg = nowyear +"년"+ nowMonth +"월"+ nowDay +"일"+ nowHour +"시"+ nowMins + "분" +nowSecs +"초";
 	
 	
-	alert(msg + "에 출근 기록되었습니다");
-	$.ajax({
-		url : "<%=context%>/startTime",
-		type : 'post',
-		data : { 	
-					com_start,
-					com_end,
-					msg,
-					emp_num,
-					com_date,
-					com_num,
-					
-				},
-		dataType : 'json',
-		success:function(data){
-			location.replace("<%=context%>/user/commute");
- 			
-		}
-	}); 
-
+		$.ajax({
+			url : "<%=context%>/startTime",
+			type : 'post',
+			data : { 	
+						com_start,
+						com_end,
+						msg,
+						emp_num,
+						com_date,
+						com_num,
+						
+					},
+			success:function(data){
+				if(data==1){
+					alert(msg + "에 출근 기록되었습니다");
+					location.replace("<%=context%>/user/commute");
+				}
+				else if(data==0){
+					alert("이미 출근 기록되었습니다");
+				}
+				
+			}
+		}); 
 	
 }
 
@@ -128,28 +129,16 @@ function endTime(){
 	
 	var msg = nowyear +"년"+ nowMonth +"월"+ nowDay +"일"+ nowHour +"시"+ nowMins + "분" +nowSecs +"초";
 	console.log("테스트"+com_num);
-	
 	$.ajax({
 		url : "<%=context%>/findTime",
 		type : 'post',
 		data : { 	
-					emp_num,
+					emp_num   : ${ sessionScope.empForSearch.emp_num },
 					"com_end" : com_end,
 					"com_num" : com_num
 				},
-		dataType : 'json',
  		success:function(commute){
- 			var com_end2 = data;
-			var endstr = data.substring(0,4) + '년 ' + data.substring(4,6) + '월 ' + data.substring(6,8) + '일 ' + data.substring(8,10) + '시 '+ data.substring(10,12)+ '분 ' + data.substring(12,14) + '초';
-			console.log("값전달 ->"+endstr);
-			$("#com_end"+com_num).empty();
- 			$("#com_end"+com_num).html(endstr);
- 			
- 			com_start=$("#com_start"+com_num).attr('name');
- 
- 			
-  			$("#com_gap").html(commute.com_workTime);
- 			
+				location.replace("<%=context%>/user/commute");
 		} 
 	}); 
 }
@@ -242,24 +231,25 @@ function time() {
 		<div style="width:8%"><strong></strong></div>
 	</div>
 	<%-- <c:if test="${commute.com_num.substring(6,8) == status.count }">${commute.com_start }</c:if> --%>
-	<c:forEach items="${listCommute}" var="commute">
+	<c:forEach items="${listCommute2}" var="commute">
 			<div class="row board text-center">	
-				<div style="width:14%">${commute.com_num }</div>	
-				<c:if test="${commute.com_start != null }">
-	 				<div style="width:11%" id="com_start${commute.com_num }" name="${commute.com_start }">${commute.com_start.substring(8,10) }시 ${commute.com_start.substring(10,12) }분</div>
+				
+				<div style="width:14%"  ">${commute.com_num }</div>	
+				<c:if test="${commute.cus_start != null }">
+	 				<div style="width:11%" id="com_start${commute.com_num }" name="${commute.cus_start }">${commute.cus_start.substring(8,10) }시 ${commute.cus_start.substring(10,12) }분</div>
 				</c:if>
-				<c:if test="${commute.com_start == null }">
-					<div style="width:12%" id="com_start${commute.com_num }"></div>	
+				<c:if test="${commute.cus_start == null }">
+					<div style="width:13%" id="com_start${commute.com_num }"></div>	
 				</c:if>
-				<c:if test="${commute.com_end != null }">
-					<div style="width:15%" id="com_end${commute.com_num }" name="${commute.com_end }">${commute.com_end.substring(8,10) }시 ${commute.com_end.substring(10,12) }분 </div>
+				<c:if test="${commute.cus_end != null }">
+					<div style="width:15%" id="com_end${commute.com_num }" name="${commute.cus_end }">${commute.cus_end.substring(8,10) }시 ${commute.cus_end.substring(10,12) }분 </div>
 				</c:if>
-				<c:if test="${commute.com_end == null }">
-					<div style="width:15%" id="com_end${commute.com_num }"></div>	
+				<c:if test="${commute.cus_end == null }">
+					<div style="width:20%" id="com_end${commute.com_num }"></div>	
 				</c:if>		
 				<div style="width:13%">${commute.com_lateTime }</div>
 				<div style="width:12%">${commute.com_workTime }</div>
-				<div style="width:12%">${commute2.cus_detail}</div>
+				<div style="width:12%">${commute.cus_detail}</div>
 				<%-- <c:forEach items="${listCommute2}" var="commute2">
 					<div style="width:12%">${commute2.cus_detail}</div>
 

@@ -115,7 +115,7 @@
 		$(function()
 		{	
 			//이메일 값 나누기
-			var email = '${emp.emp_email}';
+			var email = '${empForSearch.emp_email}';
 			var user_email = email.split('@');
 			var user_email1 = user_email[0];
 			var user_email2 = user_email[1];
@@ -124,7 +124,7 @@
 			$('#user_email2').attr('value', user_email2);
 			
 			//주소 값 불러온 후 나눠서 넣기
-			var address1 = '${emp.emp_address}';
+			var address1 = '${empForSearch.emp_address}';
 			var index1 = address1.indexOf(' ');
 			var index2 = address1.indexOf('/');
 			
@@ -186,34 +186,34 @@
 			<table class="table table-hover text-center">
 				<tr>
 					<th><label for="emp_num">사번</label></th>
-					<td><input type="text"   class="form-control" readonly tabindex="-1" id="emp_num" name="emp_num" value="${emp.emp_num}"></td>
+					<td><input type="text"   class="form-control" readonly tabindex="-1" id="emp_num" name="emp_num" value="${empForSearch.emp_num}"></td>
 				</tr>
 				
 				<tr>
 					<th><label for="emp_name">이름</label></th>
-					<td><input type="text"  class="form-control" id="emp_name" name="emp_name" value="${emp.emp_name}"></td>
+					<td><input type="text"  class="form-control" id="emp_name" name="emp_name" value="${empForSearch.emp_name}"></td>
 				</tr>
 				
 				<tr>
 					<th><label for="emp_name">아이디</label></th>
-					<td><input type="text"   class="form-control" readonly tabindex="-1" id="emp_id" name="emp_id" value="${emp.emp_id}"></td>
+					<td><input type="text"   class="form-control" readonly tabindex="-1" id="emp_id" name="emp_id" value="${empForSearch.emp_id}"></td>
 				</tr>
 				
 				<tr>
 					<th><label for="emp_passwd">비밀번호</label></th>
-					<td><input type="password"  class="form-control" id="emp_passwd" name="emp_passwd" value="${emp.emp_passwd}"></td>
+					<td><input type="password"  class="form-control" id="emp_passwd" name="emp_passwd" value="${empForSearch.emp_passwd}"></td>
 				</tr>
 				
 				<tr>
 					<th><label for="chk_emp_passwd">비밀번호 재확인</label></th>
-					<td><input type="password"  class="form-control" id="chk_emp_passwd" name="chk_emp_passwd" value="${emp.emp_passwd}"></td>
+					<td><input type="password"  class="form-control" id="chk_emp_passwd" name="chk_emp_passwd" value="${empForSearch.emp_passwd}"></td>
 				</tr>
 				
 				<tr>
 					<th>성별</th> 
 					<td>
 						<c:choose>
-							<c:when test="${emp.emp_gender eq '남'}">
+							<c:when test="${empForSearch.emp_gender eq '남'}">
 								<input type="radio" name="emp_gender" value="남" checked="checked">남성  
 								<input type="radio" name="emp_gender" value="여" onclick="return false">여성  
 							</c:when>
@@ -231,7 +231,7 @@
 						<select name="auth_num" id="auth_num">
 							<c:forEach var="auth" items="${authlist}">
 								<c:choose>
-									<c:when test="${auth.auth_num eq emp.auth_num}">
+									<c:when test="${auth.auth_num eq empForSearch.auth_num}">
 										<option value="${auth.auth_num}" selected="selected">${auth.auth_name}</option>
 									</c:when>
 									<c:otherwise>
@@ -249,7 +249,7 @@
 						<select name="position_num" id="position_num">
 							<c:forEach var="pos" items="${poslist}">
 								<c:choose>
-									<c:when test="${pos.position_num eq emp.position_num}">
+									<c:when test="${pos.position_num eq empForSearch.position_num}">
 										<option value="${pos.position_num}" selected="selected">${pos.position_name}</option>
 									</c:when>
 									<c:otherwise>
@@ -267,7 +267,7 @@
 						<select name="dept_num" id="dept_num">
 							<c:forEach var="dept" items="${deptlist}">
 								<c:choose>
-									<c:when test="${dept.dept_num eq emp.dept_num}">
+									<c:when test="${dept.dept_num eq empForSearch.dept_num}">
 										<option value="${dept.dept_num}" selected="selected">${dept.dept_name}</option>
 									</c:when>
 									<c:otherwise>
@@ -285,7 +285,7 @@
 						<select name="status_num" id="status_num">
 							<c:forEach var="status" items="${statuslist}">
 								<c:choose>
-									<c:when test="${status.status_num eq emp.status_num}">
+									<c:when test="${status.status_num eq empForSearch.status_num}">
 										<option value="${status.status_num}" selected="selected">${status.status_name}</option>
 									</c:when>
 									<c:otherwise>

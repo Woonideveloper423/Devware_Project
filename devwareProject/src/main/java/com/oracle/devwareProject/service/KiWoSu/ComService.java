@@ -18,7 +18,7 @@ public interface ComService {
 
 	List<Commute> ListCommute(Commute commute);
 
-	void saveTime(Commute commute);
+	int saveTime(Commute commute);
 
 	List<Commute_cus> ListCommuteCus(Commute_cus commuteCus);
 

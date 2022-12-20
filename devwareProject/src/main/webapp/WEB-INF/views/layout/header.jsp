@@ -757,7 +757,7 @@ function  wsEvt() {
 	           			</c:otherwise>
 	                </c:choose>
 	                
-	                <a class="dropdown-item" href="${pageContext.request.contextPath}/member/myboard?member_name=${sessionScope.member.member_name}">
+	                <a class="dropdown-item" href="${pageContext.request.contextPath}/board/checkList?brd_type=5">
 	                  <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>내 게시글
 	                </a>
                 

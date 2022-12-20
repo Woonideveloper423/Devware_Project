@@ -56,10 +56,11 @@ public class ComServiceImpl implements ComService {
 	}
 
 	@Override
-	public void saveTime(Commute commute) {
+	public int saveTime(Commute commute) {
+		int result = 0;
 		System.out.println("CommuteService saveTime start..");
-		cd.saveTime(commute);
-		return;
+		result = cd.saveTime(commute);
+		return result;
 		
 	}
 

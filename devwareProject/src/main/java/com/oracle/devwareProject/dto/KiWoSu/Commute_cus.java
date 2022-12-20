@@ -13,4 +13,7 @@ public class Commute_cus {
 	private String cus_end;
 	private String cus_detail;
 	private String cus_cus;
+	// 조회용
+	private String com_workTime; // 근무시간  
+	private String com_lateTime; // 지각시간  
 }
