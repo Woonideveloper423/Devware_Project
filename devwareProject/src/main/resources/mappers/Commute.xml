@@ -49,5 +49,6 @@
               	, work_time( CONCAT(com_num, '090000'), cus_start) com_lateTime
         from   	commute_cus cus
         where 	emp_num =  #{emp_num}
+        order by  cus_seq desc
  	</select>
 </mapper>

@@ -26,7 +26,6 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
   
@@ -129,18 +128,23 @@ function endTime(){
 	
 	var msg = nowyear +"년"+ nowMonth +"월"+ nowDay +"일"+ nowHour +"시"+ nowMins + "분" +nowSecs +"초";
 	console.log("테스트"+com_num);
-	$.ajax({
-		url : "<%=context%>/findTime",
-		type : 'post',
-		data : { 	
-					emp_num   : ${ sessionScope.empForSearch.emp_num },
-					"com_end" : com_end,
-					"com_num" : com_num
-				},
- 		success:function(commute){
-				location.replace("<%=context%>/user/commute");
-		} 
-	}); 
+	if(confirm('정말 퇴근처리 하시겠습니까?')){
+		$.ajax({
+			url : "<%=context%>/findTime",
+			type : 'post',
+			data : { 	
+						emp_num   : ${ sessionScope.empForSearch.emp_num },
+						"com_end" : com_end,
+						"com_num" : com_num
+					},
+	 		success:function(commute){
+	 				alert("퇴근 처리가 되었습니다");
+					location.replace("<%=context%>/user/commute");
+			} 
+		}); 
+		
+	}
+
 }
 
 setInterval('time()', 1000);
@@ -161,7 +165,7 @@ function time() {
 	var divDate = document.getElementById("current_date");
 	var dateMsg = currentDate.getFullYear() + "년 "
 	dateMsg += currentDate.getMonth() + 1 + "월";
-	dateMsg += currentDate.getDay() + 1 + "일";
+	dateMsg += currentDate.getDay()+18 + "일";
 	
     var msg = currentDate.getHours()+"시"
     msg += currentDate.getMinutes()+"분";
@@ -245,10 +249,10 @@ function time() {
 					<div style="width:15%" id="com_end${commute.com_num }" name="${commute.cus_end }">${commute.cus_end.substring(8,10) }시 ${commute.cus_end.substring(10,12) }분 </div>
 				</c:if>
 				<c:if test="${commute.cus_end == null }">
-					<div style="width:20%" id="com_end${commute.com_num }"></div>	
+					<div style="width:15%" id="com_end${commute.com_num }"></div>	
 				</c:if>		
 				<div style="width:13%">${commute.com_lateTime }</div>
-				<div style="width:12%">${commute.com_workTime }</div>
+				<div style="width:13%">${commute.com_workTime }</div>
 				<div style="width:12%">${commute.cus_detail}</div>
 				<%-- <c:forEach items="${listCommute2}" var="commute2">
 					<div style="width:12%">${commute2.cus_detail}</div>
